@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,17 +26,17 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<User> join(@RequestBody @ModelAttribute @Valid UserJoinDTO userJoinDTO){
+    public ResponseEntity<User> join(@RequestBody @Valid UserJoinDTO userJoinDTO){
         if(userDetailsService.loadUserByUsername(userJoinDTO.getUsername())!=null){
             // 이미 같은 아이디를 가진 유저가 존재.
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+            return ResponseEntity.status(401).body(null);
         }
 
         Optional<User> optionalUser = userService.acceptUser(userJoinDTO);
 
         if(optionalUser.isEmpty()){
             //어떤 오류로 인해 회원가입 실패
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+            return ResponseEntity.status(402).body(null);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
