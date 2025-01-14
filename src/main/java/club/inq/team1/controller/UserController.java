@@ -5,6 +5,7 @@ import club.inq.team1.entity.User;
 import club.inq.team1.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "UserController", description = "user와 관련된 api 컨트롤러")
 public class UserController {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
