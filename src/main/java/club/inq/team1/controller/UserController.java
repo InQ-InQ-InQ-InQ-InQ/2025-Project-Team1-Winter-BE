@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @Tag(name = "UserController", description = "user와 관련된 api 컨트롤러")
 public class UserController {
     private final UserDetailsService userDetailsService;
