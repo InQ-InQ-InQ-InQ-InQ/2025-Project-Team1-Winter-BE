@@ -1,8 +1,11 @@
 package club.inq.team1.entity;
 
+import club.inq.team1.config.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,6 +47,14 @@ public class UserInfo {
 
     @Column(name = "email")
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birth")
+    private Date birth;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
