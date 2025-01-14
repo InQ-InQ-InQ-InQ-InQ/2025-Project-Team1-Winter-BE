@@ -17,4 +17,7 @@ public class UserJoinDTO {
     @NotNull
     @NotBlank
     private String nickname;
+
+    private String phone;
+    private String email;
 }
