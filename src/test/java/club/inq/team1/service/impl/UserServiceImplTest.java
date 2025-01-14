@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class UserServiceImplTest {
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Test
     @Transactional
@@ -24,7 +24,7 @@ class UserServiceImplTest {
         UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
 
-        assertEquals(user.getUserInfoId().getNickname(),"nick");
+        assertEquals("nick", user.getUserInfoId().getNickname());
     }
 
     @Test
@@ -36,6 +36,6 @@ class UserServiceImplTest {
         UserInfo userInfoId = user.getUserInfoId();
 
         String username = userInfoId.getUserId().getUsername();
-        assertEquals(username,"qwer");
+        assertEquals("qwer", username);
     }
 }
