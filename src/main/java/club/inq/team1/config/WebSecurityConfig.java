@@ -30,6 +30,11 @@ public class WebSecurityConfig {
                 .loginProcessingUrl("/loginProcess")
         );
 
+        http.logout(logout->logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+        );
+
         http.csrf(csrf -> csrf.disable());
 
         return http.build();
