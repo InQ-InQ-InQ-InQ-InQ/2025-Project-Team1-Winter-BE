@@ -1,6 +1,7 @@
 package club.inq.team1.entity;
 
 import club.inq.team1.config.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -35,6 +36,7 @@ public class UserInfo {
     @Column(name = "user_info_id")
     private Long userInfoId;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
     private User userId;
