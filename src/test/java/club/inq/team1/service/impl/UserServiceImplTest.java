@@ -21,7 +21,7 @@ class UserServiceImplTest {
     @Transactional
     @DisplayName("User Entity에서 UserInfo 참조 테스트")
     void acceptUser() {
-        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick",null,null);
+        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
 
         assertEquals(user.getUserInfoId().getNickname(),"nick");
@@ -31,7 +31,7 @@ class UserServiceImplTest {
     @Transactional
     @DisplayName("UserInfo에서 User Entity 참조 테스트")
     void acceptUser1(){
-        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick",null,null);
+        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
         UserInfo userInfoId = user.getUserInfoId();
 
