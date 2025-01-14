@@ -1,7 +1,9 @@
 package club.inq.team1.dto;
 
+import club.inq.team1.config.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +26,6 @@ public class UserJoinDTO {
 
     private String phone;
     private String email;
+    private Date birth;
+    private Gender gender;
 }
