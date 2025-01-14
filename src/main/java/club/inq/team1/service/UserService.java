@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface UserService {
     User acceptUser(UserJoinDTO userJoinDTO);
     Optional<User> getCurrentLoginUser();
+    boolean existsNicknameCheck(String nickname);
 }

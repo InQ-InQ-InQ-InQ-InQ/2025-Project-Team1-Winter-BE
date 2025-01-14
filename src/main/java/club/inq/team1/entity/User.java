@@ -1,5 +1,6 @@
 package club.inq.team1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToOne(mappedBy = "userId")
+    @JsonIgnore
     private UserInfo userInfoId;
 
     @Override

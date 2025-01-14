@@ -42,8 +42,10 @@ public class UserServiceImpl implements UserService {
         userInfo.setNickname(userJoinDTO.getNickname());
         userInfo.setPhone(userJoinDTO.getPhone());
         userInfo.setEmail(userJoinDTO.getEmail());
-
         userInfoRepository.save(userInfo);
+//
+        user.setUserInfoId(userInfo);
+        userRepository.save(user);
 
         return user;
     }
@@ -58,5 +60,10 @@ public class UserServiceImpl implements UserService {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean existsNicknameCheck(String nickname) {
+        return userInfoRepository.existsByNickname(nickname);
     }
 }

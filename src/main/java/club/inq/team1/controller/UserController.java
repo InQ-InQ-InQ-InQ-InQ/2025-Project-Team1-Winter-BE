@@ -33,8 +33,9 @@ public class UserController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", responses = {
-                    @ApiResponse(responseCode = "201", description = "아이디 생성 성공"),
-                    @ApiResponse(responseCode = "401", description = "동일한 아이디를 가진 유저가 존재")
+            @ApiResponse(responseCode = "201", description = "아이디 생성 성공"),
+            @ApiResponse(responseCode = "401", description = "동일한 아이디를 가진 유저가 존재"),
+            @ApiResponse(responseCode = "500", description = "동일한 닉네임을 가진 유저가 존재")
     })
     public ResponseEntity<User> join(@RequestBody @Valid UserJoinDTO userJoinDTO) {
         if (userDetailsService.loadUserByUsername(userJoinDTO.getUsername()) != null) {
@@ -51,7 +52,15 @@ public class UserController {
     @Operation(summary = "중복된 아이디인지 확인", description = "중복된 아이디라면 true, 아니라면 false", responses = {
             @ApiResponse(responseCode = "200", description = "아이디 중복 조회 성공")
     })
-    public ResponseEntity<Boolean> existsUsername(@RequestParam(value = "q") String username){
+    public ResponseEntity<Boolean> existsUsername(@RequestParam(value = "q") String username) {
         return ResponseEntity.status(200).body(userDetailsService.loadUserByUsername(username) != null);
+    }
+
+    @GetMapping("/nickname")
+    @Operation(summary = "중복된 닉네임인지 확인", description = "중복된 닉네임이라면 true, 아니라면 false", responses = {
+            @ApiResponse(responseCode = "200", description = "닉네임 중복 조회 성공")
+    })
+    public ResponseEntity<Boolean> existsNickname(@RequestParam(value = "q") String nickname) {
+        return ResponseEntity.status(200).body(userService.existsNicknameCheck(nickname));
     }
 }
