@@ -3,7 +3,9 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.response.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
+import club.inq.team1.entity.UserInfo;
 import club.inq.team1.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,5 +106,21 @@ public class UserController {
     public ResponseEntity<User> updateCurrentUserPassword(@RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
         User user = userService.updatePassword(updateUserPasswordDTO);
         return ResponseEntity.status(200).body(user);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "다른 유저 프로필 조회 기능", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
+        User user = userService.getUserProfile(id);
+        UserInfo userInfoId = user.getUserInfoId();
+
+        PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
+        publicUserProfileDTO.setUserId(user.getUserId());
+        publicUserProfileDTO.setNickname(userInfoId.getNickname());
+        publicUserProfileDTO.setGender(userInfoId.getGender());
+
+        return ResponseEntity.status(200).body(publicUserProfileDTO);
     }
 }

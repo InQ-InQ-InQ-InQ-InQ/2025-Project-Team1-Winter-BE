@@ -99,4 +99,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(updateUserPasswordDTO.getPassword()));
         return userRepository.save(user);
     }
+
+    @Override
+    public User getUserProfile(Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
 }
