@@ -31,6 +31,11 @@ public class Follow {
     @JoinColumn(name = "followee_id", nullable = false)
     private User followeeId;
 
-    @Column(name = "alarm" , columnDefinition = "DEFAULT 0", nullable = false)
-    private Boolean alarm;
+    @Column(name = "alarm", nullable = false)
+    private Boolean alarm = false;
+
+    public Follow(User followerId, User followeeId) {
+        this.followerId = followerId;  // followerId로 User 객체 생성
+        this.followeeId = followeeId;  // followeeId로 User 객체 생성
+    }
 }
