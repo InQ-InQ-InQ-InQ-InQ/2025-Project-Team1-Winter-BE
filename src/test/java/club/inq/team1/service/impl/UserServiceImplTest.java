@@ -15,27 +15,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class UserServiceImplTest {
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Test
     @Transactional
     @DisplayName("User Entity에서 UserInfo 참조 테스트")
     void acceptUser() {
-        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick",null,null);
+        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
 
-        assertEquals(user.getUserInfoId().getNickname(),"nick");
+        assertEquals("nick", user.getUserInfoId().getNickname());
     }
 
     @Test
     @Transactional
     @DisplayName("UserInfo에서 User Entity 참조 테스트")
     void acceptUser1(){
-        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick",null,null);
+        UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
         UserInfo userInfoId = user.getUserInfoId();
 
         String username = userInfoId.getUserId().getUsername();
-        assertEquals(username,"qwer");
+        assertEquals("qwer", username);
     }
 }
