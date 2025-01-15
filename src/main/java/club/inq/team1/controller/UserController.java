@@ -109,6 +109,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "다른 유저 프로필 조회 기능", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
         UserInfo userInfoId = user.getUserInfoId();
