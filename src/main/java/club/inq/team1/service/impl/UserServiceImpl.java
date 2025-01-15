@@ -11,6 +11,7 @@ import club.inq.team1.service.UserService;
 import jakarta.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
@@ -110,19 +111,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean setUserProfileImage(MultipartFile multipartFile) {
+        String path = System.getProperty("user.dir");
+        String uploadPath = path + "/profile/";
         UserInfo userInfoId = getCurrentLoginUser().orElseThrow().getUserInfoId();
-        String filePath = UUID.randomUUID() + multipartFile.getOriginalFilename();
-//        try {
-//            multipartFile.transferTo(f);
-//
-//            userInfoId.setProfileImagePath(f.getPath());
-//            userInfoRepository.save(userInfoId);
-//
-//            return true;
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+
+        String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+        String filePath = uploadPath + fileName;
+        try {
+            File f = new File(filePath);
+            f.mkdirs();
+            multipartFile.transferTo(f);
+            userInfoId.setProfileImagePath(filePath);
+            userInfoRepository.save(userInfoId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return true;
     }
 }

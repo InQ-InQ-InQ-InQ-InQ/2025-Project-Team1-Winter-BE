@@ -11,6 +11,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,8 +131,19 @@ public class UserController {
     }
 
     @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
+    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
         boolean b = userService.setUserProfileImage(image);
-        return ResponseEntity.status(200).body(b);
+        return ResponseEntity.status(200).body(Boolean.toString(b));
     }
+
+    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE,MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.status(200).body(
+                    Files.readAllBytes(Path.of(userService.getUserProfile(id).getUserInfoId().getProfileImagePath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
