@@ -1,6 +1,7 @@
 package club.inq.team1.service.impl;
 
 import club.inq.team1.dto.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -89,5 +90,13 @@ public class UserServiceImpl implements UserService {
         userInfoRepository.save(userInfoId);
 
         return user;
+    }
+
+    @Override
+    @Transactional
+    public User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO) {
+        User user = getCurrentLoginUser().orElseThrow();
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDTO.getPassword()));
+        return userRepository.save(user);
     }
 }

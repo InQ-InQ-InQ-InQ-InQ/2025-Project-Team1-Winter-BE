@@ -1,6 +1,7 @@
 package club.inq.team1.controller;
 
 import club.inq.team1.dto.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.service.UserService;
@@ -37,19 +38,23 @@ public class UserController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", responses = {
-            @ApiResponse(responseCode = "201", description = "아이디 생성 성공"),
-            @ApiResponse(responseCode = "401", description = "동일한 아이디를 가진 유저가 존재"),
-            @ApiResponse(responseCode = "500", description = "동일한 닉네임을 가진 유저가 존재")
+            @ApiResponse(responseCode = "200", description = "아이디 생성 성공"),
+            @ApiResponse(responseCode = "299", description = "동일한 아이디를 가진 유저가 존재"),
+            @ApiResponse(responseCode = "298", description = "동일한 닉네임을 가진 유저가 존재")
     })
     public ResponseEntity<User> join(@RequestBody @Valid UserJoinDTO userJoinDTO) {
         if (userDetailsService.loadUserByUsername(userJoinDTO.getUsername()) != null) {
             // 이미 같은 아이디를 가진 유저가 존재.
-            return ResponseEntity.status(401).body(null);
+            return ResponseEntity.status(299).body(null);
+        }
+        if(userService.existsNicknameCheck(userJoinDTO.getNickname())){
+            // 같은 닉네임을 가진 유저가 존재.
+            return ResponseEntity.status(298).body(null);
         }
 
         User user = userService.acceptUser(userJoinDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        return ResponseEntity.status(200).body(user);
     }
 
     @GetMapping("/username")
@@ -78,12 +83,25 @@ public class UserController {
     }
 
     @PutMapping(value = "/my/update", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "현재 로그인된 사용자의 개인정보 수정", responses = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "299", description = "닉네임 중복으로 인한 실패")
+    })
     public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
                 !userService.getPrivateInfo().getUserInfoId().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
-            return ResponseEntity.status(200).body(null);
+            return ResponseEntity.status(299).body(null);
         }
         User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
+        return ResponseEntity.status(200).body(user);
+    }
+
+    @PostMapping(value = "/my/update",produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "비밀번호 변경", responses = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
+    })
+    public ResponseEntity<User> updateCurrentUserPassword(@RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
+        User user = userService.updatePassword(updateUserPasswordDTO);
         return ResponseEntity.status(200).body(user);
     }
 }
