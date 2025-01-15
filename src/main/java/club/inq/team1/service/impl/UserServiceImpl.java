@@ -54,10 +54,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getCurrentLoginUser() {
-        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        Object details = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(details instanceof User user){
-            log.debug("Current Login User : " + user.getUsername());
-            log.debug("Current Login User's Authority : " + user.getAuthorities().stream().findFirst().orElse(null));
             return Optional.of(user);
         }
 
@@ -67,5 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsNicknameCheck(String nickname) {
         return userInfoRepository.existsByNickname(nickname);
+    }
+
+    @Override
+    public User getPrivateInfo() {
+        User user = getCurrentLoginUser().orElseThrow();
+        return userRepository.findById(user.getUserId()).orElseThrow();
     }
 }

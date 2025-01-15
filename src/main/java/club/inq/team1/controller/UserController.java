@@ -7,8 +7,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,5 +64,14 @@ public class UserController {
     })
     public ResponseEntity<Boolean> existsNickname(@RequestParam(value = "q") String nickname) {
         return ResponseEntity.status(200).body(userService.existsNicknameCheck(nickname));
+    }
+
+    @GetMapping(value = "/my", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "현재 로그인 된 사용자 개인정보 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    public ResponseEntity<User> getCurrentUserPrivateInfo(){
+        User user = userService.getPrivateInfo();
+        return ResponseEntity.status(200).body(user);
     }
 }
