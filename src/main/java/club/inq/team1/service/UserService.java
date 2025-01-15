@@ -13,4 +13,5 @@ public interface UserService {
     User getPrivateInfo();
     User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO);
     User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO);
+    User getUserProfile(Long id);
 }
