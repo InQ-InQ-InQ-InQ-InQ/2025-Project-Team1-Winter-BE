@@ -1,5 +1,6 @@
 package club.inq.team1.service.impl;
 
+import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -71,5 +72,22 @@ public class UserServiceImpl implements UserService {
     public User getPrivateInfo() {
         User user = getCurrentLoginUser().orElseThrow();
         return userRepository.findById(user.getUserId()).orElseThrow();
+    }
+
+    @Override
+    @Transactional
+    public User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO){
+        User user = getCurrentLoginUser().orElseThrow();
+
+        UserInfo userInfoId = user.getUserInfoId();
+        userInfoId.setNickname(putUserPrivateInfoDTO.getNickname());
+        userInfoId.setPhone(putUserPrivateInfoDTO.getPhone());
+        userInfoId.setEmail(putUserPrivateInfoDTO.getEmail());
+        userInfoId.setGender(putUserPrivateInfoDTO.getGender());
+        userInfoId.setBirth(putUserPrivateInfoDTO.getBirth());
+
+        userInfoRepository.save(userInfoId);
+
+        return user;
     }
 }

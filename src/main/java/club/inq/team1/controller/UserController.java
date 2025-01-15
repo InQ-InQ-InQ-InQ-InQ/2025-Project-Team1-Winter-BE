@@ -1,5 +1,6 @@
 package club.inq.team1.controller;
 
+import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,6 +74,16 @@ public class UserController {
     })
     public ResponseEntity<User> getCurrentUserPrivateInfo(){
         User user = userService.getPrivateInfo();
+        return ResponseEntity.status(200).body(user);
+    }
+
+    @PutMapping(value = "/my/update", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
+        if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
+                !userService.getPrivateInfo().getUserInfoId().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
+            return ResponseEntity.status(200).body(null);
+        }
+        User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
         return ResponseEntity.status(200).body(user);
     }
 }
