@@ -9,12 +9,16 @@ import club.inq.team1.repository.UserInfoRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.UserService;
 import jakarta.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @Service
@@ -103,5 +107,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserProfile(Long id) {
         return userRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public boolean setUserProfileImage(MultipartFile multipartFile) {
+        UserInfo userInfoId = getCurrentLoginUser().orElseThrow().getUserInfoId();
+        String filePath = UUID.randomUUID() + multipartFile.getOriginalFilename();
+//        try {
+//            multipartFile.transferTo(f);
+//
+//            userInfoId.setProfileImagePath(f.getPath());
+//            userInfoRepository.save(userInfoId);
+//
+//            return true;
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        return true;
     }
 }
