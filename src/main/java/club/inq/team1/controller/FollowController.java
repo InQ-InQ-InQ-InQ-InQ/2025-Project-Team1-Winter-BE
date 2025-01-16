@@ -2,7 +2,9 @@ package club.inq.team1.controller;
 
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
+import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.impl.FollowServiceImpl;
+import club.inq.team1.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import java.util.List;
@@ -22,15 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
 public class FollowController {
     private final FollowServiceImpl followService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public FollowController(FollowServiceImpl followService) {
+    public FollowController(FollowServiceImpl followService, UserRepository userRepository,
+        UserServiceImpl userServiceImpl) {
         this.followService = followService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     //팔로윙
-    @PostMapping("/{currentUserId}/follow/{opponentId}")
-    private ResponseEntity<?> follow(@PathVariable Long currentUserId, @PathVariable Long opponentId){
+    @PostMapping("/follow/{opponentId}")
+    private ResponseEntity<?> follow(@PathVariable Long opponentId){
+        Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
+        Long currentUserId = currentUser.get().getUserId();
         try {
             followService.follow(currentUserId, opponentId);
             return new ResponseEntity<>(HttpStatus.CREATED);  // 팔로우 성공 시 201 CREATED 응답
@@ -40,8 +47,10 @@ public class FollowController {
     }
 
     //언팔로윙
-    @DeleteMapping("/{currentUserId}/unfollow/{opponentId}")
-    private ResponseEntity<?> unfollow(@PathVariable Long currentUserId, @PathVariable Long opponentId) {
+    @DeleteMapping("/unfollow/{opponentId}")
+    private ResponseEntity<?> unfollow(@PathVariable Long opponentId) {
+        Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
+        Long currentUserId = currentUser.get().getUserId();
         try {
             followService.unfollow(currentUserId, opponentId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 언팔로우 성공 시 204 NO_CONTENT 응답
