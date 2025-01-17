@@ -10,12 +10,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "follow")
 public class Follow {
     @Id
@@ -24,18 +27,16 @@ public class Follow {
     private Long followId;
 
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "follower_id", nullable = false)
     private User followerId;
 
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "followee_id", nullable = false)
     private User followeeId;
 
     @Column(name = "alarm", nullable = false)
     private Boolean alarm = false;
 
-    public Follow(User followerId, User followeeId) {
-        this.followerId = followerId;  // followerId로 User 객체 생성
-        this.followeeId = followeeId;  // followeeId로 User 객체 생성
-    }
 }
