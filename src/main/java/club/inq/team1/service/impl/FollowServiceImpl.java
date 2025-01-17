@@ -10,6 +10,8 @@ import club.inq.team1.service.FollowService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -60,10 +62,10 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로워 조회 (전체 팔로워 목록)
-    public List<FollowerDTO> findAllFollowers(Long userId) {
+    public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
         User user = userRepository.findById(userId).orElseThrow();
-
-        return followRepository.findFollowersByFolloweeId(user);  // user.get()로 User 객체를 전달
+        PageRequest pageRequest = PageRequest.of(page - 1, 10);
+        return followRepository.findFollowersByFolloweeId(user, pageRequest);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
@@ -75,10 +77,10 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    public List<FollowingDTO> findAllFollowees(Long userId) {
+    public List<FollowingDTO> findAllFollowees(Long userId, Integer page) {
         User user = userRepository.findById(userId).orElseThrow();
-
-        return followRepository.findFolloweesByFollowerId(user);  // user.get()로 User 객체를 전달
+        PageRequest pageRequest = PageRequest.of(page - 1, 10);
+        return followRepository.findFolloweesByFollowerId(user, pageRequest);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)

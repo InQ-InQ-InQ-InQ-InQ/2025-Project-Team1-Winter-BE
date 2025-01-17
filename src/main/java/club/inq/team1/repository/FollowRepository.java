@@ -6,12 +6,13 @@ import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    List<FollowingDTO> findFolloweesByFollowerId(User currentUser);
-    List<FollowerDTO> findFollowersByFolloweeId(User currentUser);
-    Optional<Follow> findByFollowerIdAndFolloweeId(User opponentUser, User currentUser);
+    List<FollowingDTO> findFolloweesByFollowerId(User userId, Pageable pageable);
+    List<FollowerDTO> findFollowersByFolloweeId(User userId, Pageable pageable);
+    Optional<Follow> findByFollowerIdAndFolloweeId(User followerId, User followeeId);
     long countByFolloweeId(User followeeId);
     long countByFollowerId(User followerId);
 

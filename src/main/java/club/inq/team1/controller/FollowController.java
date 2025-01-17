@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -67,8 +68,12 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping("/{userId}/follower")
-    public ResponseEntity<List<FollowerDTO>> findFollower(@PathVariable("userId") Long userId){
-        List<FollowerDTO> followers = followService.findAllFollowers(userId);
+    public ResponseEntity<List<FollowerDTO>> findFollower(
+            @PathVariable("userId") Long userId,
+            @RequestParam(value = "page", required = false) Integer page){
+        if(page == null)
+            page = 1;
+        List<FollowerDTO> followers = followService.findAllFollowers(userId, page);
         if (followers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 팔로워가 없으면 NOT_FOUND 반환
         }
@@ -86,8 +91,12 @@ public class FollowController {
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<FollowingDTO>> findFollowee(@PathVariable("userId") Long userId){
-        List<FollowingDTO> followees = followService.findAllFollowees(userId);
+    public ResponseEntity<List<FollowingDTO>> findFollowee(
+            @PathVariable("userId") Long userId,
+            @RequestParam(value = "page", required = false) Integer page) {
+        if(page == null)
+            page = 1;
+        List<FollowingDTO> followees = followService.findAllFollowees(userId, page);
         if (followees.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());  // 빈 리스트 반환
         }

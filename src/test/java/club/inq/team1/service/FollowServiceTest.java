@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
-import club.inq.team1.entity.Follow;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
@@ -95,7 +94,7 @@ class FollowServiceTest {
         followService.follow(userId1,userId3);
         followService.follow(userId2,userId3);
 
-        List<FollowerDTO> allFollowers = followService.findAllFollowers(userId3);
+        List<FollowerDTO> allFollowers = followService.findAllFollowers(userId3, 1);
         assertEquals("qwer",allFollowers.get(0).getFollowerId().getUserInfoId().getNickname());
         assertEquals("qwer1",allFollowers.get(1).getFollowerId().getUserInfoId().getNickname());
         assertEquals("qwer2",allFollowers.get(2).getFollowerId().getUserInfoId().getNickname());
@@ -125,7 +124,7 @@ class FollowServiceTest {
         followService.follow(userId,userId2);
         followService.follow(userId,userId3);
 
-        List<FollowingDTO> allFollowees = followService.findAllFollowees(userId);
+        List<FollowingDTO> allFollowees = followService.findAllFollowees(userId, 1);
         assertEquals("qwer1",allFollowees.get(0).getFolloweeId().getUserInfoId().getNickname());
         assertEquals("qwer2",allFollowees.get(1).getFolloweeId().getUserInfoId().getNickname());
         assertEquals("qwer3",allFollowees.get(2).getFolloweeId().getUserInfoId().getNickname());
