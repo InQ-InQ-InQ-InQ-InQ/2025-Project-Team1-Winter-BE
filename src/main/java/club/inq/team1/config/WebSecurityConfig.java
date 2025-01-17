@@ -21,7 +21,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/","/login","/loginProcess","/swagger-ui/**").permitAll()
-                .requestMatchers("/user").hasRole("USER")
+                .requestMatchers("/api/users/my/**").hasRole("USER")
                 .anyRequest().permitAll()
         );
 

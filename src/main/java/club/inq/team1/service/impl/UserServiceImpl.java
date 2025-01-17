@@ -1,5 +1,7 @@
 package club.inq.team1.service.impl;
 
+import club.inq.team1.dto.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -54,10 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getCurrentLoginUser() {
-        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        Object details = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(details instanceof User user){
-            log.debug("Current Login User : " + user.getUsername());
-            log.debug("Current Login User's Authority : " + user.getAuthorities().stream().findFirst().orElse(null));
             return Optional.of(user);
         }
 
@@ -67,5 +67,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsNicknameCheck(String nickname) {
         return userInfoRepository.existsByNickname(nickname);
+    }
+
+    @Override
+    public User getPrivateInfo() {
+        User user = getCurrentLoginUser().orElseThrow();
+        return userRepository.findById(user.getUserId()).orElseThrow();
+    }
+
+    @Override
+    @Transactional
+    public User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO){
+        User user = getCurrentLoginUser().orElseThrow();
+
+        UserInfo userInfoId = user.getUserInfoId();
+        userInfoId.setNickname(putUserPrivateInfoDTO.getNickname());
+        userInfoId.setPhone(putUserPrivateInfoDTO.getPhone());
+        userInfoId.setEmail(putUserPrivateInfoDTO.getEmail());
+        userInfoId.setGender(putUserPrivateInfoDTO.getGender());
+        userInfoId.setBirth(putUserPrivateInfoDTO.getBirth());
+
+        userInfoRepository.save(userInfoId);
+
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO) {
+        User user = getCurrentLoginUser().orElseThrow();
+        user.setPassword(passwordEncoder.encode(updateUserPasswordDTO.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User getUserProfile(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 }
