@@ -63,15 +63,15 @@ public class FollowServiceImpl implements FollowService {
 
     // 팔로워 조회 (전체 팔로워 목록)
     public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = getUserOrThrow(userId,"해당 사용자가 존재하지 않습니다.");
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
         return followRepository.findFollowersByFolloweeId(user, pageRequest);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
-    public boolean findSpecificFollower(Long currentUserId, Long opponentId) {
-        User follower = getUserOrThrow(currentUserId,"현재 사용자가 존재하지 않습니다.");
-        User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
+    public boolean findSpecificFollower(Long followerId, Long followeeId) {
+        User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
+        User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
 
         return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
@@ -84,9 +84,9 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
-    public boolean findSpecificFollowee(Long currentUserId, Long opponentId) {
-        User follower = getUserOrThrow(currentUserId,"현재 사용자가 존재하지 않습니다.");
-        User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
+    public boolean findSpecificFollowee(Long followerId, Long followeeId) {
+        User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
+        User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
 
         return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
