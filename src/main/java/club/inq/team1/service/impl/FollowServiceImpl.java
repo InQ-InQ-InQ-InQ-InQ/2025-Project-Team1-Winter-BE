@@ -26,13 +26,12 @@ public class FollowServiceImpl implements FollowService {
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
 
-        // 팔로우 관계 생성
         User follower = currentUser
             .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
         User followee = opponentUser
             .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
 
-        if (followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent()) {
+        if(findSpecificFollower(currentUserId, opponentId)){
             throw new IllegalArgumentException("이미 팔로우 했습니다!");
         }
 
@@ -76,15 +75,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
-    public List<Follow> findSpecificFollower(Long currentUserId, Long opponentId) {
+    public boolean findSpecificFollower(Long currentUserId, Long opponentId) {
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
-        if (currentUser.isPresent() && opponentUser.isPresent()) {
-            return followRepository.findByFollowerIdAndFolloweeId(opponentUser.get(), currentUser.get());  // 팔로우하는 사람(followerId), 팔로우되는 사람(followeeId)
-        }
-        else{
-            return Collections.emptyList();  // null 대신 빈 리스트 반환
-        }
+        
+        User follower = opponentUser
+            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
+        User followee = currentUser
+            .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
+
+        return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
@@ -97,15 +97,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
-    public List<Follow> findSpecificFollowee(Long currentUserId, Long opponentId) {
+    public boolean findSpecificFollowee(Long currentUserId, Long opponentId) {
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
-        if (currentUser.isPresent() && opponentUser.isPresent()) {
-            return followRepository.findByFollowerIdAndFolloweeId(currentUser.get(), opponentUser.get());  // 팔로우하는 사람(followerId), 팔로우되는 사람(followeeId)
-        }
-        else{
-            return Collections.emptyList();
-        }
+
+        User follower = currentUser
+            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
+        User followee = opponentUser
+            .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
 
     //팔로워 수 조회

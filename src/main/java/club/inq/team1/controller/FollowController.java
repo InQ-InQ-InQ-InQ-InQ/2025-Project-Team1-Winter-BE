@@ -77,8 +77,7 @@ public class FollowController {
     //특정 팔로워 확인
     @GetMapping("/{currentUserId}/follower/{opponentId}")
     public ResponseEntity<?> findSpecificFollower(@PathVariable Long currentUserId, @PathVariable Long opponentId) {
-        List<Follow> result = followService.findSpecificFollower(currentUserId, opponentId);
-        if (!result.isEmpty()) {
+        if (followService.findSpecificFollower(currentUserId, opponentId)) {
             return new ResponseEntity<>(true, HttpStatus.OK);  // 팔로우 관계가 존재하면 OK 반환
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);  // 팔로우 관계가 없으면 NOT_FOUND 반환
@@ -97,8 +96,7 @@ public class FollowController {
     //특정 팔로윙 확인
     @GetMapping("/{currentUserId}/following/{opponentId}")
     private ResponseEntity<?> findSpecificFollowee(@PathVariable Long currentUserId, @PathVariable Long opponentId){
-        List<Follow> result = followService.findSpecificFollowee(currentUserId, opponentId);
-        if (!result.isEmpty()) {
+        if (followService.findSpecificFollowee(currentUserId, opponentId)) {
             return new ResponseEntity<>(true, HttpStatus.OK);  // 팔로우 관계가 존재하면 OK 반환
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);  // 팔로우 관계가 없으면 NOT_FOUND 반환
