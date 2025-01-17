@@ -1,6 +1,7 @@
 package club.inq.team1.repository;
 
-import club.inq.team1.dto.projection.Following;
+import club.inq.team1.dto.projection.FollowerDTO;
+import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    List<Following> findFolloweesByFollowerId(User currentUser);
-    List<Follow> findFollowersByFolloweeId(User currentUser);
+    List<FollowingDTO> findFolloweesByFollowerId(User currentUser);
+    List<FollowerDTO> findFollowersByFolloweeId(User currentUser);
     Optional<Follow> findByFollowerIdAndFolloweeId(User opponentUser, User currentUser);
     long countByFolloweeId(User followeeId);
     long countByFollowerId(User followerId);

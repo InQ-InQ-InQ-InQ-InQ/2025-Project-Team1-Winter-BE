@@ -1,9 +1,9 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.projection.Following;
+import club.inq.team1.dto.projection.FollowerDTO;
+import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
-import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.service.UserService;
 import club.inq.team1.service.impl.FollowServiceImpl;
@@ -11,7 +11,6 @@ import club.inq.team1.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,8 +67,8 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping("/{userId}/follower")
-    public ResponseEntity<List<Follow>> findFollower(@PathVariable("userId") Long userId){
-        List<Follow> followers = followService.findAllFollowers(userId);
+    public ResponseEntity<List<FollowerDTO>> findFollower(@PathVariable("userId") Long userId){
+        List<FollowerDTO> followers = followService.findAllFollowers(userId);
         if (followers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 팔로워가 없으면 NOT_FOUND 반환
         }
@@ -87,8 +86,8 @@ public class FollowController {
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<Following>> findFollowee(@PathVariable("userId") Long userId){
-        List<Following> followees = followService.findAllFollowees(userId);
+    public ResponseEntity<List<FollowingDTO>> findFollowee(@PathVariable("userId") Long userId){
+        List<FollowingDTO> followees = followService.findAllFollowees(userId);
         if (followees.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());  // 빈 리스트 반환
         }

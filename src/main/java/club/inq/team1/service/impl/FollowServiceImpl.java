@@ -1,6 +1,7 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.projection.Following;
+import club.inq.team1.dto.projection.FollowerDTO;
+import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
@@ -59,10 +60,10 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로워 조회 (전체 팔로워 목록)
-    public List<Follow> findAllFollowers(Long userId) {
-        User currentUser = userRepository.findById(userId).orElseThrow();
+    public List<FollowerDTO> findAllFollowers(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
 
-        return followRepository.findFollowersByFolloweeId(currentUser);  // currentUser.get()로 User 객체를 전달
+        return followRepository.findFollowersByFolloweeId(user);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
@@ -74,10 +75,10 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    public List<Following> findAllFollowees(Long currentUserId) {
-        User currentUser = userRepository.findById(currentUserId).orElseThrow();
+    public List<FollowingDTO> findAllFollowees(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
 
-        return followRepository.findFolloweesByFollowerId(currentUser);  // currentUser.get()로 User 객체를 전달
+        return followRepository.findFolloweesByFollowerId(user);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
