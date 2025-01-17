@@ -36,7 +36,7 @@ public class FollowController {
 
     //팔로윙
     @PostMapping("/follow/{opponentId}")
-    private ResponseEntity<?> follow(@PathVariable Long opponentId){
+    private ResponseEntity<String> follow(@PathVariable Long opponentId){
         Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
         Long currentUserId = currentUser.get().getUserId();
         try {
@@ -51,7 +51,7 @@ public class FollowController {
 
     //언팔로윙
     @DeleteMapping("/unfollow/{opponentId}")
-    private ResponseEntity<?> unfollow(@PathVariable Long opponentId) {
+    private ResponseEntity<String> unfollow(@PathVariable Long opponentId) {
         Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
         Long currentUserId = currentUser.get().getUserId();
         try {
@@ -76,16 +76,16 @@ public class FollowController {
 
     //특정 팔로워 확인
     @GetMapping("/{currentUserId}/follower/{opponentId}")
-    public ResponseEntity<?> findSpecificFollower(@PathVariable Long currentUserId, @PathVariable Long opponentId) {
+    public ResponseEntity<Boolean> findSpecificFollower(@PathVariable Long currentUserId, @PathVariable Long opponentId) {
         if (followService.findSpecificFollower(currentUserId, opponentId)) {
-            return new ResponseEntity<>(true, HttpStatus.OK);  // 팔로우 관계가 존재하면 OK 반환
+            return ResponseEntity.status(HttpStatus.OK).body(true);  // 팔로우 관계가 존재하면 OK 반환
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);  // 팔로우 관계가 없으면 NOT_FOUND 반환
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);  // 팔로우 관계가 없으면 NOT_FOUND 반환
     }
 
     //팔로윙 조회
     @GetMapping("/{currentUserId}/following")
-    private ResponseEntity<?> findFollowee(@PathVariable Long currentUserId){
+    private ResponseEntity<List<Follow>> findFollowee(@PathVariable Long currentUserId){
         List<Follow> followees = followService.findAllFollowees(currentUserId);
         if (followees.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());  // 빈 리스트 반환
@@ -95,23 +95,25 @@ public class FollowController {
 
     //특정 팔로윙 확인
     @GetMapping("/{currentUserId}/following/{opponentId}")
-    private ResponseEntity<?> findSpecificFollowee(@PathVariable Long currentUserId, @PathVariable Long opponentId){
+    private ResponseEntity<Boolean> findSpecificFollowee(@PathVariable Long currentUserId, @PathVariable Long opponentId){
         if (followService.findSpecificFollowee(currentUserId, opponentId)) {
-            return new ResponseEntity<>(true, HttpStatus.OK);  // 팔로우 관계가 존재하면 OK 반환
+            return ResponseEntity.status(HttpStatus.OK).body(true);  // 팔로우 관계가 존재하면 OK 반환
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);  // 팔로우 관계가 없으면 NOT_FOUND 반환
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);  // 팔로우 관계가 없으면 NOT_FOUND 반환
     }
 
     //팔로워 수 조회
     @GetMapping("/{currentUserId}/follower/count")
-    private ResponseEntity<?>  countFollower(@PathVariable Long currentUserId){
-        return ResponseEntity.status(HttpStatus.OK).body(followService.countFollowers(currentUserId));
+    private ResponseEntity<Integer> countFollower(@PathVariable Long currentUserId){
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(followService.countFollowers(currentUserId));
     }
 
     //팔로윙 수 조회
     @GetMapping("/{currentUserId}/following/count")
-    private ResponseEntity<?> countFollowing(@PathVariable Long currentUserId){
-        return ResponseEntity.status(HttpStatus.OK).body(followService.countFollowings(currentUserId));
+    private ResponseEntity<Integer> countFollowing(@PathVariable Long currentUserId){
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(followService.countFollowings(currentUserId));
     }
 
     //팔로워/팔로윙수 조회 및 특정 조회 버그 수정 필요
