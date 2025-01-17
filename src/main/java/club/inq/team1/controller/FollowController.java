@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -40,9 +41,11 @@ public class FollowController {
         Long currentUserId = currentUser.get().getUserId();
         try {
             followService.follow(currentUserId, opponentId);
-            return new ResponseEntity<>(HttpStatus.CREATED);  // 팔로우 성공 시 201 CREATED 응답
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body("해당 사용자를 팔로우 하였습니다!");  // 팔로우 성공 시 201 CREATED 응답
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);  // 이미 팔로우 관계가 존재하는 경우 400 BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("이미 팔로우 한 사용자 입니다!");  // 이미 팔로우 관계가 존재하는 경우 400 BAD_REQUEST
         }
     }
 
@@ -53,10 +56,11 @@ public class FollowController {
         Long currentUserId = currentUser.get().getUserId();
         try {
             followService.unfollow(currentUserId, opponentId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 언팔로우 성공 시 204 NO_CONTENT 응답
+            return ResponseEntity.status(HttpStatus.OK)
+                .body("팔로우를 취소했습니다!");  // 언팔로우 성공 시 200 ok 응답
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(),
-                HttpStatus.BAD_REQUEST);  // 팔로우 관계가 없으면 400 BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("팔로우 하지 않은 사용자입니다!");  // 팔로우 관계가 없으면 400 BAD_REQUEST
         }
     }
 

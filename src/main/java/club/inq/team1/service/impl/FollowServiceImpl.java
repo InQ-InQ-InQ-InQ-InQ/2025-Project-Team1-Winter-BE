@@ -43,14 +43,14 @@ public class FollowServiceImpl implements FollowService {
     }
 
     //언팔로우
-    public ResponseEntity<?> unfollow(Long currentUserId, Long opponentId) {
+    public boolean unfollow(Long currentUserId, Long opponentId) {
         // 팔로우 관계를 찾고 삭제
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
         List<Follow> follow = followRepository.findByFollowerIdAndFolloweeId(currentUser.get(), opponentUser.get());
         if (!follow.isEmpty()) {
             followRepository.delete(follow.get(0));  // 팔로우 관계 삭제
-            return new ResponseEntity<>("언팔로우 성공", HttpStatus.OK);
+            return true;
         } else {
             throw new IllegalArgumentException("팔로우 하지 않았습니다!");
         }
