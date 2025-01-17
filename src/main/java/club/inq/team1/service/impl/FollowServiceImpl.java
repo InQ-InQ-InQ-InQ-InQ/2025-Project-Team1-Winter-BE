@@ -4,10 +4,10 @@ import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
 import club.inq.team1.repository.UserRepository;
+import club.inq.team1.service.FollowService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Log4j2
 @RequiredArgsConstructor
 @Service
-public class FollowServiceImpl {
+public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
@@ -83,9 +83,8 @@ public class FollowServiceImpl {
         Optional<User> currentUser = userRepository.findById(currentUserId);
         if (currentUser.isPresent()) {
             return followRepository.findFolloweesByFollowerId(currentUser.get());  // currentUser.get()로 User 객체를 전달
-        } else {
-            return Collections.emptyList();  // null 대신 빈 리스트 반환
         }
+        return Collections.emptyList();  // null 대신 빈 리스트 반환
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
@@ -98,5 +97,17 @@ public class FollowServiceImpl {
         else{
             return Collections.emptyList();
         }
+    }
+
+    //팔로워 수 조회
+    public int countFollowers(Long currentUserId) {
+        List<Follow> followers = findAllFollowers(currentUserId);
+        return followers.size();
+    }
+
+    //팔로윙 수 조회
+    public int countFollowings(Long currentUserId) {
+        List<Follow> followings = findAllFollowees(currentUserId);
+        return followings.size();
     }
 }

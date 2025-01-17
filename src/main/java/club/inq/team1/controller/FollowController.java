@@ -103,16 +103,15 @@ public class FollowController {
     //팔로워 수 조회
     @GetMapping("/{currentUserId}/follower/count")
     private ResponseEntity<?>  countFollower(@PathVariable Long currentUserId){
-        List<Follow> followers = followService.findAllFollowers(currentUserId);
-        return new ResponseEntity<>(followers.size(), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(followService.countFollowers(currentUserId));
     }
 
     //팔로윙 수 조회
     @GetMapping("/{currentUserId}/following/count")
-    private ResponseEntity<?> countFollowee(@PathVariable Long currentUserId){
-        List<Follow> followees = followService.findAllFollowees(currentUserId);
-        return new ResponseEntity<>(followees.size(), HttpStatus.OK);
+    private ResponseEntity<?> countFollowing(@PathVariable Long currentUserId){
+        return ResponseEntity.status(HttpStatus.OK).body(followService.countFollowings(currentUserId));
     }
+
     //팔로워/팔로윙수 조회 및 특정 조회 버그 수정 필요
 }
 
