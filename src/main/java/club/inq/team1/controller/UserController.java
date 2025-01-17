@@ -3,7 +3,8 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
-import club.inq.team1.dto.response.PublicUserProfileDTO;
+import club.inq.team1.dto.projection.PublicUserProfileDTO;
+import club.inq.team1.dto.projection.PublicUserProfileDTO.PublicUserInfo;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.service.UserService;
@@ -11,9 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -118,8 +117,9 @@ public class UserController {
 
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setNickname(userInfoId.getNickname());
-        publicUserProfileDTO.setGender(userInfoId.getGender());
+        publicUserProfileDTO.setPublicUserInfo(new PublicUserInfo());
+        publicUserProfileDTO.getPublicUserInfo().setNickname(userInfoId.getNickname());
+        publicUserProfileDTO.getPublicUserInfo().setGender(userInfoId.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
     }

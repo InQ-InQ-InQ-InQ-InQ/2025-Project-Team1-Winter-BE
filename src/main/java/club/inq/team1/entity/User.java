@@ -1,7 +1,9 @@
 package club.inq.team1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,15 +34,18 @@ public class User implements UserDetails {
     private String username;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @OneToOne(mappedBy = "userId")
     private UserInfo userInfoId;
 
-    @OneToMany(mappedBy = "followeeId")
+    @OneToMany(mappedBy = "followeeId", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followerId")
+    @OneToMany(mappedBy = "followerId", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Follow> followings = new ArrayList<>();
 
     @Override
