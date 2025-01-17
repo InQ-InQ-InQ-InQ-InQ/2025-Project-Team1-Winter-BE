@@ -2,10 +2,12 @@ package club.inq.team1.controller;
 
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
+import club.inq.team1.dto.response.ResponseFollowDTO;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.service.UserService;
 import club.inq.team1.service.impl.FollowServiceImpl;
 import club.inq.team1.service.impl.UserServiceImpl;
+import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +69,14 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping(value = "/{userId}/follower", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FollowerDTO>> findFollower(
+    public ResponseEntity<List<ResponseFollowDTO>> findFollower(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "page", required = false) Integer page) {
         if (page == null) {
             page = 1;
         }
-        List<FollowerDTO> followers = followService.findAllFollowers(userId, page);
+        List<ResponseFollowDTO> followers = followService.findAllFollowers(userId, page).stream()
+                .map(FollowMapper::toResponseFollowDTO).toList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(followers);  // 팔로워 목록 반환
@@ -94,13 +97,14 @@ public class FollowController {
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<FollowingDTO>> findFollowee(
+    public ResponseEntity<List<ResponseFollowDTO>> findFollowee(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "page", required = false) Integer page) {
         if (page == null) {
             page = 1;
         }
-        List<FollowingDTO> followees = followService.findAllFollowees(userId, page);
+        List<ResponseFollowDTO> followees = followService.findAllFollowees(userId, page).stream()
+                .map(FollowMapper::toResponseFollowDTO).toList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(followees);
