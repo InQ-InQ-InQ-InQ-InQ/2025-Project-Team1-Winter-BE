@@ -4,6 +4,7 @@ import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
+import club.inq.team1.service.UserService;
 import club.inq.team1.service.impl.FollowServiceImpl;
 import club.inq.team1.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,20 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
 public class FollowController {
     private final FollowService followService;
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     @Autowired
-    public FollowController(FollowServiceImpl followService, UserRepository userRepository,
-        UserServiceImpl userServiceImpl) {
+    public FollowController(FollowServiceImpl followService, UserServiceImpl userService) {
         this.followService = followService;
-        this.userServiceImpl = userServiceImpl;
+        this.userService = userService;
     }
 
-    //팔로윙
+    // 팔로윙
     @PostMapping("/follow/{opponentId}")
-    private ResponseEntity<String> follow(@PathVariable Long opponentId){
-        Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
-        Long currentUserId = currentUser.get().getUserId();
+    public ResponseEntity<String> follow(@PathVariable("opponentId") Long opponentId){
+        long currentUserId = userService.getCurrentLoginUser()
+                .orElseThrow()
+                .getUserId();
         try {
             followService.follow(currentUserId, opponentId);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -49,11 +50,11 @@ public class FollowController {
         }
     }
 
-    //언팔로윙
+    // 언팔로윙
     @DeleteMapping("/unfollow/{opponentId}")
-    private ResponseEntity<String> unfollow(@PathVariable Long opponentId) {
-        Optional<User> currentUser = userServiceImpl.getCurrentLoginUser();
-        Long currentUserId = currentUser.get().getUserId();
+    public ResponseEntity<String> unfollow(@PathVariable("opponentId") Long opponentId) {
+        User currentUser = userService.getCurrentLoginUser().orElseThrow();
+        Long currentUserId = currentUser.getUserId();
         try {
             followService.unfollow(currentUserId, opponentId);
             return ResponseEntity.status(HttpStatus.OK)
@@ -65,9 +66,9 @@ public class FollowController {
     }
 
     //팔로워 조회
-    @GetMapping("/{currentUserId}/follower")
-    private ResponseEntity<?> findFollower(@PathVariable Long currentUserId){
-        List<Follow> followers = followService.findAllFollowers(currentUserId);
+    @GetMapping("/{userId}/follower")
+    public ResponseEntity<?> findFollower(@PathVariable("userId") Long userId){
+        List<Follow> followers = followService.findAllFollowers(userId);
         if (followers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 팔로워가 없으면 NOT_FOUND 반환
         }
@@ -75,18 +76,18 @@ public class FollowController {
     }
 
     //특정 팔로워 확인
-    @GetMapping("/{currentUserId}/follower/{opponentId}")
-    public ResponseEntity<Boolean> findSpecificFollower(@PathVariable Long currentUserId, @PathVariable Long opponentId) {
-        if (followService.findSpecificFollower(currentUserId, opponentId)) {
+    @GetMapping("/{userId}/follower/{opponentId}")
+    public ResponseEntity<Boolean> findSpecificFollower(@PathVariable("userId") Long userId, @PathVariable("opponentId") Long opponentId) {
+        if (followService.findSpecificFollower(userId, opponentId)) {
             return ResponseEntity.status(HttpStatus.OK).body(true);  // 팔로우 관계가 존재하면 OK 반환
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);  // 팔로우 관계가 없으면 NOT_FOUND 반환
     }
 
     //팔로윙 조회
-    @GetMapping("/{currentUserId}/following")
-    private ResponseEntity<List<Follow>> findFollowee(@PathVariable Long currentUserId){
-        List<Follow> followees = followService.findAllFollowees(currentUserId);
+    @GetMapping("/{userId}/following")
+    public ResponseEntity<List<Follow>> findFollowee(@PathVariable("userId") Long userId){
+        List<Follow> followees = followService.findAllFollowees(userId);
         if (followees.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());  // 빈 리스트 반환
         }
@@ -94,8 +95,8 @@ public class FollowController {
     }
 
     //특정 팔로윙 확인
-    @GetMapping("/{currentUserId}/following/{opponentId}")
-    private ResponseEntity<Boolean> findSpecificFollowee(@PathVariable Long currentUserId, @PathVariable Long opponentId){
+    @GetMapping("/{userId}/following/{opponentId}")
+    public ResponseEntity<Boolean> findSpecificFollowee(@PathVariable("userId") Long currentUserId, @PathVariable("opponentId") Long opponentId){
         if (followService.findSpecificFollowee(currentUserId, opponentId)) {
             return ResponseEntity.status(HttpStatus.OK).body(true);  // 팔로우 관계가 존재하면 OK 반환
         }
@@ -103,17 +104,17 @@ public class FollowController {
     }
 
     //팔로워 수 조회
-    @GetMapping("/{currentUserId}/follower/count")
-    private ResponseEntity<Integer> countFollower(@PathVariable Long currentUserId){
+    @GetMapping("/{userId}/follower/count")
+    public ResponseEntity<Integer> countFollower(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK)
-            .body(followService.countFollowers(currentUserId));
+            .body(followService.countFollowers(userId));
     }
 
     //팔로윙 수 조회
-    @GetMapping("/{currentUserId}/following/count")
-    private ResponseEntity<Integer> countFollowing(@PathVariable Long currentUserId){
+    @GetMapping("/{userId}/following/count")
+    public ResponseEntity<Integer> countFollowing(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK)
-            .body(followService.countFollowings(currentUserId));
+            .body(followService.countFollowings(userId));
     }
 
     //팔로워/팔로윙수 조회 및 특정 조회 버그 수정 필요
