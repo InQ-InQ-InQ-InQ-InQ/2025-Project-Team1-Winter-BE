@@ -24,9 +24,9 @@ public interface FollowService {
     boolean findSpecificFollowee(Long currentUserId, Long opponentId);
 
     // 팔로워 수 조회
-    int countFollowers(Long currentUserId);
+    Long countFollowers(Long currentUserId);
 
     // 팔로윙 수 조회
-    int countFollowings(Long currentUserId);
+    Long countFollowings(Long currentUserId);
 
 }

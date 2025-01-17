@@ -88,15 +88,15 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로워 수 조회
-    public int countFollowers(Long currentUserId) {
-        List<Follow> followers = findAllFollowers(currentUserId);
-        return followers.size();
+    public Long countFollowers(Long userId) {
+        User user = getUserOrThrow(userId, "없는 회원입니다.");
+        return followRepository.countByFolloweeId(user);
     }
 
     // 팔로윙 수 조회
-    public int countFollowings(Long currentUserId) {
-        List<Follow> followings = findAllFollowees(currentUserId);
-        return followings.size();
+    public Long countFollowings(Long userId) {
+        User user = getUserOrThrow(userId, "없는 회원입니다.");
+        return followRepository.countByFollowerId(user);
     }
 
     // 해당 유저가 존재하는지 확인한다.

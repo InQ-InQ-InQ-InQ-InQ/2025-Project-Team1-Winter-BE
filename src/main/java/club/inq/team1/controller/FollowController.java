@@ -105,14 +105,14 @@ public class FollowController {
 
     //팔로워 수 조회
     @GetMapping("/{userId}/follower/count")
-    public ResponseEntity<Integer> countFollower(@PathVariable("userId") Long userId){
+    public ResponseEntity<Long> countFollower(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK)
             .body(followService.countFollowers(userId));
     }
 
     //팔로윙 수 조회
     @GetMapping("/{userId}/following/count")
-    public ResponseEntity<Integer> countFollowing(@PathVariable("userId") Long userId){
+    public ResponseEntity<Long> countFollowing(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK)
             .body(followService.countFollowings(userId));
     }
