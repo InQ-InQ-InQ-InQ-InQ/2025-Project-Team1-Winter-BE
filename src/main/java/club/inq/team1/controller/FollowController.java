@@ -3,6 +3,7 @@ package club.inq.team1.controller;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.UserRepository;
+import club.inq.team1.service.FollowService;
 import club.inq.team1.service.impl.FollowServiceImpl;
 import club.inq.team1.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,13 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
 public class FollowController {
-    private final FollowServiceImpl followService;
+    private final FollowService followService;
     private final UserServiceImpl userServiceImpl;
 
     @Autowired
