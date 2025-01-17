@@ -22,24 +22,25 @@ public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
 
     //팔로우
-    public ResponseEntity<?> follow(Long currentUserId, Long opponentId) {
+    public boolean follow(Long currentUserId, Long opponentId) {
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
-        if (!followRepository.findByFollowerIdAndFolloweeId(currentUser.get(), opponentUser.get()).isEmpty()) {
-            throw new IllegalArgumentException("이미 팔로우 했습니다!");
-        }
 
         // 팔로우 관계 생성
-        User follower = userRepository.findById(currentUserId)
+        User follower = currentUser
             .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
-        User followee = userRepository.findById(opponentId)
+        User followee = opponentUser
             .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
+
+        if (followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent()) {
+            throw new IllegalArgumentException("이미 팔로우 했습니다!");
+        }
 
         // 팔로우 관계 생성
         Follow follow = new Follow(follower, followee);  // `Follow` 엔티티 생성
         followRepository.save(follow);  // DB에 저장
 
-        return new ResponseEntity<>("팔로우 성공", HttpStatus.CREATED);
+        return true;
     }
 
     //언팔로우
@@ -47,11 +48,19 @@ public class FollowServiceImpl implements FollowService {
         // 팔로우 관계를 찾고 삭제
         Optional<User> currentUser = userRepository.findById(currentUserId);
         Optional<User> opponentUser = userRepository.findById(opponentId);
-        List<Follow> follow = followRepository.findByFollowerIdAndFolloweeId(currentUser.get(), opponentUser.get());
-        if (!follow.isEmpty()) {
-            followRepository.delete(follow.get(0));  // 팔로우 관계 삭제
+
+        User follower = currentUser
+            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
+        User followee = opponentUser
+            .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
+
+        Optional<Follow> follow = followRepository.findByFollowerIdAndFolloweeId(follower, followee);
+
+        if (follow.isPresent()) {
+            followRepository.delete(follow.get());  // 팔로우 관계 삭제
             return true;
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("팔로우 하지 않았습니다!");
         }
     }
