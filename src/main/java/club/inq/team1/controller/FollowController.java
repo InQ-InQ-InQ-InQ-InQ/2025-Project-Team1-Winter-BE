@@ -67,7 +67,7 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping("/{userId}/follower")
-    public ResponseEntity<?> findFollower(@PathVariable("userId") Long userId){
+    public ResponseEntity<List<Follow>> findFollower(@PathVariable("userId") Long userId){
         List<Follow> followers = followService.findAllFollowers(userId);
         if (followers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 팔로워가 없으면 NOT_FOUND 반환
