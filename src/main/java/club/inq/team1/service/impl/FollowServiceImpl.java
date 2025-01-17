@@ -5,6 +5,7 @@ import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +24,9 @@ public class FollowServiceImpl implements FollowService {
 
     //팔로우
     public boolean follow(Long currentUserId, Long opponentId) {
-        Optional<User> currentUser = userRepository.findById(currentUserId);
-        Optional<User> opponentUser = userRepository.findById(opponentId);
-
-        User follower = currentUser
-            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
-        User followee = opponentUser
-            .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
+        List<User> list = checkUsers(currentUserId, opponentId);
+        User follower = list.get(0);
+        User followee = list.get(1);
 
         if(findSpecificFollower(currentUserId, opponentId)){
             throw new IllegalArgumentException("이미 팔로우 했습니다!");
@@ -44,24 +41,19 @@ public class FollowServiceImpl implements FollowService {
 
     //언팔로우
     public boolean unfollow(Long currentUserId, Long opponentId) {
-        // 팔로우 관계를 찾고 삭제
-        Optional<User> currentUser = userRepository.findById(currentUserId);
-        Optional<User> opponentUser = userRepository.findById(opponentId);
+        List<User> list = checkUsers(currentUserId, opponentId);
+        User follower = list.get(0);
+        User followee = list.get(1);
 
-        User follower = currentUser
-            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
-        User followee = opponentUser
-            .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
-
-        Optional<Follow> follow = followRepository.findByFollowerIdAndFolloweeId(follower, followee);
-
-        if (follow.isPresent()) {
-            followRepository.delete(follow.get());  // 팔로우 관계 삭제
-            return true;
-        }
-        else {
+        if (!findSpecificFollower(currentUserId, opponentId)) {
             throw new IllegalArgumentException("팔로우 하지 않았습니다!");
         }
+
+        Optional<Follow> follow =
+            followRepository.findByFollowerIdAndFolloweeId(follower, followee);
+
+        followRepository.delete(follow.get());  // 팔로우 관계 삭제
+        return true;
     }
 
     // 팔로워 조회 (전체 팔로워 목록)
@@ -76,13 +68,9 @@ public class FollowServiceImpl implements FollowService {
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
     public boolean findSpecificFollower(Long currentUserId, Long opponentId) {
-        Optional<User> currentUser = userRepository.findById(currentUserId);
-        Optional<User> opponentUser = userRepository.findById(opponentId);
-        
-        User follower = opponentUser
-            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
-        User followee = currentUser
-            .orElseThrow(() -> new IllegalArgumentException("팔로우 할 사용자가 존재하지 않습니다."));
+        List<User> list = checkUsers(currentUserId, opponentId);
+        User follower = list.get(1);
+        User followee = list.get(0);
 
         return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
@@ -98,13 +86,9 @@ public class FollowServiceImpl implements FollowService {
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
     public boolean findSpecificFollowee(Long currentUserId, Long opponentId) {
-        Optional<User> currentUser = userRepository.findById(currentUserId);
-        Optional<User> opponentUser = userRepository.findById(opponentId);
-
-        User follower = currentUser
-            .orElseThrow(() -> new IllegalArgumentException("현재 사용자가 존재하지 않습니다."));
-        User followee = opponentUser
-            .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        List<User> list = checkUsers(currentUserId, opponentId);
+        User follower = list.get(0);
+        User followee = list.get(1);
 
         return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
     }
@@ -119,5 +103,19 @@ public class FollowServiceImpl implements FollowService {
     public int countFollowings(Long currentUserId) {
         List<Follow> followings = findAllFollowees(currentUserId);
         return followings.size();
+    }
+
+    //해당 유저들이 존재하는지 확인합니다.
+    private List<User> checkUsers(Long currentUserId, Long opponentUserId) {
+        Optional<User> currentUser = userRepository.findById(currentUserId);
+        Optional<User> opponentUser = userRepository.findById(opponentUserId);
+
+        List<User> list = new ArrayList<>();
+        list.add(currentUser.orElseThrow(() ->
+            new IllegalArgumentException("현재 사용자가 존재하지 않습니다.")));
+        list.add(opponentUser.orElseThrow(() ->
+            new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")));
+
+        return list;
     }
 }
