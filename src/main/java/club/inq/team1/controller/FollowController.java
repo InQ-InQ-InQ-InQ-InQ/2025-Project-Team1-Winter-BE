@@ -1,5 +1,6 @@
 package club.inq.team1.controller;
 
+import club.inq.team1.dto.projection.Following;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.UserRepository;
@@ -86,8 +87,8 @@ public class FollowController {
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<Follow>> findFollowee(@PathVariable("userId") Long userId){
-        List<Follow> followees = followService.findAllFollowees(userId);
+    public ResponseEntity<List<Following>> findFollowee(@PathVariable("userId") Long userId){
+        List<Following> followees = followService.findAllFollowees(userId);
         if (followees.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());  // 빈 리스트 반환
         }

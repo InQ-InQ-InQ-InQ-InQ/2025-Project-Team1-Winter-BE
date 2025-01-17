@@ -1,5 +1,6 @@
 package club.inq.team1.service;
 
+import club.inq.team1.dto.projection.Following;
 import club.inq.team1.entity.Follow;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface FollowService {
     boolean findSpecificFollower(Long currentUserId, Long opponentId);
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    List<Follow> findAllFollowees(Long currentUserId);
+    List<Following> findAllFollowees(Long currentUserId);
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
     boolean findSpecificFollowee(Long currentUserId, Long opponentId);

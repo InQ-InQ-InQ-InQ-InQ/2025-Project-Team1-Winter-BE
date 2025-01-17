@@ -6,11 +6,7 @@ import lombok.Data;
 @Data
 public class PublicUserProfileDTO {
     private Long userId;
-    private PublicUserInfo publicUserInfo;
-    @Data
-    public static class PublicUserInfo {
-        private String email;
-        private String nickname;
-        private Gender gender;
-    }
+    private String email;
+    private String nickname;
+    private Gender gender;
 }

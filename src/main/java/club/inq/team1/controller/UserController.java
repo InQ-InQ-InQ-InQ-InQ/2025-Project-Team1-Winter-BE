@@ -4,7 +4,6 @@ import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
 import club.inq.team1.dto.projection.PublicUserProfileDTO;
-import club.inq.team1.dto.projection.PublicUserProfileDTO.PublicUserInfo;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.service.UserService;
@@ -117,9 +116,9 @@ public class UserController {
 
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setPublicUserInfo(new PublicUserInfo());
-        publicUserProfileDTO.getPublicUserInfo().setNickname(userInfoId.getNickname());
-        publicUserProfileDTO.getPublicUserInfo().setGender(userInfoId.getGender());
+        publicUserProfileDTO.setNickname(userInfoId.getNickname());
+        publicUserProfileDTO.setEmail(userInfoId.getEmail());
+        publicUserProfileDTO.setGender(userInfoId.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
     }

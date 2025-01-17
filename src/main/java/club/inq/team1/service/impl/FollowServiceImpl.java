@@ -1,5 +1,6 @@
 package club.inq.team1.service.impl;
 
+import club.inq.team1.dto.projection.Following;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
@@ -73,7 +74,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    public List<Follow> findAllFollowees(Long currentUserId) {
+    public List<Following> findAllFollowees(Long currentUserId) {
         User currentUser = userRepository.findById(currentUserId).orElseThrow();
 
         return followRepository.findFolloweesByFollowerId(currentUser);  // currentUser.get()로 User 객체를 전달
