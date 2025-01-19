@@ -90,7 +90,7 @@ public class UserController {
     })
     public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
-                !userService.getPrivateInfo().getUserInfoId().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
+                !userService.getPrivateInfo().getUserInfo().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
             return ResponseEntity.status(299).body(null);
         }
         User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
@@ -112,7 +112,7 @@ public class UserController {
     })
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
-        UserInfo userInfoId = user.getUserInfoId();
+        UserInfo userInfoId = user.getUserInfo();
 
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());

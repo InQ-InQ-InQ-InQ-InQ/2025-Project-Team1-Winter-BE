@@ -95,9 +95,9 @@ class FollowServiceTest {
         followService.follow(userId2,userId3);
 
         List<FollowerDTO> allFollowers = followService.findAllFollowers(userId3, 1);
-        assertEquals("qwer",allFollowers.get(0).getFollowerId().getUserInfoId().getNickname());
-        assertEquals("qwer1",allFollowers.get(1).getFollowerId().getUserInfoId().getNickname());
-        assertEquals("qwer2",allFollowers.get(2).getFollowerId().getUserInfoId().getNickname());
+        assertEquals("qwer",allFollowers.get(0).getFollower().getUserInfo().getNickname());
+        assertEquals("qwer1",allFollowers.get(1).getFollower().getUserInfo().getNickname());
+        assertEquals("qwer2",allFollowers.get(2).getFollower().getUserInfo().getNickname());
     }
 
     @Test
@@ -125,9 +125,9 @@ class FollowServiceTest {
         followService.follow(userId,userId3);
 
         List<FollowingDTO> allFollowees = followService.findAllFollowees(userId, 1);
-        assertEquals("qwer1",allFollowees.get(0).getFolloweeId().getUserInfoId().getNickname());
-        assertEquals("qwer2",allFollowees.get(1).getFolloweeId().getUserInfoId().getNickname());
-        assertEquals("qwer3",allFollowees.get(2).getFolloweeId().getUserInfoId().getNickname());
+        assertEquals("qwer1",allFollowees.get(0).getFollowee().getUserInfo().getNickname());
+        assertEquals("qwer2",allFollowees.get(1).getFollowee().getUserInfo().getNickname());
+        assertEquals("qwer3",allFollowees.get(2).getFollowee().getUserInfo().getNickname());
     }
 
     @Test

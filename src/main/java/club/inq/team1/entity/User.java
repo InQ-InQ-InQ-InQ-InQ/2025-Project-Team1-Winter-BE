@@ -1,6 +1,5 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,19 +31,19 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "userId")
-    private UserInfo userInfoId;
+    @OneToOne(mappedBy = "user")
+    private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "followeeId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followerId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> followings = new ArrayList<>();
 
     @Override

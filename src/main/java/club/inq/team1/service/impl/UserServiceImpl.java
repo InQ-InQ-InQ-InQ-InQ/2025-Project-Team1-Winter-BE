@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(saved);
+        userInfo.setUser(saved);
         userInfo.setNickname(userJoinDTO.getNickname());
         userInfo.setPhone(userJoinDTO.getPhone());
         userInfo.setEmail(userJoinDTO.getEmail());
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         userInfo.setGender(userJoinDTO.getGender());
         userInfoRepository.save(userInfo);
 
-        user.setUserInfoId(userInfo);
+        user.setUserInfo(userInfo);
         userRepository.save(user);
 
         return user;
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     public User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         User user = getCurrentLoginUser().orElseThrow();
 
-        UserInfo userInfoId = user.getUserInfoId();
+        UserInfo userInfoId = user.getUserInfo();
         userInfoId.setNickname(putUserPrivateInfoDTO.getNickname());
         userInfoId.setPhone(putUserPrivateInfoDTO.getPhone());
         userInfoId.setEmail(putUserPrivateInfoDTO.getEmail());

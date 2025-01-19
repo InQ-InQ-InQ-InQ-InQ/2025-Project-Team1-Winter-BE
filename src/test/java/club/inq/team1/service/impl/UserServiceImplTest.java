@@ -24,7 +24,7 @@ class UserServiceImplTest {
         UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
 
-        assertEquals("nick", user.getUserInfoId().getNickname());
+        assertEquals("nick", user.getUserInfo().getNickname());
     }
 
     @Test
@@ -33,9 +33,9 @@ class UserServiceImplTest {
     void acceptUser1(){
         UserJoinDTO userJoinDTO = new UserJoinDTO("qwer","1234","nick");
         User user = userService.acceptUser(userJoinDTO);
-        UserInfo userInfoId = user.getUserInfoId();
+        UserInfo userInfoId = user.getUserInfo();
 
-        String username = userInfoId.getUserId().getUsername();
+        String username = userInfoId.getUser().getUsername();
         assertEquals("qwer", username);
     }
 }
