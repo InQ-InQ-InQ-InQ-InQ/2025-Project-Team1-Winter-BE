@@ -1,0 +1,34 @@
+[33m10f2780[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/feature/post[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mfeature/post[m[33m)[m Modify files and add new features
+[33m1070b8b[m 최신 .
+[33m1161abc[m[33m ([m[1;32mfeature/users-my[m[33m)[m comment : getUserProfile 메서드의 설명 추가
+[33mc74a6c4[m feat : 다른 유저 조회 기능 추가
+[33m61a1a8c[m Start development based on feature/users-my
+[33m4dfa595[m feat : 비밀번호 변경 기능 추가 및 확인
+[33m281b661[m refactor : 사용할 필요 없는 문장 제거
+[33m0b69cd2[m feat : 개인정보 변경 기능 추가 및 확인
+[33mb71dfc1[m feat : DTO 설계
+[33m99a6589[m feat : DTO 설계
+[33m7e63fac[m feat(config) : /api/users/my/** 에 대해 USER 권한이 있는경우만 이용할 수 있도록 수정
+[33m7abbec1[m feat : 로그인된 사용자의 개인정보 조회 로직 작성
+[33m0efb270[m Merge pull request #6 from InQ-InQ-InQ-InQ-InQ/feature/user-join
+[33m089d604[m refactor : api 명명 규칙 변경
+[33mc273d81[m feat : JsonIgnore를 이용해 User와 UserInfo의 순환참조 방지
+[33m4e5d2e9[m feat : 생일과 성별 저장 확인
+[33mcd0a5c8[m feat : User Entity에 필드 추가
+[33m745187a[m test : 참조 테스트 케이스 추가
+[33mb0a54b4[m fix : user에 userInfo를 저장하지 않던 것 수정
+[33m4c5cb4f[m docs : Update README.md
+[33m726efcd[m feat : UserInfo Entity 생성
+[33m81ddfeb[m feat : 아이디 중복 확인 기능 추가
+[33mef9594a[m feat : logout 기능 추가 및 작동 확인
+[33m2386e5b[m comment : swagger update
+[33m07e92a1[m refactor : 사용되지 않는 부분 제거
+[33mace5ad3[m feat : 회원가입 후 로그인 기능 작동 확인
+[33m6a43f4e[m Merge branch 'develop' of https://github.com/InQ-InQ-InQ-InQ-InQ/2025-Project-Team1-Winter-BE into feature/user-join
+[33m89f0e18[m Merge pull request #5 from InQ-InQ-InQ-InQ-InQ/feature/config-swagger
+[33m545a9ed[m Merge pull request #4 from InQ-InQ-InQ-InQ-InQ/feature/cors-config
+[33m682c83d[m feat : 회원가입 기능 추가
+[33m28c4911[m feat : 회원가입 로직 작성
+[33m0cdc547[m feat : SwaggerConfig 생성 및 초기 설정
+[33m208685b[m feat : CorsConfig, WebSecurityConfig 초기 설정
+[33m8d4040b[m[33m ([m[1;32mmain[m[33m)[m Init

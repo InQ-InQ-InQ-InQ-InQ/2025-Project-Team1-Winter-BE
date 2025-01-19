@@ -1,15 +1,3 @@
-#server:
-#  port: 8080
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/photo
-#    username: root
-#    password: 1234
-#  jpa:
-#    hibernate:
-#      ddl-auto: create-drop
-#
 
 server:
   port: 8080
@@ -24,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
