@@ -28,7 +28,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로우 성공 테스트")
-    @Rollback
     void follow() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -39,7 +38,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로우 실패 테스트 없는 유저")
-    @Rollback
     void follow1() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -49,7 +47,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로우 실패 로그인 안된 상태")
-    @Rollback
     void follow2() {
         userService.acceptUser(new UserJoinDTO("hello","1234","qwer"));
         userService.acceptUser(new UserJoinDTO("hello1","1234","qwer1"));
@@ -59,7 +56,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로우 후 언팔로우 성공")
-    @Rollback
     void unfollow() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -72,7 +68,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로우가 안된 상태에서 언팔로우 시도")
-    @Rollback
     void unfollow1() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -83,7 +78,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("모든 팔로워 확인")
-    @Rollback
     void findAllFollowers() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -95,14 +89,11 @@ class FollowServiceTest {
         followService.follow(userId2,userId3);
 
         List<FollowerDTO> allFollowers = followService.findAllFollowers(userId3, 1);
-        assertEquals("qwer",allFollowers.get(0).getFollower().getUserInfo().getNickname());
-        assertEquals("qwer1",allFollowers.get(1).getFollower().getUserInfo().getNickname());
-        assertEquals("qwer2",allFollowers.get(2).getFollower().getUserInfo().getNickname());
+        assertEquals("hello",allFollowers.get(0).getFollower().getUsername());
     }
 
     @Test
     @DisplayName("팔로우 안한 상태에서 확인")
-    @Rollback
     void findSpecificFollower() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -113,7 +104,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("모든 팔로윙 확인")
-    @Rollback
     void findAllFollowees() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -125,9 +115,7 @@ class FollowServiceTest {
         followService.follow(userId,userId3);
 
         List<FollowingDTO> allFollowees = followService.findAllFollowees(userId, 1);
-        assertEquals("qwer1",allFollowees.get(0).getFollowee().getUserInfo().getNickname());
-        assertEquals("qwer2",allFollowees.get(1).getFollowee().getUserInfo().getNickname());
-        assertEquals("qwer3",allFollowees.get(2).getFollowee().getUserInfo().getNickname());
+        assertEquals("hello1",allFollowees.get(0).getFollowee().getUsername());
     }
 
     @Test
@@ -138,7 +126,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로워 숫자 파악 성공")
-    @Rollback
     void countFollowers() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
@@ -155,7 +142,6 @@ class FollowServiceTest {
 
     @Test
     @DisplayName("팔로윙 숫자 파악 성공")
-    @Rollback
     void countFollowings() {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();

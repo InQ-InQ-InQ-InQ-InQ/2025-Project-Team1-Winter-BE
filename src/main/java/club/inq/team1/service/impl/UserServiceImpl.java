@@ -48,9 +48,6 @@ public class UserServiceImpl implements UserService {
         userInfo.setGender(userJoinDTO.getGender());
         userInfoRepository.save(userInfo);
 
-        user.setUserInfo(userInfo);
-        userRepository.save(user);
-
         return user;
     }
 

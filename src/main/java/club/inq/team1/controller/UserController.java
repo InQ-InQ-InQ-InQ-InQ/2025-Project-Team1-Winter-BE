@@ -112,13 +112,13 @@ public class UserController {
     })
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
-        UserInfo userInfoId = user.getUserInfo();
+        UserInfo userInfo = user.getUserInfo();
 
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setNickname(userInfoId.getNickname());
-        publicUserProfileDTO.setEmail(userInfoId.getEmail());
-        publicUserProfileDTO.setGender(userInfoId.getGender());
+        publicUserProfileDTO.setNickname(userInfo.getNickname());
+        publicUserProfileDTO.setEmail(userInfo.getEmail());
+        publicUserProfileDTO.setGender(userInfo.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
     }
