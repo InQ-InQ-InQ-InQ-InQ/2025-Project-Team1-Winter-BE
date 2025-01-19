@@ -2,7 +2,7 @@ package club.inq.team1.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import jakarta.transaction.Transactional;

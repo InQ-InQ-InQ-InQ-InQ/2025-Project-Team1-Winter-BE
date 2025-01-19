@@ -2,7 +2,7 @@ package club.inq.team1.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

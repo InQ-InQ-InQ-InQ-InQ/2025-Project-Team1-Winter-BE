@@ -1,8 +1,8 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.UpdateUserPasswordDTO;
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.request.UpdateUserPasswordDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.repository.UserInfoRepository;
