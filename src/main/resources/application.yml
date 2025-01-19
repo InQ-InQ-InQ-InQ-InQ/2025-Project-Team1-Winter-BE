@@ -32,4 +32,3 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
->>>>>>> feature/post
