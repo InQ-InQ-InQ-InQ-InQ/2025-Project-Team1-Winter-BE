@@ -126,9 +126,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
+    public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
         boolean b = userService.setUserProfileImage(image);
-        return ResponseEntity.status(200).body(Boolean.toString(b));
+        return ResponseEntity.status(200).body(b);
     }
 
 }

@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
@@ -113,8 +115,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean setUserProfileImage(MultipartFile multipartFile) {
-        String path = System.getProperty("user.dir");
-        String uploadPath = path + "/profile/";
+        String path = "file:///C:/images/";
+        String uploadPath = path + "profile/" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+
         UserInfo userInfoId = getCurrentLoginUser().orElseThrow().getUserInfoId();
 
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
