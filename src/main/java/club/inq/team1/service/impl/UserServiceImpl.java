@@ -1,8 +1,8 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.UpdateUserPasswordDTO;
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.request.UpdateUserPasswordDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.repository.UserInfoRepository;
@@ -47,16 +47,13 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(saved);
+        userInfo.setUser(saved);
         userInfo.setNickname(userJoinDTO.getNickname());
         userInfo.setPhone(userJoinDTO.getPhone());
         userInfo.setEmail(userJoinDTO.getEmail());
         userInfo.setBirth(userJoinDTO.getBirth());
         userInfo.setGender(userJoinDTO.getGender());
         userInfoRepository.save(userInfo);
-
-        user.setUserInfoId(userInfo);
-        userRepository.save(user);
 
         return user;
     }
@@ -87,7 +84,7 @@ public class UserServiceImpl implements UserService {
     public User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         User user = getCurrentLoginUser().orElseThrow();
 
-        UserInfo userInfoId = user.getUserInfoId();
+        UserInfo userInfoId = user.getUserInfo();
         userInfoId.setNickname(putUserPrivateInfoDTO.getNickname());
         userInfoId.setPhone(putUserPrivateInfoDTO.getPhone());
         userInfoId.setEmail(putUserPrivateInfoDTO.getEmail());

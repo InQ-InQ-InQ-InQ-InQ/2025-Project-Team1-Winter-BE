@@ -4,11 +4,11 @@ import club.inq.team1.config.Gender;
 import java.util.Date;
 
 public interface FollowingDTO {
-    Followee getFolloweeId();
+    Followee getFollowee();
     interface Followee {
         Long getUserId();
         String getUsername();
-        FolloweeInfo getUserInfoId();
+        FolloweeInfo getUserInfo();
         interface FolloweeInfo {
             String getNickname();
             String getPhone();

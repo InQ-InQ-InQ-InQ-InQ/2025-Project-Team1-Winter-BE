@@ -39,7 +39,7 @@ public class UserInfo {
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Column(name = "nickname", nullable = false, unique = true, length = 32)
     private String nickname;

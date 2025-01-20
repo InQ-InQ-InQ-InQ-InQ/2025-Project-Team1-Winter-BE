@@ -1,6 +1,6 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,28 +24,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "user")
+@JsonIgnoreProperties(value = {"password", "userInfoId", "followers", "followings", "enabled", "accountNonLocked",
+        "authorities", "credentialsNonExpired", "accountNonExpired"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
-    @JsonIgnore
     private String password;
 
-    @OneToOne(mappedBy = "userId")
-    private UserInfo userInfoId;
+    @OneToOne(mappedBy = "user")
+    private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "followeeId", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followerId", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> followings = new ArrayList<>();
 
     @Override

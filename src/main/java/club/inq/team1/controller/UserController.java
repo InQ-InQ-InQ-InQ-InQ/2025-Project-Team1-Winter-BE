@@ -1,8 +1,8 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.UpdateUserPasswordDTO;
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.request.UpdateUserPasswordDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.dto.projection.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -92,7 +92,7 @@ public class UserController {
     })
     public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
-                !userService.getPrivateInfo().getUserInfoId().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
+                !userService.getPrivateInfo().getUserInfo().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
             return ResponseEntity.status(299).body(null);
         }
         User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
@@ -114,13 +114,13 @@ public class UserController {
     })
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
-        UserInfo userInfoId = user.getUserInfoId();
+        UserInfo userInfo = user.getUserInfo();
 
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setNickname(userInfoId.getNickname());
-        publicUserProfileDTO.setEmail(userInfoId.getEmail());
-        publicUserProfileDTO.setGender(userInfoId.getGender());
+        publicUserProfileDTO.setNickname(userInfo.getNickname());
+        publicUserProfileDTO.setEmail(userInfo.getEmail());
+        publicUserProfileDTO.setGender(userInfo.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
     }
