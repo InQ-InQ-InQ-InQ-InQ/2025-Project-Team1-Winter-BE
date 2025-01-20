@@ -3,7 +3,7 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.UpdateUserPasswordDTO;
 import club.inq.team1.dto.UserJoinDTO;
-import club.inq.team1.dto.response.PublicUserProfileDTO;
+import club.inq.team1.dto.projection.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.service.UserService;
@@ -11,12 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +119,7 @@ public class UserController {
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
         publicUserProfileDTO.setNickname(userInfoId.getNickname());
+        publicUserProfileDTO.setEmail(userInfoId.getEmail());
         publicUserProfileDTO.setGender(userInfoId.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
@@ -134,16 +129,6 @@ public class UserController {
     public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
         boolean b = userService.setUserProfileImage(image);
         return ResponseEntity.status(200).body(Boolean.toString(b));
-    }
-
-    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE,MediaType.IMAGE_JPEG_VALUE})
-    public ResponseEntity<byte[]> getProfileImage(@PathVariable("id") Long id){
-        try {
-            return ResponseEntity.status(200).body(
-                    Files.readAllBytes(Path.of(userService.getUserProfile(id).getUserInfoId().getProfileImagePath())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
