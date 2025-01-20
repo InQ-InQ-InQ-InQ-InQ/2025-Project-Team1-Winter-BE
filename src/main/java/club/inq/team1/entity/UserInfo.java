@@ -2,6 +2,7 @@ package club.inq.team1.entity;
 
 import club.inq.team1.config.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -30,15 +31,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_info")
+@JsonIgnoreProperties(value = {"user"})
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_info_id")
     private Long userInfoId;
 
-    @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "nickname", nullable = false, unique = true, length = 32)
@@ -47,7 +48,7 @@ public class UserInfo {
     @Column(name = "phone", length = 15)
     private String phone;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 255)
     private String email;
 
     @Enumerated(EnumType.STRING)
