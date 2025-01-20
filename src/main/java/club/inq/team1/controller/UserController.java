@@ -115,7 +115,7 @@ public class UserController {
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
         UserInfo userInfo = user.getUserInfo();
-
+        // todo 수정 필요
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
         publicUserProfileDTO.setNickname(userInfo.getNickname());
@@ -125,10 +125,14 @@ public class UserController {
         return ResponseEntity.status(200).body(publicUserProfileDTO);
     }
 
-    @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
+    @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
         boolean b = userService.setUserProfileImage(image);
-        return ResponseEntity.status(200).body(b);
+        return ResponseEntity.status(200).body(Boolean.toString(b));
     }
 
+    @GetMapping(value = "/{userId}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(userService.getUserProfileImage(userId));
+    }
 }

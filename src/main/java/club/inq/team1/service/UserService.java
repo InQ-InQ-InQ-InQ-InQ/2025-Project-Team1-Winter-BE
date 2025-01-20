@@ -16,4 +16,5 @@ public interface UserService {
     User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO);
     User getUserProfile(Long id);
     boolean setUserProfileImage(MultipartFile multipartFile);
+    byte[] getUserProfileImage(Long userId);
 }

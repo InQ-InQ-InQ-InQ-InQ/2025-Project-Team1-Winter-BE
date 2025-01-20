@@ -1,5 +1,6 @@
 package club.inq.team1.service.impl;
 
+import club.inq.team1.dto.projection.ProfileImageProjectionDTO;
 import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.request.UpdateUserPasswordDTO;
 import club.inq.team1.dto.request.UserJoinDTO;
@@ -11,6 +12,7 @@ import club.inq.team1.service.UserService;
 import jakarta.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -112,23 +114,39 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean setUserProfileImage(MultipartFile multipartFile) {
-        String path = "file:///C:/images/";
-        String uploadPath = path + "profile/" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        UserInfo userInfo = getCurrentLoginUser().orElseThrow().getUserInfo();
 
-        UserInfo userInfoId = getCurrentLoginUser().orElseThrow().getUserInfoId();
+        // 프로필 이미지 저장 경로 C:/images/profile/yyyyMMdd/randomUUID+originalName.format
+        String startPath = "C:/images/";
+        String profilePath = startPath + "profile/" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + "/";
 
-        String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-        String filePath = uploadPath + fileName;
+        String imageFileStoredName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+        String filePath = profilePath + imageFileStoredName;
         try {
             File f = new File(filePath);
             f.mkdirs();
             multipartFile.transferTo(f);
-            userInfoId.setProfileImagePath(filePath);
-            userInfoRepository.save(userInfoId);
+            userInfo.setProfileImagePath(filePath);
+            userInfoRepository.save(userInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         return true;
+    }
+
+    @Override
+    public byte[] getUserProfileImage(Long userId){
+        User user = userRepository.findById(userId).orElseThrow();
+        ProfileImageProjectionDTO profileImageProjectionDTO = userInfoRepository.findProfileImagePathByUser(user)
+                .orElseThrow();
+
+        String profileImagePath = profileImageProjectionDTO.getProfileImagePath();
+
+        try {
+            return Files.readAllBytes(Path.of(profileImagePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
