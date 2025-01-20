@@ -1,5 +1,6 @@
 package club.inq.team1.service.impl;
 
+import club.inq.team1.constant.ImagePath;
 import club.inq.team1.dto.projection.ProfileImageProjectionDTO;
 import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.request.UpdateUserPasswordDTO;
@@ -117,8 +118,7 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo = getCurrentLoginUser().orElseThrow().getUserInfo();
 
         // 프로필 이미지 저장 경로 C:/images/profile/yyyyMMdd/randomUUID+originalName.format
-        String startPath = "C:/images/";
-        String profilePath = startPath + "profile/" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + "/";
+        String profilePath = ImagePath.SAVE_PROFILE.getPath();
 
         String imageFileStoredName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String filePath = profilePath + imageFileStoredName;
