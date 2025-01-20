@@ -11,7 +11,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -33,8 +32,8 @@ public class FollowServiceImpl implements FollowService {
         // 팔로우 관계 생성
 
         Follow follow = new Follow();  // `Follow` 엔티티 생성
-        follow.setFollowerId(follower);
-        follow.setFolloweeId(followee);
+        follow.setFollower(follower);
+        follow.setFollowee(followee);
         follow.setAlarm(false);
         Follow savedFollow = followRepository.save(follow);// DB에 저장
 
@@ -55,7 +54,7 @@ public class FollowServiceImpl implements FollowService {
             return false;
         }
 
-        Follow follow = followRepository.findByFollowerIdAndFolloweeId(follower, followee).orElseThrow();
+        Follow follow = followRepository.findByFollowerAndFollowee(follower, followee).orElseThrow();
 
         followRepository.delete(follow);  // 팔로우 관계 삭제
         return true;
@@ -65,7 +64,7 @@ public class FollowServiceImpl implements FollowService {
     public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
         User user = getUserOrThrow(userId,"해당 사용자가 존재하지 않습니다.");
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFollowersByFolloweeId(user, pageRequest);  // user.get()로 User 객체를 전달
+        return followRepository.findFollowersByFollowee(user, pageRequest);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
@@ -73,14 +72,14 @@ public class FollowServiceImpl implements FollowService {
         User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
         User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
 
-        return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
+        return followRepository.findByFollowerAndFollowee(follower, followee).isPresent();
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
     public List<FollowingDTO> findAllFollowees(Long userId, Integer page) {
         User user = userRepository.findById(userId).orElseThrow();
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFolloweesByFollowerId(user, pageRequest);  // user.get()로 User 객체를 전달
+        return followRepository.findFolloweesByFollower(user, pageRequest);  // user.get()로 User 객체를 전달
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
@@ -88,19 +87,19 @@ public class FollowServiceImpl implements FollowService {
         User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
         User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
 
-        return followRepository.findByFollowerIdAndFolloweeId(follower, followee).isPresent();
+        return followRepository.findByFollowerAndFollowee(follower, followee).isPresent();
     }
 
     // 팔로워 수 조회
     public Long countFollowers(Long userId) {
         User user = getUserOrThrow(userId, "없는 회원입니다.");
-        return followRepository.countByFolloweeId(user);
+        return followRepository.countByFollowee(user);
     }
 
     // 팔로윙 수 조회
     public Long countFollowings(Long userId) {
         User user = getUserOrThrow(userId, "없는 회원입니다.");
-        return followRepository.countByFollowerId(user);
+        return followRepository.countByFollower(user);
     }
 
     // 해당 유저가 존재하는지 확인한다.
