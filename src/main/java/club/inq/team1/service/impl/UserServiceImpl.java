@@ -116,6 +116,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean setUserProfileImage(MultipartFile multipartFile) {
         UserInfo userInfo = getCurrentLoginUser().orElseThrow().getUserInfo();
+        
+        // 이전 이미지 제거
+        String profileImagePath = userInfo.getProfileImagePath();
+        if(profileImagePath != null) {
+            File prevProfileImage = Path.of(profileImagePath).toFile();
+            if (prevProfileImage.exists()) {
+                prevProfileImage.delete();
+            }
+        }
 
         // 프로필 이미지 저장 경로 C:/images/profile/yyyyMMdd/randomUUID+originalName.format
         String profilePath = ImagePath.SAVE_PROFILE.getPath();
