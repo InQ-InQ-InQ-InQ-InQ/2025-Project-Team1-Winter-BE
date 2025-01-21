@@ -45,6 +45,12 @@ public class UserInfo {
     @Column(name = "nickname", nullable = false, unique = true, length = 32)
     private String nickname;
 
+    @Column(name = "first_name", nullable = false, length = 32)
+    private String firstName;
+
+    @Column(name = "lastName", nullable = false, length = 32)
+    private String lastName;
+
     @Column(name = "phone", length = 15)
     private String phone;
 
