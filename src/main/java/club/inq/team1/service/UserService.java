@@ -17,4 +17,6 @@ public interface UserService {
     User getUserProfile(Long id);
     boolean setUserProfileImage(MultipartFile multipartFile);
     byte[] getUserProfileImage(Long userId);
+
+    boolean deleteMySelf();
 }
