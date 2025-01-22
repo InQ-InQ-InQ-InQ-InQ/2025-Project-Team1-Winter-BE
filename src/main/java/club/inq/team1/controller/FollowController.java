@@ -10,6 +10,7 @@ import club.inq.team1.service.impl.UserServiceImpl;
 import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,6 +42,9 @@ public class FollowController {
         long currentUserId = userService.getCurrentLoginUser()
                 .orElseThrow()
                 .getUserId();
+        if(Objects.equals(currentUserId, opponentId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("자기 자신을 팔로우 할 수 없습니다!");
+        }
         try {
             followService.follow(currentUserId, opponentId);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -57,6 +61,9 @@ public class FollowController {
         Long currentUserId = userService.getCurrentLoginUser()
                 .orElseThrow()
                 .getUserId();
+        if(Objects.equals(currentUserId, opponentId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("자기 자신을 언팔로우 할 수 없습니다!");
+        }
         try {
             followService.unfollow(currentUserId, opponentId);
             return ResponseEntity.status(HttpStatus.OK)
