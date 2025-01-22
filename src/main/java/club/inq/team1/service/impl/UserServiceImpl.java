@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
@@ -118,13 +116,7 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo = getCurrentLoginUser().orElseThrow().getUserInfo();
         
         // 이전 이미지 제거
-        String profileImagePath = userInfo.getProfileImagePath();
-        if(profileImagePath != null) {
-            File prevProfileImage = Path.of(profileImagePath).toFile();
-            if (prevProfileImage.exists()) {
-                prevProfileImage.delete();
-            }
-        }
+        deletePrevProfileImageFile(userInfo);
 
         // 프로필 이미지 저장 경로 C:/images/profile/yyyyMMdd/randomUUID+originalName.format
         String profilePath = ImagePath.SAVE_PROFILE.getPath();
@@ -144,6 +136,16 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    private void deletePrevProfileImageFile(UserInfo userInfo) {
+        String profileImagePath = userInfo.getProfileImagePath();
+        if(profileImagePath != null) {
+            File prevProfileImage = Path.of(profileImagePath).toFile();
+            if (prevProfileImage.exists()) {
+                prevProfileImage.delete();
+            }
+        }
+    }
+
     @Override
     public byte[] getUserProfileImage(Long userId){
         User user = userRepository.findById(userId).orElseThrow();
@@ -157,5 +159,19 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Override
+    @Transactional
+    public boolean deleteMySelf(){
+        Optional<User> opUser = getCurrentLoginUser();
+        if(opUser.isEmpty())
+            return false;
+
+        User user = opUser.get();
+        UserInfo userInfo = user.getUserInfo();
+        deletePrevProfileImageFile(userInfo);
+        userInfoRepository.delete(userInfo);
+        userRepository.delete(user);
+        return true;
     }
 }
