@@ -38,33 +38,23 @@ public class FollowController {
     // 팔로윙
     @PostMapping("/follow/{opponentId}")
     public ResponseEntity<String> follow(@PathVariable("opponentId") Long opponentId) {
-        long currentUserId = userService.getCurrentLoginUser()
-                .orElseThrow()
-                .getUserId();
-        try {
-            followService.follow(currentUserId, opponentId);
+        if(followService.follow(opponentId)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("해당 사용자를 팔로우 하였습니다!");  // 팔로우 성공 시 201 CREATED 응답
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("이미 팔로우 한 사용자 입니다!");  // 이미 팔로우 관계가 존재하는 경우 400 BAD_REQUEST
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("이미 팔로우 한 사용자 입니다!");  // 이미 팔로우 관계가 존재하는 경우 400 BAD_REQUEST
     }
 
     // 언팔로윙
     @DeleteMapping("/unfollow/{opponentId}")
     public ResponseEntity<String> unfollow(@PathVariable("opponentId") Long opponentId) {
-        Long currentUserId = userService.getCurrentLoginUser()
-                .orElseThrow()
-                .getUserId();
-        try {
-            followService.unfollow(currentUserId, opponentId);
+        if(followService.unfollow(opponentId)) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body("팔로우를 취소했습니다!");  // 언팔로우 성공 시 200 ok 응답
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("팔로우 하지 않은 사용자입니다!");  // 팔로우 관계가 없으면 400 BAD_REQUEST
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("팔로우 하지 않은 사용자입니다!");  // 팔로우 관계가 없으면 400 BAD_REQUEST
     }
 
     //팔로워 조회
@@ -115,7 +105,7 @@ public class FollowController {
     public ResponseEntity<Boolean> findSpecificFollowee(
             @PathVariable("userId") Long currentUserId,
             @PathVariable("opponentId") Long opponentId) {
-        if (followService.findSpecificFollowee(currentUserId, opponentId)) {
+        if (followService.findSpecificFollower(opponentId,currentUserId)) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(true);  // 팔로우 관계가 존재하면 OK 반환
         }
@@ -138,5 +128,17 @@ public class FollowController {
     }
 
     //팔로워/팔로윙수 조회 및 특정 조회 버그 수정 필요
+
+    /**
+     * 팔로윙 한 상대의 알람 설정 상태를 기존에 설정된 것의 반대로 한다.
+     * @param userId 알람 설정을 할 상대방의 아이디.
+     * @return 바꾼 뒤 알람 상태를 반환한다.
+     */
+    @PostMapping(value = "/alarm/{userId}")
+    public ResponseEntity<String> setAlarmReverse(@PathVariable("userId") Long userId){
+        boolean alarm = followService.setAlarm(userId);
+        return ResponseEntity.status(200)
+                .body(Boolean.toString(alarm));
+    }
 }
 

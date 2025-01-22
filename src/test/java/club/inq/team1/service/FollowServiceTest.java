@@ -32,7 +32,7 @@ class FollowServiceTest {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
 
-        boolean follow = followService.follow(userId, userId1);
+        boolean follow = followService.follow(userId1);
         assertTrue(follow);
     }
 
@@ -42,7 +42,7 @@ class FollowServiceTest {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
 
-        assertThrows(RuntimeException.class,()-> followService.follow(userId,0L));
+        assertThrows(RuntimeException.class,()-> followService.follow(0L));
     }
 
     @Test
@@ -51,7 +51,7 @@ class FollowServiceTest {
         userService.acceptUser(new UserJoinDTO("hello","1234","qwer"));
         userService.acceptUser(new UserJoinDTO("hello1","1234","qwer1"));
 
-        assertThrows(RuntimeException.class,()-> followService.follow(null,3L));
+        assertThrows(RuntimeException.class,()-> followService.follow(3L));
     }
 
     @Test
@@ -60,9 +60,9 @@ class FollowServiceTest {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
 
-        boolean follow = followService.follow(userId, userId1);
+        boolean follow = followService.follow(userId1);
         assertTrue(follow);
-        boolean unfollow = followService.unfollow(userId, userId1);
+        boolean unfollow = followService.unfollow(userId1);
         assertTrue(unfollow);
     }
 
@@ -72,7 +72,7 @@ class FollowServiceTest {
         Long userId = userService.acceptUser(new UserJoinDTO("hello", "1234", "qwer")).getUserId();
         Long userId1 = userService.acceptUser(new UserJoinDTO("hello1", "1234", "qwer1")).getUserId();
 
-        boolean unfollow = followService.unfollow(userId, userId1);
+        boolean unfollow = followService.unfollow(userId1);
         assertFalse(unfollow);
     }
 
@@ -84,9 +84,9 @@ class FollowServiceTest {
         Long userId2 = userService.acceptUser(new UserJoinDTO("hello2", "1234", "qwer2")).getUserId();
         Long userId3 = userService.acceptUser(new UserJoinDTO("hello3", "1234", "qwer3")).getUserId();
 
-        followService.follow(userId,userId3);
-        followService.follow(userId1,userId3);
-        followService.follow(userId2,userId3);
+        followService.follow(userId3);
+        followService.follow(userId3);
+        followService.follow(userId3);
 
         List<FollowerDTO> allFollowers = followService.findAllFollowers(userId3, 1);
         assertEquals("hello",allFollowers.get(0).getFollower().getUsername());
@@ -110,9 +110,9 @@ class FollowServiceTest {
         Long userId2 = userService.acceptUser(new UserJoinDTO("hello2", "1234", "qwer2")).getUserId();
         Long userId3 = userService.acceptUser(new UserJoinDTO("hello3", "1234", "qwer3")).getUserId();
 
-        followService.follow(userId,userId1);
-        followService.follow(userId,userId2);
-        followService.follow(userId,userId3);
+        followService.follow(userId1);
+        followService.follow(userId2);
+        followService.follow(userId3);
 
         List<FollowingDTO> allFollowees = followService.findAllFollowees(userId, 1);
         assertEquals("hello1",allFollowees.get(0).getFollowee().getUsername());
@@ -132,9 +132,9 @@ class FollowServiceTest {
         Long userId2 = userService.acceptUser(new UserJoinDTO("hello2", "1234", "qwer2")).getUserId();
         Long userId3 = userService.acceptUser(new UserJoinDTO("hello3", "1234", "qwer3")).getUserId();
 
-        followService.follow(userId,userId3);
-        followService.follow(userId1,userId3);
-        followService.follow(userId2,userId3);
+        followService.follow(userId3);
+        followService.follow(userId3);
+        followService.follow(userId3);
 
         Long followers = followService.countFollowers(userId3);
         assertEquals(3,followers);
@@ -148,9 +148,9 @@ class FollowServiceTest {
         Long userId2 = userService.acceptUser(new UserJoinDTO("hello2", "1234", "qwer2")).getUserId();
         Long userId3 = userService.acceptUser(new UserJoinDTO("hello3", "1234", "qwer3")).getUserId();
 
-        followService.follow(userId,userId1);
-        followService.follow(userId,userId2);
-        followService.follow(userId,userId3);
+        followService.follow(userId1);
+        followService.follow(userId2);
+        followService.follow(userId3);
 
         Long followings = followService.countFollowings(userId);
         assertEquals(3,followings);
