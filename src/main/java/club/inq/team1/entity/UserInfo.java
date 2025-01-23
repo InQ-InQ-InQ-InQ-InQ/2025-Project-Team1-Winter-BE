@@ -65,6 +65,9 @@ public class UserInfo {
     @Column(name = "birth")
     private Date birth;
 
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     @CreatedDate
