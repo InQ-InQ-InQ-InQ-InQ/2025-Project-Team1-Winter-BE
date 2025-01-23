@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor
@@ -27,9 +28,16 @@ public class Mail {
     @Column(name = "mail_id")
     private Long mailId;
 
+    @Column(name = "saw", nullable = false)
+    @ColumnDefault("false")
+    private Boolean saw;
+    /**
+     * 수신자
+     */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 //    todo
 //    @ManyToOne
 //    @JoinColumn(name = "post_id")
