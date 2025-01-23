@@ -1,6 +1,7 @@
 package club.inq.team1.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "user")
-@JsonIgnoreProperties(value = {"password", "userInfoId", "followers", "followings", "enabled", "accountNonLocked",
+@JsonIgnoreProperties(value = {"password", "userInfo", "followers", "followings", "enabled", "accountNonLocked",
         "authorities", "credentialsNonExpired", "accountNonExpired"})
 public class User implements UserDetails {
     @Id
@@ -38,7 +39,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private UserInfo userInfo;
 
     @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
