@@ -5,7 +5,7 @@ import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
-import club.inq.team1.repository.FollowerUserProjectionDTO;
+import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.util.CurrentUser;

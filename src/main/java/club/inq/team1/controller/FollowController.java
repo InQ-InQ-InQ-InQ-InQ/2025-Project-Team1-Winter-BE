@@ -1,21 +1,12 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.projection.FollowerDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.dto.response.ResponseFollowDTO;
-import club.inq.team1.entity.User;
-import club.inq.team1.repository.FollowerUserProjectionDTO;
 import club.inq.team1.service.FollowService;
-import club.inq.team1.service.UserService;
-import club.inq.team1.service.impl.FollowServiceImpl;
-import club.inq.team1.service.impl.UserServiceImpl;
 import club.inq.team1.util.CurrentUser;
 import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

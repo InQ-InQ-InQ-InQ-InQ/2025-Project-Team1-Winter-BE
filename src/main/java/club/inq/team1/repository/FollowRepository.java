@@ -1,6 +1,7 @@
 package club.inq.team1.repository;
 
 import club.inq.team1.dto.projection.FollowerDTO;
+import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
