@@ -33,19 +33,19 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", length = 32, unique = true)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 255)
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Follow> followings = new ArrayList<>();
 
     @Override
