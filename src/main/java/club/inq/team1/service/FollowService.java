@@ -29,6 +29,4 @@ public interface FollowService {
     Long countFollowings(Long currentUserId);
 
     boolean setAlarm(Long followeeId);
-
-    List<User> findAllFollowerWithAlarmTrue();
 }
