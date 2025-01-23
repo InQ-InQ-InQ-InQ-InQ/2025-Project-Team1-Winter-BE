@@ -3,6 +3,8 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.dto.response.ResponseFollowDTO;
+import club.inq.team1.entity.User;
+import club.inq.team1.repository.FollowerUserProjectionDTO;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.service.UserService;
 import club.inq.team1.service.impl.FollowServiceImpl;

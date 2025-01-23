@@ -39,9 +39,11 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userJoinDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userJoinDTO.getPassword()));
         User saved = userRepository.save(user);
-
+        // todo mapper 로 변경 필요
         UserInfo userInfo = new UserInfo();
         userInfo.setUser(saved);
+        userInfo.setFirstName(userJoinDTO.getFirstName());
+        userInfo.setLastName(userJoinDTO.getLastName());
         userInfo.setNickname(userJoinDTO.getNickname());
         userInfo.setPhone(userJoinDTO.getPhone());
         userInfo.setEmail(userJoinDTO.getEmail());

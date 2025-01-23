@@ -3,7 +3,6 @@ package club.inq.team1.service;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.User;
-import jakarta.transaction.Transactional;
 import java.util.List;
 
 
@@ -30,4 +29,6 @@ public interface FollowService {
     Long countFollowings(Long currentUserId);
 
     boolean setAlarm(Long followeeId);
+
+    List<User> findAllFollowerWithAlarmTrue();
 }
