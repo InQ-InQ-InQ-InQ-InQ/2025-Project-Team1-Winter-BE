@@ -10,6 +10,7 @@ import club.inq.team1.service.impl.UserServiceImpl;
 import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
