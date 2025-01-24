@@ -3,8 +3,11 @@ package club.inq.team1.service.impl;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
+import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
+import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
+import club.inq.team1.repository.MailRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.util.CurrentUser;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final MailRepository mailRepository;
     private final CurrentUser currentUser;
 
     // 팔로우
@@ -121,5 +125,25 @@ public class FollowServiceImpl implements FollowService {
         follow.setAlarm(!follow.getAlarm());
         followRepository.save(follow);
         return follow.getAlarm();
+    }
+
+    private List<User> findAllFollowerWithAlarmTrue(){
+        User user = currentUser.get();
+        return followRepository.findFollowersByFolloweeAndAlarmTrue(user)
+                .stream()
+                .map(FollowerUserProjectionDTO::getFollower)
+                .toList();
+    }
+
+    @Transactional
+    private boolean sendAlarm(){
+        List<User> users = findAllFollowerWithAlarmTrue();
+        users.stream()
+                .map(user->Mail.builder()
+                        .user(user)
+                        // todo : post 도 설정하도록 바꿔야됨.
+                        .build())
+                .forEach(mailRepository::save);
+        return true;
     }
 }

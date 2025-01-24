@@ -1,17 +1,12 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.projection.FollowerDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.dto.response.ResponseFollowDTO;
 import club.inq.team1.service.FollowService;
-import club.inq.team1.service.UserService;
-import club.inq.team1.service.impl.FollowServiceImpl;
-import club.inq.team1.service.impl.UserServiceImpl;
+import club.inq.team1.util.CurrentUser;
 import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,20 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 @Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
 public class FollowController {
     private final FollowService followService;
-    private final UserService userService;
-
-    @Autowired
-    public FollowController(FollowServiceImpl followService, UserServiceImpl userService) {
-        this.followService = followService;
-        this.userService = userService;
-    }
-
+    private final CurrentUser currentUser;
     // 팔로윙
     @PostMapping("/follow/{opponentId}")
     public ResponseEntity<String> follow(@PathVariable("opponentId") Long opponentId) {
+        if (currentUser.get().getUserId().equals(opponentId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("자기 자신을 팔로우 할 수 없습니다!");
+        }
         if(followService.follow(opponentId)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("해당 사용자를 팔로우 하였습니다!");  // 팔로우 성공 시 201 CREATED 응답
@@ -50,6 +43,10 @@ public class FollowController {
     // 언팔로윙
     @DeleteMapping("/unfollow/{opponentId}")
     public ResponseEntity<String> unfollow(@PathVariable("opponentId") Long opponentId) {
+        if (currentUser.get().getUserId().equals(opponentId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("자기 자신을 언팔로우 할 수 없습니다!");
+        }
         if(followService.unfollow(opponentId)) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body("팔로우를 취소했습니다!");  // 언팔로우 성공 시 200 ok 응답
