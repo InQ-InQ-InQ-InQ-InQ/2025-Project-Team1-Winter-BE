@@ -38,5 +38,4 @@ public class Follow {
 
     @Column(name = "alarm", nullable = false)
     private Boolean alarm = false;
-
 }

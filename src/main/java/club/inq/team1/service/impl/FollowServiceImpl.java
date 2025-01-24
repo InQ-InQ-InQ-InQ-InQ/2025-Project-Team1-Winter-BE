@@ -3,10 +3,14 @@ package club.inq.team1.service.impl;
 import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
+import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
+import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
+import club.inq.team1.repository.MailRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
+import club.inq.team1.util.CurrentUser;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,39 +22,37 @@ import org.springframework.stereotype.Service;
 public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final MailRepository mailRepository;
+    private final CurrentUser currentUser;
 
     // 팔로우
+    @Override
     @Transactional
-    public boolean follow(Long currentUserId, Long opponentId) {
-        User follower = getUserOrThrow(currentUserId,"현재 사용자가 존재하지 않습니다.");
+    public boolean follow(Long opponentId) {
+        User follower = currentUser.get();
         User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
 
-        if(findSpecificFollower(currentUserId, opponentId)){
+        if(findSpecificFollower(follower.getUserId(), opponentId)){
             return false;
         }
 
         // 팔로우 관계 생성
-
         Follow follow = new Follow();  // `Follow` 엔티티 생성
         follow.setFollower(follower);
         follow.setFollowee(followee);
         follow.setAlarm(false);
-        Follow savedFollow = followRepository.save(follow);// DB에 저장
-
-        follower.getFollowings().add(savedFollow);
-        followee.getFollowers().add(savedFollow);
-        userRepository.save(follower);
-        userRepository.save(followee);
+        followRepository.save(follow);// DB에 저장
 
         return true;
     }
 
     // 언팔로우
-    public boolean unfollow(Long currentUserId, Long opponentId) {
-        User follower = getUserOrThrow(currentUserId,"현재 사용자가 존재하지 않습니다.");
+    @Override
+    public boolean unfollow(Long opponentId) {
+        User follower = currentUser.get();
         User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
 
-        if (!findSpecificFollower(currentUserId, opponentId)) {
+        if (!findSpecificFollower(follower.getUserId(),opponentId)) {
             return false;
         }
 
@@ -61,6 +63,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로워 조회 (전체 팔로워 목록)
+    @Override
     public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
         User user = getUserOrThrow(userId,"해당 사용자가 존재하지 않습니다.");
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
@@ -68,16 +71,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
+    @Override
     public boolean findSpecificFollower(Long followerId, Long followeeId) {
-        User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
-        User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
-
+        User follower = getUserOrThrow(followerId, "팔로워에 해당하는 유저가 존재하지 않습니다.");
+        User followee = getUserOrThrow(followeeId, "팔로윙에 해당하는 유저가 존재하지 않습니다.");
         return followRepository.findByFollowerAndFollowee(follower, followee).isPresent();
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
     public List<FollowingDTO> findAllFollowees(Long userId, Integer page) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = getUserOrThrow(userId,"해당 유저가 존재하지 않습니다.");
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
         return followRepository.findFolloweesByFollower(user, pageRequest);  // user.get()로 User 객체를 전달
     }
@@ -105,5 +108,42 @@ public class FollowServiceImpl implements FollowService {
     // 해당 유저가 존재하는지 확인한다.
     private User getUserOrThrow(Long userId, String exceptionMessage) {
         return userRepository.findById(userId).orElseThrow(() -> new RuntimeException(exceptionMessage));
+    }
+
+    /**
+     * 알람 설정 상태를 반대로 한다. ex) 알람 상태가 true 였다면 false 로 바꿈.
+     * @param followeeId 알람 설정을 할 상대의 회원 식별 아이디를 입력한다.
+     * @return 현재 알람 설정 상태를 반환한다.
+     */
+
+    @Override
+    @Transactional
+    public boolean setAlarm(Long followeeId){
+        User user = currentUser.get();
+        User followee = getUserOrThrow(followeeId, "해당 유저가 존재하지 않습니다.");
+        Follow follow = followRepository.findByFollowerAndFollowee(user, followee).orElseThrow(()->new RuntimeException("팔로우 된 상태가 아닙니다."));
+        follow.setAlarm(!follow.getAlarm());
+        followRepository.save(follow);
+        return follow.getAlarm();
+    }
+
+    private List<User> findAllFollowerWithAlarmTrue(){
+        User user = currentUser.get();
+        return followRepository.findFollowersByFolloweeAndAlarmTrue(user)
+                .stream()
+                .map(FollowerUserProjectionDTO::getFollower)
+                .toList();
+    }
+
+    @Transactional
+    private boolean sendAlarm(){
+        List<User> users = findAllFollowerWithAlarmTrue();
+        users.stream()
+                .map(user->Mail.builder()
+                        .user(user)
+                        // todo : post 도 설정하도록 바꿔야됨.
+                        .build())
+                .forEach(mailRepository::save);
+        return true;
     }
 }
