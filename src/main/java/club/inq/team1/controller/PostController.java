@@ -1,5 +1,6 @@
 package club.inq.team1.controller;
 
+import club.inq.team1.dto.CommentRequestDto;
 import club.inq.team1.dto.PostRequestDto;
 import club.inq.team1.dto.PostResponseDto;
 import club.inq.team1.entity.Comment;
@@ -25,8 +26,8 @@ public class PostController {
 
     @PostMapping("/new")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto,
-                                                      @RequestParam Long userId) {
-        PostResponseDto  createdPost = postService.createPost(requestDto, userId);
+                                                      @RequestParam Long user_id) {
+        PostResponseDto  createdPost = postService.createPost(requestDto, user_id);
         return ResponseEntity.ok(createdPost);
     }
 
@@ -78,10 +79,19 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/comment/{commentId}/update")
-    public ResponseEntity<Void> updateComment(@PathVariable Long commentId, @RequestParam String content) {
-        commentService.updateComment(commentId, content);
-        return ResponseEntity.ok().build();
+//    @PutMapping("/comment/{commentId}/update")
+//    public ResponseEntity<Void> updateComment(@PathVariable Long commentId, @RequestParam String content) {
+//        commentService.updateComment(commentId, content);
+//        return ResponseEntity.ok().build();
+//    }
+
+    @PutMapping("/comment/{comment_id}/update")
+    public ResponseEntity<Comment> updateComment(
+            @PathVariable Long comment_id,
+            @RequestBody CommentRequestDto requestDto) {  // ✅ JSON Body로 데이터를 받음
+        Comment updatedComment = commentService.updateComment(comment_id, requestDto.getContent());
+        return ResponseEntity.ok(updatedComment);
     }
+
 
 }

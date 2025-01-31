@@ -31,13 +31,13 @@ public class PostService {
     /**
      * 게시글 생성 로직
      * @param requestDto 클라이언트 요청 데이터 ( 제목, 내용 포함 )
-     * @param userId 게시글 작성자의 ID
+     * @param user_id 게시글 작성자의 ID
      * @return 저장된 게시글에 대한 응답 DTO
      *
      */
-    public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
+    public PostResponseDto createPost(PostRequestDto requestDto, Long user_id) {
         //작성자 (User) 정보 가져오기
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         //Post 엔티티 생성
