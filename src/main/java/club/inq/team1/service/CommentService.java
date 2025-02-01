@@ -21,10 +21,12 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment updateComment(Long commentId, String content) {
+    public Comment updateComment(Long commentId, String newContent) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + commentId));
-        comment.setContent(content);
+
+        comment.setContent(newContent);
+        // updatedAt 필드 자동으로 갱신시킴
         return comment;
     }
 }

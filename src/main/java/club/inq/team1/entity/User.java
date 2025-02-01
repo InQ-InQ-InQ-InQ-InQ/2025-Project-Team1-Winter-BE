@@ -68,11 +68,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return "";
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
     }

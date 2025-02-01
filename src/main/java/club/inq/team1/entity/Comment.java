@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -30,5 +31,12 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false, updatable = false, name="created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @UpdateTimestamp //댓글이 수정될 때 자동으로 갱신됨
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+
 }
