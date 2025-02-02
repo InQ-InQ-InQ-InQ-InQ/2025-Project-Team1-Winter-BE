@@ -7,6 +7,7 @@ import club.inq.team1.entity.Comment;
 import club.inq.team1.entity.Post;
 import club.inq.team1.service.CommentService;
 import club.inq.team1.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class PostController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto,
+    public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto requestDto,
                                                       @RequestParam Long user_id) {
         PostResponseDto  createdPost = postService.createPost(requestDto, user_id);
         return ResponseEntity.ok(createdPost);
