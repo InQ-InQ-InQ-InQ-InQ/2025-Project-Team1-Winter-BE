@@ -80,19 +80,14 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PutMapping("/comment/{commentId}/update")
-//    public ResponseEntity<Void> updateComment(@PathVariable Long commentId, @RequestParam String content) {
-//        commentService.updateComment(commentId, content);
-//        return ResponseEntity.ok().build();
-//    }
-
     @PutMapping("/comment/{comment_id}/update")
     public ResponseEntity<Comment> updateComment(
-            @PathVariable Long comment_id,
-            @RequestBody CommentRequestDto requestDto) {  // ✅ JSON Body로 데이터를 받음
-        Comment updatedComment = commentService.updateComment(comment_id, requestDto.getContent());
+            @PathVariable("comment_id") Long commentId,  // 변수명을 Java 스타일로 변경
+            @RequestBody CommentRequestDto requestDto) {
+        Comment updatedComment = commentService.updateComment(commentId, requestDto.getContent());
         return ResponseEntity.ok(updatedComment);
     }
+
 
 
 }
