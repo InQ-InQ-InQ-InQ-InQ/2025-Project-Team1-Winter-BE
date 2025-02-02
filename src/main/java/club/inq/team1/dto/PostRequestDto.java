@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class PostRequestDto {
     @NotBlank(message = "Title cannot be empty")
     private String title;
