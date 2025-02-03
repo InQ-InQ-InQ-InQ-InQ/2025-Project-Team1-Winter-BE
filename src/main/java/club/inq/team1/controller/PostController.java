@@ -8,6 +8,8 @@ import club.inq.team1.entity.Post;
 import club.inq.team1.service.CommentService;
 import club.inq.team1.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +47,10 @@ public class PostController {
     }
 
     @GetMapping("/{id}/comment")
-    public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable Long id) {
-        List<Comment> comments = postService.getCommentsByPostId(id);
+    public ResponseEntity<Page<Comment>> getCommentsByPostId(
+            @PathVariable Long id,
+            Pageable pageable) {  // Pageable 추가
+        Page<Comment> comments = postService.getCommentsByPostId(id, pageable);
         return ResponseEntity.ok(comments);
     }
 
@@ -72,6 +76,15 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/comment")
+    public ResponseEntity<Comment> createComment(
+            @PathVariable("id") Long postId,
+            @RequestParam Long user_id,
+            @RequestBody @Valid CommentRequestDto requestDto) {
+        Comment comment = commentService.createComment(postId, user_id, requestDto);
+        return ResponseEntity.ok(comment);
     }
 
     @DeleteMapping("/comment/{commentId}/delete")

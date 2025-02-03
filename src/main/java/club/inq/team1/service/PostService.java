@@ -9,6 +9,8 @@ import club.inq.team1.repository.CommentRepository;
 import club.inq.team1.repository.PostRepository;
 import club.inq.team1.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -71,8 +73,8 @@ public class PostService {
         return post.getImageUrl(); // 이미지 URL 반환
     }
 
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPostId(postId);
+    public Page<Comment> getCommentsByPostId(Long postId, Pageable pageable) {
+        return commentRepository.findByPostId(postId, pageable);
     }
 
     public List<PostResponseDto> searchPosts(String query) {
