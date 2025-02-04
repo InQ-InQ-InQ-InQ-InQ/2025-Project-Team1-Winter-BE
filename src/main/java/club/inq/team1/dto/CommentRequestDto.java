@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentRequestDto {
 
-    @NotBlank(message =  "댓글 내용은 비워둘 수 없습니다.")
+    @NotBlank(message =  "댓글 내용이 없습니다.")
     private String content;  // 댓글 내용
 
     public CommentRequestDto(String content) {
