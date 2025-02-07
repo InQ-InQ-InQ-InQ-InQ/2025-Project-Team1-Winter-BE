@@ -1,8 +1,8 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.UpdateUserPasswordDTO;
-import club.inq.team1.dto.UserJoinDTO;
+import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
+import club.inq.team1.dto.request.UpdateUserPasswordDTO;
+import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.dto.projection.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -90,7 +93,7 @@ public class UserController {
     })
     public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
         if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
-                !userService.getPrivateInfo().getUserInfoId().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
+                !userService.getPrivateInfo().getUserInfo().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
             return ResponseEntity.status(299).body(null);
         }
         User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
@@ -112,14 +115,31 @@ public class UserController {
     })
     public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
         User user = userService.getUserProfile(id);
-        UserInfo userInfoId = user.getUserInfoId();
-
+        UserInfo userInfo = user.getUserInfo();
+        // todo 수정 필요
         PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
         publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setNickname(userInfoId.getNickname());
-        publicUserProfileDTO.setEmail(userInfoId.getEmail());
-        publicUserProfileDTO.setGender(userInfoId.getGender());
+        publicUserProfileDTO.setNickname(userInfo.getNickname());
+        publicUserProfileDTO.setEmail(userInfo.getEmail());
+        publicUserProfileDTO.setGender(userInfo.getGender());
 
         return ResponseEntity.status(200).body(publicUserProfileDTO);
+    }
+
+    @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
+        boolean b = userService.setUserProfileImage(image);
+        return ResponseEntity.status(200).body(Boolean.toString(b));
+    }
+
+    @GetMapping(value = "/{userId}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok(userService.getUserProfileImage(userId));
+    }
+
+    @DeleteMapping(value = "/my/delete")
+    public ResponseEntity<String> deleteMySelf(){
+        boolean deleteSuccess = userService.deleteMySelf();
+        return ResponseEntity.status(200).body(Boolean.toString(deleteSuccess));
     }
 }

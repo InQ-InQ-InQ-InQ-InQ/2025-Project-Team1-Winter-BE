@@ -1,10 +1,8 @@
-package club.inq.team1.dto;
+package club.inq.team1.dto.request;
 
-import club.inq.team1.config.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +26,4 @@ public class PutUserPrivateInfoDTO {
     
     @Schema(description = "변경할 휴대폰 번호")
     private String phone;
-
-    @Schema(description = "변경할 성별")
-    private Gender gender;
-    
-    @Schema(description = "변경할 생일")
-    private Date birth;
 }
