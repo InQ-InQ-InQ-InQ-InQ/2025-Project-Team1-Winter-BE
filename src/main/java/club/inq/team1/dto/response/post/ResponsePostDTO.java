@@ -10,9 +10,11 @@ public class ResponsePostDTO {
     private Long postId; // 게시글 고유 아이디
     private Long userId; // 게시글 작성자의 고유 아이디
     private String nickname; // 게시글 작성자의 닉네임
+    private Boolean myPost; // 게시글 작성자가 현재 로그인한 사용자인지
     private String title; // 게시글 제목
     private String content; // 게시글 내용
     private String tags; // 게시글 태그
+    // private List<String> tags; // 게시글 태그를 리스트의 형태로 반환하게 된다면 이걸로 변환
     private String where; // 게시글 지역 태그
     private BigDecimal latitude; // 게시글의 위도
     private BigDecimal longitude; // 게시글의 경도

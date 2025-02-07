@@ -14,6 +14,7 @@ public class ResponseCommentDTO {
     private Long commentId; // 댓글 고유 아이디
     private Long userId; // 댓글을 작성한 유저의 고유 아이디
     private Long postId; // 게시글의 고유 아이디
+    private Boolean myComment; // 게시글 작성자가 현재 로그인한 사용자인지 여부
     private String nickname; // 댓글을 작성한 유저의 닉네임
     private String content; // 댓글 내용
     private Boolean myLike; // 현재 로그인한 사용자의 좋아요 여부

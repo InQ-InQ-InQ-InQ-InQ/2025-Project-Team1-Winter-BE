@@ -11,4 +11,6 @@ public class PostRequestDto {
 
     @NotBlank(message = "Content cannot be empty")
     private String content;
+
+    // private List<String> tags 있어도 될 것 같음.
 }
