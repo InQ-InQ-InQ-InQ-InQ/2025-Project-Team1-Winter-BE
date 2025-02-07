@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Setter;
 
+/**
+ * @apiNote {@link club.inq.team1.entity.Post}
+ *
+ * 게시글 엔티티 응답 전용 DTO 입니다.
+ */
 @Setter
 public class ResponsePostDTO {
     private Long postId; // 게시글 고유 아이디
