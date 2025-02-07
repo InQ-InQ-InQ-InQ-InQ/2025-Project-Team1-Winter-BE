@@ -1,5 +1,6 @@
 package club.inq.team1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postId;
 
     @Column(nullable = false)
     private String title;
@@ -42,20 +42,22 @@ public class Post {
     @Column
     private String imageUrl; // 이미지 경로 추가
 
+    @Column
+    private String tags; // 쉼표로 구분된 태그 문자열
+
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount = 0; // 기본값 0
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 
-    @Column
-    private String tags; // 쉼표로 구분된 태그 문자열
-
-    @Column(nullable = false)
-    private int likeCount = 0; // 기본값 0
-
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @JsonIgnore
+    private List<Image> images = new ArrayList<>();
 }
 
 

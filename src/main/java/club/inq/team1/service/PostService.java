@@ -74,7 +74,7 @@ public class PostService {
     }
 
     public Page<Comment> getCommentsByPostId(Long postId, Pageable pageable) {
-        return commentRepository.findByPostId(postId, pageable);
+        return commentRepository.findByPost(postId, pageable);
     }
 
     public List<PostResponseDto> searchPosts(String query) {
