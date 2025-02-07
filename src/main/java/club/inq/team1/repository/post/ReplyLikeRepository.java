@@ -3,6 +3,7 @@ package club.inq.team1.repository.post;
 import club.inq.team1.entity.Reply;
 import club.inq.team1.entity.ReplyLike;
 import club.inq.team1.entity.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReplyLikeRepository extends JpaRepository<ReplyLike, Long> {
@@ -14,5 +15,5 @@ public interface ReplyLikeRepository extends JpaRepository<ReplyLike, Long> {
      * @param reply 확인할 답글
      * @return 좋아요를 눌렀다면 true, 아니라면 false
      */
-    Boolean existsByUserAndReply(User user, Reply reply);
+    Optional<ReplyLike> findByUserAndReply(User user, Reply reply);
 }

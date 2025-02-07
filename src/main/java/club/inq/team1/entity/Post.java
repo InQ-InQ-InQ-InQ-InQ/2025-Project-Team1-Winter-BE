@@ -37,16 +37,11 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column
-    private String imageUrl; // 이미지 경로 추가
-
-    @Column
     private String tags; // 쉼표로 구분된 태그 문자열
-
-    @Column(name = "like_count", nullable = false)
-    private Integer likeCount = 0; // 기본값 0
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -58,6 +53,10 @@ public class Post {
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
     @JsonIgnore
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<PostLike> postLikes = new ArrayList<>();
 }
 
 

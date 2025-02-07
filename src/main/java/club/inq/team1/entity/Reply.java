@@ -1,5 +1,6 @@
 package club.inq.team1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +15,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +35,9 @@ public class Reply {
     @Column(name = "reply_id")
     private Long replyId;
 
+    @Column(name = "content", nullable = false)
+    private String content;
+
     @Column(name = "created_at")
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,9 +50,12 @@ public class Reply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
+    @JsonIgnore
     private Comment comment;
+
 }

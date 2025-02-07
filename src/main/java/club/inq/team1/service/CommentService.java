@@ -38,6 +38,7 @@ public class CommentService {
 
         comment.setContent(newContent);
         // updatedAt 필드 자동으로 갱신시킴
+        // save?
         return comment;
     }
 
@@ -53,6 +54,7 @@ public class CommentService {
         comment.setContent(requestDto.getContent());  // DTO에서 받은 content 설정
         comment.setPost(post);
         comment.setUser(user);
+        // save?
 
         return commentRepository.save(comment);
     }
