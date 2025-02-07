@@ -1,15 +1,14 @@
 package club.inq.team1.service;
 
-import club.inq.team1.dto.request.map.AddressRequestDTO;
-import club.inq.team1.dto.response.map.GeocodeResponseDTO;
+import club.inq.team1.dto.projection.GeocodeDTO;
 
 public interface MapService {
 
     //위경도 -> 주소 변환
-    String convertAddress(AddressRequestDTO addressRequestDTO);
+    String convertAddress(GeocodeDTO addressRequestDTO);
 
     //주소 -> 위경도 변환
-    GeocodeResponseDTO convertGeocode(String address);
+    GeocodeDTO convertGeocode(String address);
 
     //지역명 변환
     String convertRegion(String address);
