@@ -1,4 +1,4 @@
-package club.inq.team1.dto.response;
+package club.inq.team1.dto.response.post;
 
 import java.time.LocalDateTime;
 import java.util.List;
