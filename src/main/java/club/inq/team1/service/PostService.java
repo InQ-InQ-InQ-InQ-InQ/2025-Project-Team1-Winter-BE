@@ -70,7 +70,8 @@ public class PostService {
     public String getPostImageById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
-        return post.getImageUrl(); // 이미지 URL 반환
+        return null;
+//        return post.getImageUrl(); // 이미지 URL 반환
     }
 
     public Page<Comment> getCommentsByPostId(Long postId, Pageable pageable) {
@@ -91,7 +92,7 @@ public class PostService {
     public void toggleLike(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + postId));
-        post.setLikeCount(post.getLikeCount() + 1); // 좋아요 수 증가
+//        post.setLikeCount(post.getLikeCount() + 1); // 좋아요 수 증가
         postRepository.save(post);
     }
 

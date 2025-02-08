@@ -1,7 +1,10 @@
 package club.inq.team1.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,15 +25,6 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    @JsonBackReference
-    private Post post;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(nullable = false, updatable = false, name="created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -38,5 +32,16 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    @JsonBackReference
+    private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();
 }

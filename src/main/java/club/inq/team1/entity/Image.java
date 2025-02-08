@@ -26,7 +26,10 @@ public class Image {
     private Long imageId;
 
     @Column(name = "image_path", nullable = false)
-    private String imagePath;
+    private String imagePath; // 파일 이름까지 포함
+
+    @Column(name = "original_name")
+    private String originalName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
