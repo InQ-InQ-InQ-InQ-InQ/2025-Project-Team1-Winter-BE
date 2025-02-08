@@ -3,9 +3,11 @@ package club.inq.team1.service.impl.post;
 import club.inq.team1.constant.ImagePath;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
+import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
 import club.inq.team1.entity.User;
+import club.inq.team1.repository.CommentRepository;
 import club.inq.team1.repository.PostRepository;
 import club.inq.team1.repository.post.ImageRepository;
 import club.inq.team1.service.post.PostService;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final CurrentUser currentUser;
 
@@ -42,7 +47,10 @@ public class PostServiceImpl implements PostService {
         post.setTags(requestPostCreateDTO.getTags());
 
         Post save = postRepository.save(post);
-        post.setImages(toImage(multipartFiles, post));
+
+        List<Image> images = multipartFiles.stream().map(it -> toImage(it, post)).toList();
+        images.forEach(imageRepository::save);
+        save.setImages(images);
 
         postRepository.save(save);
 
@@ -54,30 +62,46 @@ public class PostServiceImpl implements PostService {
         return null;
     }
 
+    @Override
     @Transactional
-    private ArrayList<Image> toImage(List<MultipartFile> multipartFiles, Post post){
-        ArrayList<Image> images = new ArrayList<>();
-        for (MultipartFile file : multipartFiles) {
-            String defaultStoredPath = ImagePath.WINDOW.getPath();
-            String postImageStoredPath = ImagePath.SAVE_POST.getPath();
-            String storedName = UUID.randomUUID() + file.getOriginalFilename();
-            String storedPath = defaultStoredPath + postImageStoredPath + storedName;
-            File stored = Path.of(storedPath).toFile();
-            try {
-                file.transferTo(stored);
-            } catch (IOException e) {
-                throw new RuntimeException("이미지 저장 과정에서 문제가 발생했습니다.");
-            }
+    public Page<ResponsePostOutlineDTO> getAllPostWithPaging(String query, Pageable pageable) {
+        Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(query,
+                query, pageable);
 
-            Image image = new Image();
-            image.setPost(post);
-            image.setOriginalName(file.getOriginalFilename());
-            image.setImagePath(postImageStoredPath + storedName);
+        return posts.map(this::toResponsePostOutlineDTO);
+    }
 
-            Image save = imageRepository.save(image);
-            images.add(save);
+    private ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
+        ResponsePostOutlineDTO dto = new ResponsePostOutlineDTO();
+        dto.setPostId(post.getPostId());
+        dto.setTitle(post.getTitle());
+        dto.setUserId(post.getUser().getUserId());
+        dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setImagePath(post.getImages().get(0).getImagePath());
+        dto.setTags(post.getTags());
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setModifiedAt(post.getModifiedAt());
+        dto.setPostLikeCount(post.getPostLikes().size());
+        return dto;
+    }
+
+    private Image toImage(MultipartFile file, Post post){
+        String defaultStoredPath = ImagePath.WINDOW.getPath();
+        String postImageStoredPath = ImagePath.SAVE_POST.getPath();
+        String storedName = UUID.randomUUID() + file.getOriginalFilename();
+        String storedPath = defaultStoredPath + postImageStoredPath + storedName;
+        File stored = Path.of(storedPath).toFile();
+        try {
+            file.transferTo(stored);
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 저장 과정에서 문제가 발생했습니다.");
         }
 
-        return images;
+        Image image = new Image();
+        image.setPost(post);
+        image.setOriginalName(file.getOriginalFilename());
+        image.setImagePath(postImageStoredPath + storedName);
+
+        return image;
     }
 }

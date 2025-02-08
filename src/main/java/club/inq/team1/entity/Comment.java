@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -42,6 +43,8 @@ public class Comment {
     @JsonIgnore
     private User user;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Reply> replies = new ArrayList<>();
 }
