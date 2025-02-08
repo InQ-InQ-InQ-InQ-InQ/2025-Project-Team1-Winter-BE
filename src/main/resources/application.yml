@@ -14,4 +14,3 @@ naver:
   map:
     client-id: "" # Naver map API Client ID 입력
     client-secret: "" # Naver map API Client pw 입력
-    api-url: "" # Naver map API 기본 주소 입력
