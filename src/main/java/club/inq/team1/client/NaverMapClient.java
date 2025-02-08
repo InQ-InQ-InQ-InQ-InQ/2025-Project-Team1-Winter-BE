@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class NaverMapClient {
@@ -22,8 +23,23 @@ public class NaverMapClient {
 
     //https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode
     //Geocoding API (주소 검색) 호출 클래스
-    public void callGeocodingAPI(){
+    public String callGeocodingAPI(String address){
+        String url =
+            "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
 
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url)
+            .queryParam("query", address);
+
+        System.out.println(uriBuilder.toUriString());
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders());  // 헤더 생성 메서드 호출
+
+        ResponseEntity<String> response = restTemplate.exchange(
+            uriBuilder.toUriString(),
+            HttpMethod.GET,
+            entity,
+            String.class
+        );
+        return response.getBody();
     }
 
     //https://api.ncloud-docs.com/docs/ai-naver-mapsreversegeocoding-gc
@@ -37,6 +53,7 @@ public class NaverMapClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-ncp-apigw-api-key-id" , client_id);
         headers.set("x-ncp-apigw-api-key", client_secret);
+        headers.set("Accept", "application/json");
         return headers;
     }
 
