@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "user")
 @JsonIgnoreProperties(value = {"password", "userInfo", "followers", "followings", "enabled", "accountNonLocked",
         "authorities", "credentialsNonExpired", "accountNonExpired"})
+@BatchSize(size = 100)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;

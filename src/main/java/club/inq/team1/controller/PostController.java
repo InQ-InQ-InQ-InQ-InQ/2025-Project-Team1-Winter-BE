@@ -1,105 +1,40 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.CommentRequestDto;
-import club.inq.team1.dto.PostRequestDto;
-import club.inq.team1.dto.PostResponseDto;
-import club.inq.team1.entity.Comment;
-import club.inq.team1.service.CommentService;
-import club.inq.team1.service.PostService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
+import club.inq.team1.dto.response.post.ResponsePostDTO;
+import club.inq.team1.service.post.PostService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/posts")
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
-
-    public PostController(PostService postService, CommentService commentService) {
-        this.postService = postService;
-        this.commentService = commentService;
-    }
 
     @PostMapping("/new")
-    public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto requestDto,
-                                                      @RequestParam Long user_id) {
-        PostResponseDto  createdPost = postService.createPost(requestDto, user_id);
-        return ResponseEntity.ok(createdPost);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long id) {
-        PostResponseDto post = postService.getPostById(id); // PostResponseDto를 바로 반환
+    public ResponseEntity<ResponsePostDTO> createPost(@RequestBody RequestPostCreateDTO dto,
+                                                      @RequestPart(name = "image") List<MultipartFile> files){
+        ResponsePostDTO post = postService.createPost(dto, files);
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/{id}/image")
-    public ResponseEntity<String> getPostImageById(@PathVariable Long id) {
-        String imageUrl = postService.getPostImageById(id);
-        return ResponseEntity.ok(imageUrl);
+    @GetMapping("/{postId}")
+    public ResponseEntity<ResponsePostDTO> getPost(@PathVariable("postId") Long postId){
+        ResponsePostDTO post = postService.getPost(postId);
+
+        return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/{id}/comment")
-    public ResponseEntity<Page<Comment>> getCommentsByPostId(
-            @PathVariable Long id,
-            Pageable pageable) {  // Pageable 추가
-        Page<Comment> comments = postService.getCommentsByPostId(id, pageable);
-        return ResponseEntity.ok(comments);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<PostResponseDto>> searchPosts(@RequestParam String q) {
-        List<PostResponseDto> results = postService.searchPosts(q);
-        return ResponseEntity.ok(results);
-    }
-
-    @GetMapping("/searchByTag")
-    public ResponseEntity<List<PostResponseDto>> searchByTag(@RequestParam String tag) {
-        List<PostResponseDto> results = postService.searchByTag(tag);
-        return ResponseEntity.ok(results);
-    }
-
-    @PostMapping("/{id}/heart")
-    public ResponseEntity<Void> toggleLike(@PathVariable Long id) {
-        postService.toggleLike(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/comment")
-    public ResponseEntity<Comment> createComment(
-            @PathVariable("id") Long postId,
-            @RequestParam Long user_id,
-            @RequestBody @Valid CommentRequestDto requestDto) {
-        Comment comment = commentService.createComment(postId, user_id, requestDto);
-        return ResponseEntity.ok(comment);
-    }
-
-    @DeleteMapping("/comment/{commentId}/delete")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/comment/{comment_id}/update")
-    public ResponseEntity<Comment> updateComment(
-            @PathVariable("comment_id") Long commentId,  // 변수명을 Java 스타일로 변경
-            @RequestBody CommentRequestDto requestDto) {
-        Comment updatedComment = commentService.updateComment(commentId, requestDto.getContent());
-        return ResponseEntity.ok(updatedComment);
-    }
-
-
-
+    
 }

@@ -1,36 +1,19 @@
 package club.inq.team1.service.impl.post;
 
-import club.inq.team1.constant.ImagePath;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
+import club.inq.team1.dto.request.post.post.RequestPostDeleteDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
-import club.inq.team1.dto.response.post.ResponseCommentDTO;
-import club.inq.team1.dto.response.post.ResponseImageDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
-import club.inq.team1.dto.response.post.ResponseReplyDTO;
-import club.inq.team1.entity.Comment;
-import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
-import club.inq.team1.entity.Reply;
 import club.inq.team1.entity.User;
-import club.inq.team1.repository.CommentRepository;
 import club.inq.team1.repository.PostRepository;
-import club.inq.team1.repository.post.CommentLikeRepository;
-import club.inq.team1.repository.post.ImageRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
-import club.inq.team1.repository.post.ReplyLikeRepository;
 import club.inq.team1.service.post.CommentService;
 import club.inq.team1.service.post.ImageService;
 import club.inq.team1.service.post.PostService;
-import club.inq.team1.service.post.ReplyService;
 import club.inq.team1.util.CurrentUser;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,25 +33,35 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Boolean createPost(RequestPostCreateDTO requestPostCreateDTO, List<MultipartFile> multipartFiles) {
+    public ResponsePostDTO createPost(RequestPostCreateDTO requestPostCreateDTO, List<MultipartFile> multipartFiles) {
         User user = currentUser.get(); // 작성자 조회
 
-        Post post = new Post();
-        post.setTitle(requestPostCreateDTO.getTitle());
-        post.setUser(user);
-        post.setContent(requestPostCreateDTO.getContent());
-        post.setTags(requestPostCreateDTO.getTags());
+        Post post = toPost(requestPostCreateDTO, user);
+        Post save = postRepository.save(post);
 
-        postRepository.save(post);
+        multipartFiles.forEach(file -> imageService.saveWithPost(file, save));
 
-        multipartFiles.forEach(file -> imageService.saveWithPost(file, post));
-
-        return true;
+        return toResponsePostDTO(post);
     }
 
     @Override
+    @Transactional
     public Boolean updatePost(RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles) {
-        return null;
+        Post post = postRepository.findById(requestPostUpdateDTO.getPostId()).orElseThrow();
+        User user = currentUser.get();
+        if(!post.getUser().getUserId().equals(user.getUserId())){
+            return false;
+        }
+
+        post.setTitle(requestPostUpdateDTO.getTitle());
+        post.setContent(requestPostUpdateDTO.getContent());
+        post.setTags(requestPostUpdateDTO.getTags());
+        post.setLatitude(requestPostUpdateDTO.getLatitude());
+        post.setLongitude(requestPostUpdateDTO.getLongitude());
+
+        postRepository.save(post);
+
+        return true;
     }
 
     @Override
@@ -81,8 +74,37 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Boolean deletePost(RequestPostDeleteDTO requestPostDeleteDTO) {
+        Post post = postRepository.findById(requestPostDeleteDTO.getPostId()).orElseThrow();
+        User user = currentUser.get();
+
+        // 게시글 관련 정보 지워야됨. 댓글은 알아서 지워지는데 답글은 안지워짐 이미지 정보도 지워지는데 이미지 파일은 안지워짐
+
+
+        return true;
+    }
+
+    @Override
     public ResponsePostDTO getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
+        return toResponsePostDTO(post);
+    }
+
+    private Post toPost(RequestPostCreateDTO requestPostCreateDTO, User user) {
+        Post post = new Post();
+
+        post.setTitle(requestPostCreateDTO.getTitle());
+        post.setUser(user);
+        post.setContent(requestPostCreateDTO.getContent());
+        post.setTags(requestPostCreateDTO.getTags());
+        post.setLatitude(requestPostCreateDTO.getLatitude());
+        post.setLongitude(requestPostCreateDTO.getLongitude());
+
+        return post;
+    }
+
+    @Override
+    public ResponsePostDTO toResponsePostDTO(Post post) {
         User user = currentUser.get();
 
         ResponsePostDTO dto = new ResponsePostDTO();
@@ -97,7 +119,7 @@ public class PostServiceImpl implements PostService {
         dto.setLatitude(post.getLatitude());
         dto.setLongitude(post.getLongitude());
         dto.setPostLikeCount(post.getPostLikes().size());
-        dto.setMyLike(postLikeRepository.existsByUserAndPost(user,post));
+        dto.setMyLike(postLikeRepository.existsByUserAndPost(user, post));
         dto.setCreatedAt(post.getCreatedAt());
         dto.setModifiedAt(post.getModifiedAt());
         dto.setImages(post.getImages().stream().map(imageService::toResponseImageDTO).toList());
@@ -106,7 +128,8 @@ public class PostServiceImpl implements PostService {
         return dto;
     }
 
-    private ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
+    @Override
+    public ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
         ResponsePostOutlineDTO dto = new ResponsePostOutlineDTO();
 
         dto.setPostId(post.getPostId());
