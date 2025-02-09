@@ -5,8 +5,12 @@ import java.util.List;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
-//https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode
-//위 링크에서 응답 양식 확인 가능
+/**
+ * 네이버 Geocoding api response 변환 DTO
+ * https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode
+ * 위 링크에서 응답 양식 확인 가능
+ */
+
 @Getter
 @Component
 public class GeocodeResponseDTO {
