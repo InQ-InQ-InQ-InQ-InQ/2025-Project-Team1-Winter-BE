@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 //위 링크에서 응답 양식 확인 가능
 @Getter
 @Component
-public class GeocodeResponse {
+public class GeocodeResponseDTO {
 
     @JsonProperty("status")
     private String status;
