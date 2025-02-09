@@ -23,7 +23,7 @@ public class ResponsePostDTO {
     private String where; // 게시글 지역 태그
     private BigDecimal latitude; // 게시글의 위도
     private BigDecimal longitude; // 게시글의 경도
-    private Long likeCount; // 게시글의 좋아요 개수
+    private Integer postLikeCount; // 게시글의 좋아요 개수
     private Boolean myLike; // 현재 로그인한 유저의 게시글 좋아요 여부
     private LocalDateTime createdAt; // 게시글 작성 시기
     private LocalDateTime modifiedAt; // 게시글 수정 시기

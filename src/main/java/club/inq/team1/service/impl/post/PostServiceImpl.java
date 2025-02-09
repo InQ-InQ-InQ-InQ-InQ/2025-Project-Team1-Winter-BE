@@ -3,14 +3,26 @@ package club.inq.team1.service.impl.post;
 import club.inq.team1.constant.ImagePath;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
+import club.inq.team1.dto.response.post.ResponseCommentDTO;
+import club.inq.team1.dto.response.post.ResponseImageDTO;
+import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
+import club.inq.team1.dto.response.post.ResponseReplyDTO;
+import club.inq.team1.entity.Comment;
 import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
+import club.inq.team1.entity.Reply;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.CommentRepository;
 import club.inq.team1.repository.PostRepository;
+import club.inq.team1.repository.post.CommentLikeRepository;
 import club.inq.team1.repository.post.ImageRepository;
+import club.inq.team1.repository.post.PostLikeRepository;
+import club.inq.team1.repository.post.ReplyLikeRepository;
+import club.inq.team1.service.post.CommentService;
+import club.inq.team1.service.post.ImageService;
 import club.inq.team1.service.post.PostService;
+import club.inq.team1.service.post.ReplyService;
 import club.inq.team1.util.CurrentUser;
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +42,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final ImageRepository imageRepository;
     private final CurrentUser currentUser;
+    private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final ImageService imageService;
+    private final CommentService commentService;
 
     @Override
     @Transactional
@@ -46,13 +59,9 @@ public class PostServiceImpl implements PostService {
         post.setContent(requestPostCreateDTO.getContent());
         post.setTags(requestPostCreateDTO.getTags());
 
-        Post save = postRepository.save(post);
+        postRepository.save(post);
 
-        List<Image> images = multipartFiles.stream().map(it -> toImage(it, post)).toList();
-        images.forEach(imageRepository::save);
-        save.setImages(images);
-
-        postRepository.save(save);
+        multipartFiles.forEach(file -> imageService.saveWithPost(file, post));
 
         return true;
     }
@@ -71,8 +80,35 @@ public class PostServiceImpl implements PostService {
         return posts.map(this::toResponsePostOutlineDTO);
     }
 
+    @Override
+    public ResponsePostDTO getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        User user = currentUser.get();
+
+        ResponsePostDTO dto = new ResponsePostDTO();
+        dto.setPostId(post.getPostId());
+        dto.setUserId(post.getUser().getUserId());
+        dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setMyPost(post.getUser().getUserId().equals(user.getUserId()));
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+        dto.setTitle(post.getTags());
+        dto.setWhere(post.getWhere());
+        dto.setLatitude(post.getLatitude());
+        dto.setLongitude(post.getLongitude());
+        dto.setPostLikeCount(post.getPostLikes().size());
+        dto.setMyLike(postLikeRepository.existsByUserAndPost(user,post));
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setModifiedAt(post.getModifiedAt());
+        dto.setImages(post.getImages().stream().map(imageService::toResponseImageDTO).toList());
+        dto.setComments(post.getComments().stream().map(commentService::toResponseCommentDTO).toList());
+
+        return dto;
+    }
+
     private ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
         ResponsePostOutlineDTO dto = new ResponsePostOutlineDTO();
+
         dto.setPostId(post.getPostId());
         dto.setTitle(post.getTitle());
         dto.setUserId(post.getUser().getUserId());
@@ -82,26 +118,7 @@ public class PostServiceImpl implements PostService {
         dto.setCreatedAt(post.getCreatedAt());
         dto.setModifiedAt(post.getModifiedAt());
         dto.setPostLikeCount(post.getPostLikes().size());
+
         return dto;
-    }
-
-    private Image toImage(MultipartFile file, Post post){
-        String defaultStoredPath = ImagePath.WINDOW.getPath();
-        String postImageStoredPath = ImagePath.SAVE_POST.getPath();
-        String storedName = UUID.randomUUID() + file.getOriginalFilename();
-        String storedPath = defaultStoredPath + postImageStoredPath + storedName;
-        File stored = Path.of(storedPath).toFile();
-        try {
-            file.transferTo(stored);
-        } catch (IOException e) {
-            throw new RuntimeException("이미지 저장 과정에서 문제가 발생했습니다.");
-        }
-
-        Image image = new Image();
-        image.setPost(post);
-        image.setOriginalName(file.getOriginalFilename());
-        image.setImagePath(postImageStoredPath + storedName);
-
-        return image;
     }
 }

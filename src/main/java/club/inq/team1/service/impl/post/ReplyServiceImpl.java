@@ -4,6 +4,7 @@ import club.inq.team1.dto.request.post.reply.RequestReplyCreateDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyDeleteDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyLikeDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyUpdateDTO;
+import club.inq.team1.dto.response.post.ResponseReplyDTO;
 import club.inq.team1.entity.Comment;
 import club.inq.team1.entity.Reply;
 import club.inq.team1.entity.ReplyLike;
@@ -11,7 +12,7 @@ import club.inq.team1.entity.User;
 import club.inq.team1.repository.CommentRepository;
 import club.inq.team1.repository.post.ReplyLikeRepository;
 import club.inq.team1.repository.post.ReplyRepository;
-import club.inq.team1.service.ReplyService;
+import club.inq.team1.service.post.ReplyService;
 import club.inq.team1.util.CurrentUser;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +86,24 @@ public class ReplyServiceImpl implements ReplyService {
         replyLikeRepository.save(replyLike);
 
         return true;
+    }
+
+    @Override
+    public ResponseReplyDTO toResponseReplyDTO(Reply reply) {
+        ResponseReplyDTO dto = new ResponseReplyDTO();
+        User user = currentUser.get();
+
+        dto.setReplyId(reply.getReplyId());
+        dto.setUserId(reply.getUser().getUserId());
+        dto.setNickname(reply.getUser().getUserInfo().getNickname());
+        dto.setCommentId(reply.getComment().getId());
+        dto.setMyReply(reply.getUser().getUserId().equals(user.getUserId()));
+        dto.setContent(reply.getContent());
+        dto.setMyLike(replyLikeRepository.existsByUserAndReply(user,reply));
+        dto.setReplyLikeCount(reply.getReplyLikes().size());
+        dto.setCreatedAt(reply.getCreatedAt());
+        dto.setModifiedAt(reply.getModifiedAt());
+
+        return dto;
     }
 }

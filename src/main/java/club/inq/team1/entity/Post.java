@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,8 +51,17 @@ public class Post {
     @JsonIgnore
     private User user;
 
-    @Column
+    @Column(name = "tags")
     private String tags; // 쉼표로 구분된 태그 문자열
+
+    @Column(name = "latitude", precision = 10, scale = 7)
+    private BigDecimal latitude;
+
+    @Column(name = "longitude", precision = 10, scale = 7)
+    private BigDecimal longitude;
+
+    @Column(name = "where")
+    private String where;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

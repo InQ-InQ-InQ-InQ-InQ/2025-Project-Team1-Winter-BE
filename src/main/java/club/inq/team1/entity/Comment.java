@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "comment")
+@BatchSize(size = 100)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +43,11 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
-
-    @BatchSize(size = 100)
+    
+    @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CommentLike> commentLikes = new ArrayList<>();
+    
     @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Reply> replies = new ArrayList<>();

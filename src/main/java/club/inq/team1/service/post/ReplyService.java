@@ -1,9 +1,11 @@
-package club.inq.team1.service;
+package club.inq.team1.service.post;
 
 import club.inq.team1.dto.request.post.reply.RequestReplyCreateDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyDeleteDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyLikeDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyUpdateDTO;
+import club.inq.team1.dto.response.post.ResponseReplyDTO;
+import club.inq.team1.entity.Reply;
 
 public interface ReplyService {
     
@@ -37,4 +39,6 @@ public interface ReplyService {
      * @return 토글 된 뒤 좋아요 상태
      */
     Boolean likeReply(RequestReplyLikeDTO requestReplyLikeDTO);
+
+    ResponseReplyDTO toResponseReplyDTO(Reply reply);
 }

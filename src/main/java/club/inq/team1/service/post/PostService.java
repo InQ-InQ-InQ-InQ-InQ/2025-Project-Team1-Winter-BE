@@ -2,6 +2,7 @@ package club.inq.team1.service.post;
 
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
+import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,8 @@ public interface PostService {
      * @return 페이징을 통해 데이터를 받는다.
      */
     Page<ResponsePostOutlineDTO> getAllPostWithPaging(String query, Pageable pageable);
+
+    ResponsePostDTO getPost(Long postId);
     
     // 작성자 닉네임으로 검색.
     // 태그로 검색.

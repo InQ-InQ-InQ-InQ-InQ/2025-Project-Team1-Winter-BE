@@ -4,7 +4,6 @@ import club.inq.team1.dto.CommentRequestDto;
 import club.inq.team1.dto.PostRequestDto;
 import club.inq.team1.dto.PostResponseDto;
 import club.inq.team1.entity.Comment;
-import club.inq.team1.entity.Post;
 import club.inq.team1.service.CommentService;
 import club.inq.team1.service.PostService;
 import jakarta.validation.Valid;

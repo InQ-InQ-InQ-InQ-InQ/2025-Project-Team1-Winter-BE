@@ -18,7 +18,7 @@ public class ResponseCommentDTO {
     private String nickname; // 댓글을 작성한 유저의 닉네임
     private String content; // 댓글 내용
     private Boolean myLike; // 현재 로그인한 사용자의 좋아요 여부
-    private Long commentLikeCount; // 댓글의 좋아요 개수
+    private Integer commentLikeCount; // 댓글의 좋아요 개수
     private LocalDateTime createdAt; // 댓글의 작성 시기
     private LocalDateTime modifiedAt; // 댓글의 수정 시기
     private List<ResponseReplyDTO> replies; // 답글

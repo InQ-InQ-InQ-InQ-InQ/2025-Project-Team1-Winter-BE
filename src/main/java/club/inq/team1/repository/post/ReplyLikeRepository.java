@@ -16,4 +16,6 @@ public interface ReplyLikeRepository extends JpaRepository<ReplyLike, Long> {
      * @return 좋아요를 눌렀다면 true, 아니라면 false
      */
     Optional<ReplyLike> findByUserAndReply(User user, Reply reply);
+
+    Boolean existsByUserAndReply(User user, Reply reply);
 }
