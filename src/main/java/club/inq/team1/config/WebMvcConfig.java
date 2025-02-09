@@ -23,6 +23,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
+
+
+
     /** 없어도 될듯? */
 //    @Override
 //    public void addResourceHandlers(ResourceHandlerRegistry registry) {
