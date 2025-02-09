@@ -28,6 +28,9 @@ public class WebSecurityConfig {
         http.formLogin(login->login
                 .loginPage("/login")
                 .loginProcessingUrl("/loginProcess")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(200);
+                })
         );
 
         http.logout(logout->logout
