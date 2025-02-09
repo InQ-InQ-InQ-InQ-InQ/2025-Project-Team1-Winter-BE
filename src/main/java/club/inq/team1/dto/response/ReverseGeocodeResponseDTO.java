@@ -5,6 +5,12 @@ import java.util.List;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
+/**
+ * 네이버 ReverseGeocoding api response 변환 DTO
+ * //https://api.ncloud-docs.com/docs/ai-naver-mapsreversegeocoding-gc
+ * 위 링크에서 응답 양식 확인 가능
+ */
+
 @Getter
 @Component
 public class ReverseGeocodeResponseDTO {
@@ -55,7 +61,6 @@ public class ReverseGeocodeResponseDTO {
         @JsonProperty("alias")
         private String alias; // 예 : 서울, 경기
     }
-
 
 }
 
