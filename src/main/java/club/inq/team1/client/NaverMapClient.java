@@ -8,6 +8,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Naver Map API 와 직접적으로 통신하는 클래스입니다
+ */
+
 @Component
 public class NaverMapClient {
 
@@ -19,8 +23,12 @@ public class NaverMapClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    //https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode
-    //Geocoding API (주소 검색) 호출 클래스
+    /**
+     * 주소검색 -> 좌표로 반환해주는 api (geocoding api) 와 통신하는 메소드 입니다.
+     * https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode (참고)
+     * @param address (주소값)
+     * @return GeocodeResponseDTO
+     */
     public GeocodeResponseDTO callGeocodingAPI(String address) {
         String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
         String urlBuilder = url + "?query=" + address;
@@ -37,8 +45,13 @@ public class NaverMapClient {
         return response.getBody();
     }
 
-    //https://api.ncloud-docs.com/docs/ai-naver-mapsreversegeocoding-gc
-    //ReverseGeoCoding API (좌표 -> 주소) 호출 클래스
+    /**
+     * 좌표값 -> 지역 추출 해주는 api (ReverseGeocodingAPI) 와 통신하는 메소드입니다.
+     * https://api.ncloud-docs.com/docs/ai-naver-mapsreversegeocoding-gc (참고)
+     * @param x (x좌표값)
+     * @param y (y좌표값)
+     * @return ReverseGeocodeResponseDTO
+     */
     public ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y){
         String url = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
         UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(url)
@@ -58,7 +71,11 @@ public class NaverMapClient {
         return response.getBody();
     }
 
-    //Geocode api 요청 시 필요한 헤더를 만듭니다.
+    /**
+     * Geocode api 요청 시 필요한 헤더를 만듭니다.
+     * 필수값 : 인증ID, 인증PW, 반환형식
+     * @return HttpHeaders (만들어진 헤더)
+     */
     private HttpHeaders createGeocodeHeaders(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-ncp-apigw-api-key-id" , client_id);
@@ -67,7 +84,11 @@ public class NaverMapClient {
         return headers;
     }
 
-    //Reverse Geocode api 요청 시 필요한 헤더를 만듭니다.
+    /**
+     * Reverse Geocode api 요청 시 필요한 헤더를 만듭니다.
+     * 필수값 : 인증ID, 인증PW
+     * @return HttpHeaders (만들어진 헤더)
+     */
     private HttpHeaders createReverseGeocodeHeaders(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-ncp-apigw-api-key-id" , client_id);
