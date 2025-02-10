@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
  */
 
 @Getter
-@Component
 public class ReverseGeocodeResponseDTO {
 
     @JsonProperty("status")
