@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @Component
-public class NaverMapClient {
+public class NaverMapService {
 
     @Value("${naver.map.client-id}")
     private String client_id;
