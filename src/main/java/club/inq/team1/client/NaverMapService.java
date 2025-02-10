@@ -16,10 +16,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class NaverMapService {
 
     @Value("${naver.map.client-id}")
-    private String client_id;
+    private String clientId;
 
     @Value("${naver.map.client-secret}")
-    private String client_secret;
+    private String clientSecret;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -78,8 +78,8 @@ public class NaverMapService {
      */
     private HttpHeaders createGeocodeHeaders(){
         HttpHeaders headers = new HttpHeaders();
-        headers.set("x-ncp-apigw-api-key-id" , client_id);
-        headers.set("x-ncp-apigw-api-key", client_secret);
+        headers.set("x-ncp-apigw-api-key-id" , clientId);
+        headers.set("x-ncp-apigw-api-key", clientSecret);
         headers.set("Accept", "application/json");
         return headers;
     }
@@ -91,8 +91,8 @@ public class NaverMapService {
      */
     private HttpHeaders createReverseGeocodeHeaders(){
         HttpHeaders headers = new HttpHeaders();
-        headers.set("x-ncp-apigw-api-key-id" , client_id);
-        headers.set("x-ncp-apigw-api-key", client_secret);
+        headers.set("x-ncp-apigw-api-key-id" , clientId);
+        headers.set("x-ncp-apigw-api-key", clientSecret);
         return headers;
     }
 
