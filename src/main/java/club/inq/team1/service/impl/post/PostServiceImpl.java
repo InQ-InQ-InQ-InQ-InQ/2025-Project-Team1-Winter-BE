@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Page<ResponsePostOutlineDTO> getAllPostWithPaging(String query, Pageable pageable) {
+    public Page<ResponsePostOutlineDTO> searchPost(String query, Pageable pageable) {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(query,
                 query, pageable);
 
@@ -126,6 +126,13 @@ public class PostServiceImpl implements PostService {
         dto.setComments(post.getComments().stream().map(commentService::toResponseCommentDTO).toList());
 
         return dto;
+    }
+
+    @Override
+    public Page<ResponsePostOutlineDTO> tagSearchPost(String tag, Pageable pageable) {
+        Page<Post> posts = postRepository.findByTagsContaining(tag, pageable);
+
+        return posts.map(this::toResponsePostOutlineDTO);
     }
 
     @Override

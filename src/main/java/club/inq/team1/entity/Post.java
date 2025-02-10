@@ -33,7 +33,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @Table(name = "post")
 @EntityListeners(AuditingEntityListener.class)
-@BatchSize(size = 20)
+@BatchSize(size = 24)
 public class Post {
 
     @Id

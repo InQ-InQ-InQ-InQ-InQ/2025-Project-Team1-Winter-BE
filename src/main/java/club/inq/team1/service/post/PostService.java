@@ -38,7 +38,7 @@ public interface PostService {
      * @param pageable {@link club.inq.team1.entity.Post} 에 대해 페이징을 한다.
      * @return 페이징을 통해 데이터를 받는다.
      */
-    Page<ResponsePostOutlineDTO> getAllPostWithPaging(String query, Pageable pageable);
+    Page<ResponsePostOutlineDTO> searchPost(String query, Pageable pageable);
 
     Boolean deletePost(RequestPostDeleteDTO requestPostDeleteDTO);
 
@@ -48,6 +48,14 @@ public interface PostService {
 
     ResponsePostDTO toResponsePostDTO(Post post);
 
+    /**
+     * 태그로 게시글을 검색한다.
+     *
+     * @param tag      검색하려고 하는 태그
+     * @param pageable {@link Post} 에 대해 페이징을 한다.
+     * @return 페이징을 통해 게시글 목록을 받는다.
+     */
+    Page<ResponsePostOutlineDTO> tagSearchPost(String tag, Pageable pageable);
+
     // 작성자 닉네임으로 검색.
-    // 태그로 검색.
 }
