@@ -44,7 +44,10 @@ public class NaverMapService {
             GeocodeResponseDTO.class
         );
 
-        return response.getBody();
+        if(response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        }
+        return null;
     }
 
     /**
@@ -69,7 +72,10 @@ public class NaverMapService {
             ReverseGeocodeResponseDTO.class
         );
 
-        return response.getBody();
+        if(response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        }
+        return null;
     }
 
     /**
