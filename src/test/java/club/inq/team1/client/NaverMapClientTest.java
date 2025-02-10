@@ -11,13 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class NaverMapClientTest {
 
     @Autowired
-    NaverMapClient naverMapClient = new NaverMapClient();
+    NaverMapService naverMapClient = new NaverMapService();
 
-    @Autowired
-    GeocodeResponseDTO geocodeResponseDTO = new GeocodeResponseDTO();
-
-    @Autowired
-    ReverseGeocodeResponseDTO reverseGeocodeResponseDTO = new ReverseGeocodeResponseDTO();
+    GeocodeResponseDTO geocodeResponseDTO ;
+    ReverseGeocodeResponseDTO reverseGeocodeResponseDTO ;
 
     @Test
     @DisplayName("GeoCodingAPI 호출 테스트")
