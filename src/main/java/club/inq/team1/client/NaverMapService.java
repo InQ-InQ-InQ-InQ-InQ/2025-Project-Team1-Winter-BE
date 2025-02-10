@@ -23,6 +23,9 @@ public class NaverMapService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private final String geocodingUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+    private final String reverseGeocodingUrl = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
+
     /**
      * 주소검색 -> 좌표로 반환해주는 api (geocoding api) 와 통신하는 메소드 입니다.
      * https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode (참고)
@@ -30,8 +33,7 @@ public class NaverMapService {
      * @return GeocodeResponseDTO
      */
     public GeocodeResponseDTO callGeocodingAPI(String address) {
-        String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
-        String urlBuilder = url + "?query=" + address;
+        String urlBuilder = geocodingUrl + "?query=" + address;
 
         HttpEntity<String> entity = new HttpEntity<>(createGeocodeHeaders());  // 헤더 생성 메서드 호출
 
@@ -53,8 +55,7 @@ public class NaverMapService {
      * @return ReverseGeocodeResponseDTO
      */
     public ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y){
-        String url = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
-        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(url)
+        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(reverseGeocodingUrl)
             .queryParam("coords",x+","+y)
             .queryParam("output", "json");
         System.out.println(urlBuilder.toUriString());
