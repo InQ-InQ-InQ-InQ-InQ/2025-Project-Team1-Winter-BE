@@ -1,6 +1,7 @@
 package club.inq.team1.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,42 +25,52 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/","/login","/loginProcess","/swagger-ui/**").permitAll()
+                .requestMatchers("/", "/login", "/loginProcess", "/swagger-ui/**").permitAll()
                 .requestMatchers("/api/users/my/**").hasRole("USER")
                 .anyRequest().permitAll()
         );
 
-        http.cors(custom->custom.configurationSource(new CorsConfigurationSource() {
+        http.cors(custom -> custom.configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
 
+                config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
                 config.setAllowedMethods(Collections.singletonList("*"));
-                config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
+                config.setAllowCredentials(true);
                 config.setMaxAge(3600L);
                 return config;
             }
         }));
 
-        http.formLogin(login->login
+        http.formLogin(login -> login
                 .loginPage("/login")
                 .loginProcessingUrl("/loginProcess")
                 .successHandler((request, response, authentication) -> {
-                    response.setStatus(200);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("{\"status\":\"success\"}");
                 })
                 .failureHandler((request, response, exception) -> {
-                    response.setStatus(400);
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("{\"status\":\"failure\"}");
                 })
         );
 
-        http.logout(logout->logout
+        http.logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
         );
 
         http.csrf(csrf -> csrf.disable());
+
+        http
+                .sessionManagement(auth -> auth
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true));
+
+        http.sessionManagement(auth-> auth
+                .sessionFixation().changeSessionId());
 
         return http.build();
     }
