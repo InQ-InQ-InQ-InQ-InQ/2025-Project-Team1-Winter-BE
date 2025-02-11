@@ -2,6 +2,7 @@ package club.inq.team1.dto.response.post;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Setter;
  * 댓글에 대한 데이터를 응답용으로 가공한 DTO 입니다.
  */
 @Setter
+@Getter
 public class ResponseCommentDTO {
     private Long commentId; // 댓글 고유 아이디
     private Long userId; // 댓글을 작성한 유저의 고유 아이디

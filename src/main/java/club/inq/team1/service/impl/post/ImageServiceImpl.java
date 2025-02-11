@@ -9,6 +9,8 @@ import club.inq.team1.service.post.ImageService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,26 +37,33 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public Boolean saveWithPost(MultipartFile file, Post post) {
+    public List<Image> saveWithPost(List<MultipartFile> files, Post post) {
+        List<Image> images = new ArrayList<>();
+
         String defaultStoredPath = ImagePath.WINDOW.getPath();
         String postImageStoredPath = ImagePath.SAVE_POST.getPath();
-        String storedName = UUID.randomUUID() + file.getOriginalFilename();
-        String storedPath = defaultStoredPath + postImageStoredPath + storedName;
-        File stored = Path.of(storedPath).toFile();
-        try {
-            file.transferTo(stored);
-        } catch (IOException e) {
-            throw new RuntimeException("이미지 저장 과정에서 문제가 발생했습니다.");
+
+        for(MultipartFile file:files) {
+            String storedName = UUID.randomUUID() + file.getOriginalFilename();
+            String storedPath = defaultStoredPath + postImageStoredPath + storedName;
+            File stored = Path.of(storedPath).toFile();
+            try {
+                stored.mkdirs();
+                file.transferTo(stored);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 저장 과정에서 문제가 발생했습니다.");
+            }
+
+            Image image = new Image();
+            image.setPost(post);
+            image.setOriginalName(file.getOriginalFilename());
+            image.setImagePath(postImageStoredPath + storedName);
+            images.add(image);
         }
 
-        Image image = new Image();
-        image.setPost(post);
-        image.setOriginalName(file.getOriginalFilename());
-        image.setImagePath(postImageStoredPath + storedName);
+        List<Image> saved = imageRepository.saveAll(images);
 
-        imageRepository.save(image);
-
-        return true;
+        return saved;
     }
 
 

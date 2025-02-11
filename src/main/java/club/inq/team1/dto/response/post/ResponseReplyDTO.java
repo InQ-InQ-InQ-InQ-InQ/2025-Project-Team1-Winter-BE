@@ -1,6 +1,7 @@
 package club.inq.team1.dto.response.post;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Setter;
  * 답글에 대한 데이터를 응답용으로 가공한 DTO 입니다.
  */
 @Setter
+@Getter
 public class ResponseReplyDTO {
     private Long replyId; // 답글 고유 아이디
     private Long userId; // 답글을 단 유저의 고유 아이디

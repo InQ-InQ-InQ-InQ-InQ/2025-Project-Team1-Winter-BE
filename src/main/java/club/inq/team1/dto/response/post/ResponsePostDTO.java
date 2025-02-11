@@ -3,6 +3,7 @@ package club.inq.team1.dto.response.post;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
  * 게시글 엔티티 응답 전용 DTO 입니다.
  */
 @Setter
+@Getter
 public class ResponsePostDTO {
     private Long postId; // 게시글 고유 아이디
     private Long userId; // 게시글 작성자의 고유 아이디

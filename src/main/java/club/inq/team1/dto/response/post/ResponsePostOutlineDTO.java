@@ -1,9 +1,11 @@
 package club.inq.team1.dto.response.post;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
+@Getter
 public class ResponsePostOutlineDTO {
     private String title; // 게시글 제목
     private Long userId; // 게시글 작성자 고유 아이디

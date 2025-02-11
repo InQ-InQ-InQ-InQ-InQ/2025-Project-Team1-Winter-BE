@@ -5,6 +5,7 @@ import club.inq.team1.dto.request.post.post.RequestPostDeleteDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
+import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.PostRepository;
@@ -39,9 +40,10 @@ public class PostServiceImpl implements PostService {
         Post post = toPost(requestPostCreateDTO, user);
         Post save = postRepository.save(post);
 
-        multipartFiles.forEach(file -> imageService.saveWithPost(file, save));
+        List<Image> saved = imageService.saveWithPost(multipartFiles, post);
+//        save.setImages(saved);
 
-        return toResponsePostDTO(post);
+        return toResponsePostDTO(save);
     }
 
     @Override
@@ -115,7 +117,7 @@ public class PostServiceImpl implements PostService {
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
         dto.setTitle(post.getTags());
-        dto.setWhere(post.getWhere());
+        dto.setWhere(post.getRegion());
         dto.setLatitude(post.getLatitude());
         dto.setLongitude(post.getLongitude());
         dto.setPostLikeCount(post.getPostLikes().size());
