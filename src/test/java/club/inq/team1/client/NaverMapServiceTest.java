@@ -31,8 +31,8 @@ class NaverMapServiceTest {
         String x1 = geocodeResponseDTO.getAddresses().get(0).getX();
         String y1 = geocodeResponseDTO.getAddresses().get(0).getY();
         reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x1,y1);
-        String sido1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getArea1().getName();
-        String sigungu1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getArea2().getName();
+        String sido1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getName();
+        String sigungu1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigigun().getName();
 
         System.out.println("============================");
         System.out.println("주소 : " + address1);
@@ -47,8 +47,8 @@ class NaverMapServiceTest {
         String x2 = geocodeResponseDTO.getAddresses().get(0).getX();
         String y2 = geocodeResponseDTO.getAddresses().get(0).getY();
         reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x2,y2);
-        String sido2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getArea1().getName();
-        String sigungu2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getArea2().getName();
+        String sido2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getName();
+        String sigungu2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigigun().getName();
 
         System.out.println("============================");
         System.out.println("주소 : " + address2);
