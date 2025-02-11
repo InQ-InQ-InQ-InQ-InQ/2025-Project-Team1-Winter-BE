@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NaverMapClientTest {
+class NaverMapServiceTest {
 
     @Autowired
-    NaverMapService naverMapClient = new NaverMapService();
+    NaverMapService naverMapClient;
 
     GeocodeResponseDTO geocodeResponseDTO ;
     ReverseGeocodeResponseDTO reverseGeocodeResponseDTO ;
