@@ -41,4 +41,11 @@ public class CommentController {
 
         return ResponseEntity.ok(success);
     }
+
+    @PostMapping("/{commentId}/heart")
+    public ResponseEntity<Boolean> toggleCommentLike(@PathVariable("commentId") Long commentId){
+        Boolean success = commentService.toggleCommentLike(commentId);
+
+        return ResponseEntity.ok(success);
+    }
 }

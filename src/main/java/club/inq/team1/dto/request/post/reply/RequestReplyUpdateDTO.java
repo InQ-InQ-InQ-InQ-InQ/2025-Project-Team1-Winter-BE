@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestReplyUpdateDTO {
-    private Long replyId;
     private String content;
 }

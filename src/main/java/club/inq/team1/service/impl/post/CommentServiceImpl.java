@@ -4,6 +4,7 @@ import club.inq.team1.dto.request.post.comment.RequestCommentCreateDTO;
 import club.inq.team1.dto.request.post.comment.RequestCommentUpdateDTO;
 import club.inq.team1.dto.response.post.ResponseCommentDTO;
 import club.inq.team1.entity.Comment;
+import club.inq.team1.entity.CommentLike;
 import club.inq.team1.entity.Post;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.CommentRepository;
@@ -12,6 +13,7 @@ import club.inq.team1.repository.post.CommentLikeRepository;
 import club.inq.team1.service.post.CommentService;
 import club.inq.team1.service.post.ReplyService;
 import club.inq.team1.util.CurrentUser;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +71,27 @@ public class CommentServiceImpl implements CommentService {
         comment.setContent(dto.getContent());
 
         commentRepository.save(comment);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean toggleCommentLike(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        User user = currentUser.get();
+
+        Optional<CommentLike> alreadyLikeComment = commentLikeRepository.findByUserAndComment(user, comment);
+
+        if(alreadyLikeComment.isPresent()){
+            commentLikeRepository.delete(alreadyLikeComment.get());
+            return false;
+        }
+
+        CommentLike commentLike = new CommentLike();
+        commentLike.setComment(comment);
+        commentLike.setUser(user);
+        commentLikeRepository.save(commentLike);
 
         return true;
     }

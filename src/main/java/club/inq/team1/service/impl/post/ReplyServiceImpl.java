@@ -1,8 +1,6 @@
 package club.inq.team1.service.impl.post;
 
 import club.inq.team1.dto.request.post.reply.RequestReplyCreateDTO;
-import club.inq.team1.dto.request.post.reply.RequestReplyDeleteDTO;
-import club.inq.team1.dto.request.post.reply.RequestReplyLikeDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyUpdateDTO;
 import club.inq.team1.dto.response.post.ResponseReplyDTO;
 import club.inq.team1.entity.Comment;
@@ -44,36 +42,41 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional
-    public Boolean updateReply(RequestReplyUpdateDTO requestReplyUpdateDTO) {
+    public Boolean updateReply(Long replyId, RequestReplyUpdateDTO requestReplyUpdateDTO) {
         User user = currentUser.get();
 
-        Reply reply = replyRepository.findById(requestReplyUpdateDTO.getReplyId()).orElseThrow();
-        if(reply.getUser().getUserId().equals(user.getUserId())){
-            reply.setContent(requestReplyUpdateDTO.getContent());
-            return true;
+        Reply reply = replyRepository.findById(replyId).orElseThrow();
+        if(!reply.getUser().getUserId().equals(user.getUserId())){
+            throw new RuntimeException("본인이 작성한 답글이 아닙니다.");
         }
-        return false;
+
+        reply.setContent(requestReplyUpdateDTO.getContent());
+        replyRepository.save(reply);
+
+        return true;
     }
 
     @Override
     @Transactional
-    public Boolean deleteReply(RequestReplyDeleteDTO requestReplyDeleteDTO) {
+    public Boolean deleteReply(Long replyId) {
         User user = currentUser.get();
+        Reply reply = replyRepository.findById(replyId).orElseThrow();
 
-        Reply reply = replyRepository.findById(requestReplyDeleteDTO.getReplyId()).orElseThrow();
-        if(reply.getUser().getUserId().equals(user.getUserId())){
-            replyRepository.delete(reply);
-            return true;
+        if(!reply.getUser().getUserId().equals(user.getUserId())){
+            throw new RuntimeException("본인이 작성한 답글이 아닙니다.");
         }
-        return false;
+
+        replyRepository.delete(reply);
+
+        return true;
     }
 
     @Override
     @Transactional
-    public Boolean likeReply(RequestReplyLikeDTO requestReplyLikeDTO) {
+    public Boolean toggleReplyLike(Long replyId) {
         User user = currentUser.get();
 
-        Reply reply = replyRepository.findById(requestReplyLikeDTO.getReplyId()).orElseThrow();
+        Reply reply = replyRepository.findById(replyId).orElseThrow();
         Optional<ReplyLike> alreadyLike = replyLikeRepository.findByUserAndReply(user, reply);
         if(alreadyLike.isPresent()){
             replyLikeRepository.delete(alreadyLike.get());

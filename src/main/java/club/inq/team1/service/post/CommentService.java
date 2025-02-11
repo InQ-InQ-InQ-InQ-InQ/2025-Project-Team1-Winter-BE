@@ -9,6 +9,6 @@ public interface CommentService {
     Boolean deleteComment(Long commentId);
     Boolean updateComment(Long commentId, RequestCommentUpdateDTO requestCommentUpdateDTO);
     Boolean createComment(RequestCommentCreateDTO requestCommentCreateDTO);
-
+    Boolean toggleCommentLike(Long commentId);
     ResponseCommentDTO toResponseCommentDTO(Comment comment);
 }
