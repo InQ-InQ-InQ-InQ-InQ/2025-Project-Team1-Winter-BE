@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @Service
-public class NaverMapService {
+public class NaverMapService implements MapService {
 
     @Value("${naver.map.client-id}")
     private String clientId;
@@ -23,8 +23,10 @@ public class NaverMapService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String geocodingUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
-    private final String reverseGeocodingUrl = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
+    private final String geocodingUrl
+        = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+    private final String reverseGeocodingUrl
+        = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
 
     /**
      * 주소검색 -> 좌표로 반환해주는 api (geocoding api) 와 통신하는 메소드 입니다.
@@ -32,10 +34,16 @@ public class NaverMapService {
      * @param address (주소값)
      * @return GeocodeResponseDTO
      */
+
+    @Override
     public GeocodeResponseDTO callGeocodingAPI(String address) {
         String urlBuilder = geocodingUrl + "?query=" + address;
 
-        HttpEntity<String> entity = new HttpEntity<>(createGeocodeHeaders());  // 헤더 생성 메서드 호출
+        // 헤더 생성 메서드 호출
+        HttpHeaders headers = createHeaders();
+        headers.set("Accept", "application/json");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<GeocodeResponseDTO> response = restTemplate.exchange(
             urlBuilder,
@@ -57,13 +65,15 @@ public class NaverMapService {
      * @param y (y좌표값)
      * @return ReverseGeocodeResponseDTO
      */
+
+    @Override
     public ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y){
         UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(reverseGeocodingUrl)
             .queryParam("coords",x+","+y)
             .queryParam("output", "json");
-        System.out.println(urlBuilder.toUriString());
 
-        HttpEntity<String> entity = new HttpEntity<>(createReverseGeocodeHeaders());
+        //헤더 생성 메소드 호출
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders());
 
         ResponseEntity<ReverseGeocodeResponseDTO> response = restTemplate.exchange(
             urlBuilder.toUriString(),
@@ -79,24 +89,12 @@ public class NaverMapService {
     }
 
     /**
-     * Geocode api 요청 시 필요한 헤더를 만듭니다.
-     * 필수값 : 인증ID, 인증PW, 반환형식
+     * api 요청 시 필요한 헤더를 만듭니다.
+     * 필수값 : 인증ID, 인증PW, (반환형식 -> geocoding 에서만)
      * @return HttpHeaders (만들어진 헤더)
      */
-    private HttpHeaders createGeocodeHeaders(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("x-ncp-apigw-api-key-id" , clientId);
-        headers.set("x-ncp-apigw-api-key", clientSecret);
-        headers.set("Accept", "application/json");
-        return headers;
-    }
 
-    /**
-     * Reverse Geocode api 요청 시 필요한 헤더를 만듭니다.
-     * 필수값 : 인증ID, 인증PW
-     * @return HttpHeaders (만들어진 헤더)
-     */
-    private HttpHeaders createReverseGeocodeHeaders(){
+    private HttpHeaders createHeaders(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-ncp-apigw-api-key-id" , clientId);
         headers.set("x-ncp-apigw-api-key", clientSecret);
