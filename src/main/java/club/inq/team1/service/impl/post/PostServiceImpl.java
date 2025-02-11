@@ -36,9 +36,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public ResponsePostDTO createPost(RequestPostCreateDTO requestPostCreateDTO, List<MultipartFile> multipartFiles) {
-        User user = currentUser.get(); // 작성자 조회
-
-        Post post = toPost(requestPostCreateDTO, user);
+        Post post = toPost(requestPostCreateDTO);
         Post save = postRepository.save(post);
 
         List<Image> saved = imageService.saveWithPost(multipartFiles, post);
@@ -97,8 +95,9 @@ public class PostServiceImpl implements PostService {
         return toResponsePostDTO(post);
     }
 
-    private Post toPost(RequestPostCreateDTO requestPostCreateDTO, User user) {
+    private Post toPost(RequestPostCreateDTO requestPostCreateDTO) {
         Post post = new Post();
+        User user = currentUser.get(); // 작성자 조회
 
         post.setTitle(requestPostCreateDTO.getTitle());
         post.setUser(user);
@@ -121,7 +120,7 @@ public class PostServiceImpl implements PostService {
         dto.setMyPost(post.getUser().getUserId().equals(user.getUserId()));
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
-        dto.setTitle(post.getTags());
+        dto.setTags(post.getTags());
         dto.setWhere(post.getRegion());
         dto.setLatitude(post.getLatitude());
         dto.setLongitude(post.getLongitude());
