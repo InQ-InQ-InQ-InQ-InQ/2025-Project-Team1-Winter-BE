@@ -1,6 +1,7 @@
 package club.inq.team1.controller;
 
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
+import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import club.inq.team1.service.post.PostService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,10 +67,25 @@ public class PostController {
 
     @GetMapping("/tag-search")
     public ResponseEntity<Page<ResponsePostOutlineDTO>> tagSearchPost(
-            @RequestParam(value = "tag", required = true) String tag,
-            @PageableDefault() Pageable pageable) {
+            @RequestParam(value = "tag", required = false, defaultValue = "") String tag,
+            @PageableDefault(size = 24, sort = {"postId"}, direction = Direction.DESC) Pageable pageable) {
         Page<ResponsePostOutlineDTO> responsePostOutlineDTOS = postService.tagSearchPost(tag, pageable);
 
         return ResponseEntity.ok(responsePostOutlineDTOS);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Boolean> deletePost(@PathVariable("postId") Long postId){
+        Boolean delete = postService.deletePost(postId);
+
+        return ResponseEntity.ok(delete);
+    }
+
+    @PostMapping("/{postId}/heart")
+    public ResponseEntity<Boolean> togglePostLike(@PathVariable("postId") Long postId){
+        Boolean currentMyLikeStatus = postService.togglePostLike(postId);
+
+        return ResponseEntity.ok(currentMyLikeStatus);
+    }
+
 }

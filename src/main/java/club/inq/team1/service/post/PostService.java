@@ -1,7 +1,6 @@
 package club.inq.team1.service.post;
 
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
-import club.inq.team1.dto.request.post.post.RequestPostDeleteDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
@@ -25,11 +24,12 @@ public interface PostService {
     /**
      * 게시글 수정을 위한 데이터와 이미지를 가지고 영속화된 게시글 데이터를 수정한다.
      *
+     * @param postId
      * @param requestPostUpdateDTO 게시글 수정을 위한 데이터
      * @param multipartFiles       이미지
      * @return 게시글 수정 성공 여부
      */
-    Boolean updatePost(RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles);
+    Boolean updatePost(Long postId, RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles);
 
     /**
      * 제목과 내용으로 게시글을 검색한다.
@@ -40,7 +40,7 @@ public interface PostService {
      */
     Page<ResponsePostOutlineDTO> searchPost(String query, Pageable pageable);
 
-    Boolean deletePost(RequestPostDeleteDTO requestPostDeleteDTO);
+    Boolean deletePost(Long postId);
 
     ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post);
 
@@ -57,5 +57,6 @@ public interface PostService {
      */
     Page<ResponsePostOutlineDTO> tagSearchPost(String tag, Pageable pageable);
 
+    Boolean togglePostLike(Long postId);
     // 작성자 닉네임으로 검색.
 }

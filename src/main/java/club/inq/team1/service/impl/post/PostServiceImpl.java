@@ -1,12 +1,12 @@
 package club.inq.team1.service.impl.post;
 
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
-import club.inq.team1.dto.request.post.post.RequestPostDeleteDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
+import club.inq.team1.entity.PostLike;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.PostRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
@@ -15,6 +15,7 @@ import club.inq.team1.service.post.ImageService;
 import club.inq.team1.service.post.PostService;
 import club.inq.team1.util.CurrentUser;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,15 +42,15 @@ public class PostServiceImpl implements PostService {
         Post save = postRepository.save(post);
 
         List<Image> saved = imageService.saveWithPost(multipartFiles, post);
-//        save.setImages(saved);
+//        save.setImages(saved); // 이미지를 연결하는 과정인데 쿼리가 하나 더 나가기 때문에 일단 안쓰는 방향으로 설정함.
 
         return toResponsePostDTO(save);
     }
 
     @Override
     @Transactional
-    public Boolean updatePost(RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles) {
-        Post post = postRepository.findById(requestPostUpdateDTO.getPostId()).orElseThrow();
+    public Boolean updatePost(Long postId, RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles) {
+        Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
         if(!post.getUser().getUserId().equals(user.getUserId())){
             return false;
@@ -76,12 +77,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Boolean deletePost(RequestPostDeleteDTO requestPostDeleteDTO) {
-        Post post = postRepository.findById(requestPostDeleteDTO.getPostId()).orElseThrow();
+    public Boolean deletePost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
 
-        // 게시글 관련 정보 지워야됨. 댓글은 알아서 지워지는데 답글은 안지워짐 이미지 정보도 지워지는데 이미지 파일은 안지워짐
+        if(!post.getUser().getUserId().equals(user.getUserId())){
+            throw new RuntimeException("본인의 게시글이 아닙니다.");
+        }
 
+        // 게시글 관련 정보 지워야됨. 댓글은 알아서 지워지는데 답글은 안지워짐 이미지 정보도 지워지는데 이미지 파일은 안지워짐
+        postRepository.delete(post);
 
         return true;
     }
@@ -135,6 +140,25 @@ public class PostServiceImpl implements PostService {
         Page<Post> posts = postRepository.findByTagsContaining(tag, pageable);
 
         return posts.map(this::toResponsePostOutlineDTO);
+    }
+
+    @Override
+    public Boolean togglePostLike(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        User user = currentUser.get();
+
+        Optional<PostLike> alreadyLikePost = postLikeRepository.findByUserAndPost(user, post);
+
+        if(alreadyLikePost.isPresent()){
+            postLikeRepository.delete(alreadyLikePost.get());
+            return false; // 현재 상태는 false로 바뀜.
+        }
+
+        PostLike postLike = new PostLike();
+        postLike.setPost(post);
+        postLike.setUser(user);
+        postLikeRepository.save(postLike);
+        return true; // 현재 상태는 true.
     }
 
     @Override
