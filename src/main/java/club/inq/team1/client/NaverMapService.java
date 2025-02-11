@@ -3,7 +3,7 @@ package club.inq.team1.client;
 import club.inq.team1.dto.response.GeocodeResponseDTO;
 import club.inq.team1.dto.response.ReverseGeocodeResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Naver Map API 와 직접적으로 통신하는 클래스입니다
  */
 
-@Component
+@Service
 public class NaverMapService {
 
     @Value("${naver.map.client-id}")
