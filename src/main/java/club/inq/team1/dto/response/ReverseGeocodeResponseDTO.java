@@ -43,13 +43,13 @@ public class ReverseGeocodeResponseDTO {
     public static class Region {
 
         @JsonProperty("area0")
-        private Area area0;  // 예: "kr" (국가)
+        private Area country;  // 예: "kr" (국가)
 
         @JsonProperty("area1")
-        private Area area1;  // 예: 서울, 경기도 (도시)
+        private Area sido;  // 예: 서울, 경기도 (도시)
 
         @JsonProperty("area2")
-        private Area area2;  // 예: 송파구, 수원시 (시/구/군)
+        private Area sigugun;  // 예: 송파구, 수원시 (시/구/군)
     }
 
     @Getter
