@@ -9,3 +9,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+naver:
+  map:
+    client-id: "" # Naver map API Client ID 입력
+    client-secret: "" # Naver map API Client pw 입력
