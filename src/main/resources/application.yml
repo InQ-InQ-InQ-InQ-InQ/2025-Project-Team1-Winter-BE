@@ -1,22 +1,13 @@
-
 server:
   port: 8080
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/photo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-
+    url: jdbc:mysql://localhost:3306/photo
     username: root
     password: 1234
-
   jpa:
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
-logging:
-  level:
-    org.hibernate.SQL: debug
+      ddl-auto: create-drop
+    show-sql: true

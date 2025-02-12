@@ -29,14 +29,13 @@ public class Follow {
     @ManyToOne
     @NonNull
     @JoinColumn(name = "follower_id", nullable = false)
-    private User followerId;
+    private User follower;
 
     @ManyToOne
     @NonNull
     @JoinColumn(name = "followee_id", nullable = false)
-    private User followeeId;
+    private User followee;
 
     @Column(name = "alarm", nullable = false)
     private Boolean alarm = false;
-
 }

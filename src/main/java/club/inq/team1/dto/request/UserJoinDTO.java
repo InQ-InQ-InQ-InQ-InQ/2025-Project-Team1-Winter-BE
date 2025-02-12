@@ -1,10 +1,11 @@
-package club.inq.team1.dto;
+package club.inq.team1.dto.request;
 
 import club.inq.team1.config.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Date;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @Schema(title = "회원가입 요청 DTO")
 public class UserJoinDTO {
@@ -32,6 +34,18 @@ public class UserJoinDTO {
     @NonNull
     @Schema(description = "닉네임",example = "hello")
     private String nickname;
+
+    @NotNull
+    @NotBlank
+    @NonNull
+    @Schema(description = "성", example = "Kim")
+    private String firstName;
+
+    @NotNull
+    @NotBlank
+    @NonNull
+    @Schema(description = "이름", example = "Sumin")
+    private String lastName;
 
     @Schema(description = "전화번호",example = "010-1234-5678")
     private String phone;

@@ -7,23 +7,23 @@ import club.inq.team1.dto.response.ResponseFollowDTO;
 public class FollowMapper {
     public static ResponseFollowDTO toResponseFollowDTO(FollowerDTO followerDTO){
         ResponseFollowDTO responseFollowDTO = new ResponseFollowDTO();
-        responseFollowDTO.setUserId(followerDTO.getFollowerId().getUserId());
-        responseFollowDTO.setUsername(followerDTO.getFollowerId().getUsername());
-        responseFollowDTO.setNickname(followerDTO.getFollowerId().getUserInfoId().getNickname());
-        responseFollowDTO.setPhone(followerDTO.getFollowerId().getUserInfoId().getPhone());
-        responseFollowDTO.setGender(followerDTO.getFollowerId().getUserInfoId().getGender());
-        responseFollowDTO.setBirth(followerDTO.getFollowerId().getUserInfoId().getBirth());
+        responseFollowDTO.setUserId(followerDTO.getFollower().getUserId());
+        responseFollowDTO.setUsername(followerDTO.getFollower().getUsername());
+        responseFollowDTO.setNickname(followerDTO.getFollower().getUserInfo().getNickname());
+        responseFollowDTO.setPhone(followerDTO.getFollower().getUserInfo().getPhone());
+        responseFollowDTO.setGender(followerDTO.getFollower().getUserInfo().getGender());
+        responseFollowDTO.setBirth(followerDTO.getFollower().getUserInfo().getBirth());
         return responseFollowDTO;
     }
 
     public static ResponseFollowDTO toResponseFollowDTO(FollowingDTO followerDTO){
         ResponseFollowDTO responseFollowDTO = new ResponseFollowDTO();
-        responseFollowDTO.setUserId(followerDTO.getFolloweeId().getUserId());
-        responseFollowDTO.setUsername(followerDTO.getFolloweeId().getUsername());
-        responseFollowDTO.setNickname(followerDTO.getFolloweeId().getUserInfoId().getNickname());
-        responseFollowDTO.setPhone(followerDTO.getFolloweeId().getUserInfoId().getPhone());
-        responseFollowDTO.setGender(followerDTO.getFolloweeId().getUserInfoId().getGender());
-        responseFollowDTO.setBirth(followerDTO.getFolloweeId().getUserInfoId().getBirth());
+        responseFollowDTO.setUserId(followerDTO.getFollowee().getUserId());
+        responseFollowDTO.setUsername(followerDTO.getFollowee().getUsername());
+        responseFollowDTO.setNickname(followerDTO.getFollowee().getUserInfo().getNickname());
+        responseFollowDTO.setPhone(followerDTO.getFollowee().getUserInfo().getPhone());
+        responseFollowDTO.setGender(followerDTO.getFollowee().getUserInfo().getGender());
+        responseFollowDTO.setBirth(followerDTO.getFollowee().getUserInfo().getBirth());
         return responseFollowDTO;
     }
 }
