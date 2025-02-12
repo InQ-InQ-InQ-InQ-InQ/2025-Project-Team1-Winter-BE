@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,4 +9,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+
+naver:
+  map:
+    client-id: "" # Naver map API Client ID 입력
+    client-secret: "" # Naver map API Client pw 입력
