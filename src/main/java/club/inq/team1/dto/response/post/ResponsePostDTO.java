@@ -22,7 +22,7 @@ public class ResponsePostDTO {
     private String content; // 게시글 내용
     private String tags; // 게시글 태그
     // private List<String> tags; // 게시글 태그를 리스트의 형태로 반환하게 된다면 이걸로 변환
-    private String where; // 게시글 지역 태그
+    private String region; // 게시글 지역 태그
     private BigDecimal latitude; // 게시글의 위도
     private BigDecimal longitude; // 게시글의 경도
     private Integer postLikeCount; // 게시글의 좋아요 개수

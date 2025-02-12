@@ -110,31 +110,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponsePostDTO toResponsePostDTO(Post post) {
-        User user = currentUser.get();
-
-        ResponsePostDTO dto = new ResponsePostDTO();
-        dto.setPostId(post.getPostId());
-        dto.setUserId(post.getUser().getUserId());
-        dto.setNickname(post.getUser().getUserInfo().getNickname());
-        dto.setMyPost(post.getUser().getUserId().equals(user.getUserId()));
-        dto.setTitle(post.getTitle());
-        dto.setContent(post.getContent());
-        dto.setTags(post.getTags());
-        dto.setWhere(post.getRegion());
-        dto.setLatitude(post.getLatitude());
-        dto.setLongitude(post.getLongitude());
-        dto.setPostLikeCount(post.getPostLikes().size());
-        dto.setMyLike(postLikeRepository.existsByUserAndPost(user, post));
-        dto.setCreatedAt(post.getCreatedAt());
-        dto.setModifiedAt(post.getModifiedAt());
-        dto.setImages(post.getImages().stream().map(imageService::toResponseImageDTO).toList());
-        dto.setComments(post.getComments().stream().map(commentService::toResponseCommentDTO).toList());
-
-        return dto;
-    }
-
-    @Override
     public Page<ResponsePostOutlineDTO> tagSearchPost(String tag, Pageable pageable) {
         Page<Post> posts = postRepository.findByTagsContaining(tag, pageable);
 
@@ -161,18 +136,50 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public ResponsePostDTO toResponsePostDTO(Post post) {
+        User user = currentUser.get();
+
+        ResponsePostDTO dto = new ResponsePostDTO();
+
+        dto.setPostId(post.getPostId());
+        dto.setUserId(post.getUser().getUserId());
+        dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setMyPost(post.getUser().getUserId().equals(user.getUserId()));
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+        dto.setTags(post.getTags());
+        dto.setRegion(post.getRegion());
+        dto.setLatitude(post.getLatitude());
+        dto.setLongitude(post.getLongitude());
+        dto.setPostLikeCount(post.getPostLikes().size());
+        dto.setMyLike(postLikeRepository.existsByUserAndPost(user, post));
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setModifiedAt(post.getModifiedAt());
+        dto.setImages(post.getImages().stream().map(imageService::toResponseImageDTO).toList());
+        dto.setComments(post.getComments().stream().map(commentService::toResponseCommentDTO).toList());
+
+        return dto;
+    }
+
+    @Override
     public ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
+        User user = currentUser.get();
+
         ResponsePostOutlineDTO dto = new ResponsePostOutlineDTO();
 
         dto.setPostId(post.getPostId());
         dto.setTitle(post.getTitle());
         dto.setUserId(post.getUser().getUserId());
         dto.setNickname(post.getUser().getUserInfo().getNickname());
-        dto.setImagePath(post.getImages().get(0).getImagePath());
+        dto.setRegion(post.getRegion());
+        dto.setLatitude(post.getLatitude());
+        dto.setLongitude(post.getLongitude());
+        dto.setMyLike(postLikeRepository.existsByUserAndPost(user, post));
         dto.setTags(post.getTags());
         dto.setCreatedAt(post.getCreatedAt());
         dto.setModifiedAt(post.getModifiedAt());
         dto.setPostLikeCount(post.getPostLikes().size());
+        dto.setImagePath(post.getImages().get(0).getImagePath());
 
         return dto;
     }
