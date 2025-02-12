@@ -1,4 +1,4 @@
-package club.inq.team1.client;
+package club.inq.team1.service;
 
 import club.inq.team1.dto.response.GeocodeResponseDTO;
 import club.inq.team1.dto.response.ReverseGeocodeResponseDTO;
