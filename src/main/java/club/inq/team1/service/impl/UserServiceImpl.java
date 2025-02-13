@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -102,15 +101,16 @@ public class UserServiceImpl implements UserService {
         deletePrevProfileImageFile(userInfo);
 
         // 프로필 이미지 저장 경로 C:/images/profile/yyyyMMdd/randomUUID+originalName.format
+        String resourceStoredPath = ImagePath.WINDOW.getPath(); // 배포시 수정 필요
         String profilePath = ImagePath.SAVE_PROFILE.getPath();
 
         String imageFileStoredName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-        String filePath = profilePath + imageFileStoredName;
+        String filePath = resourceStoredPath + profilePath + imageFileStoredName;
         try {
             File f = new File(filePath);
             f.mkdirs();
             multipartFile.transferTo(f);
-            userInfo.setProfileImagePath(filePath);
+            userInfo.setProfileImagePath(profilePath + imageFileStoredName);
             userInfoRepository.save(userInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);

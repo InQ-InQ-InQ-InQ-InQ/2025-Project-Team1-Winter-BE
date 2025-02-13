@@ -1,7 +1,7 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +17,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "user")
 @JsonIgnoreProperties(value = {"password", "userInfo", "followers", "followings", "enabled", "accountNonLocked",
         "authorities", "credentialsNonExpired", "accountNonExpired"})
+@BatchSize(size = 100)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
