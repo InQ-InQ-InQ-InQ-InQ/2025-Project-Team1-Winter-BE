@@ -1,6 +1,7 @@
 package club.inq.team1.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ public class WebSecurityConfig {
                 .anyRequest().permitAll()
         );
 
+        http.csrf(csrf -> csrf.disable());
+
         http.cors(custom->custom.configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -56,10 +59,10 @@ public class WebSecurityConfig {
 
         http.logout(logout->logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                })
         );
-
-        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }

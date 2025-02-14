@@ -1,0 +1,22 @@
+version: "1"
+
+services:
+  mysql:
+    image: mysql:8.0.41
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: "photo"
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  backend:
+    depends_on:
+      - mysql
+    image: whrjsgml0000/photo:0.0.1
+    container_name: backend
+    ports:
+      - "8080:8080"
+volumes:
+  db-data:
