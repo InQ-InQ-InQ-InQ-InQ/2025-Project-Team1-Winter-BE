@@ -26,8 +26,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations("file:///C:/images/") // 배포 환경에선 수정 필요
-//                .addResourceLocations("file:///home/user/images/") // 작동 확인 필요
+                .addResourceLocations("file:///C:/images/")
+                .addResourceLocations("file:///home/user/images/")
+                .addResourceLocations("file:///Users/사용자이름/images/")
                 .setCacheControl(CacheControl.maxAge(Duration.ofSeconds(3600)))
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
