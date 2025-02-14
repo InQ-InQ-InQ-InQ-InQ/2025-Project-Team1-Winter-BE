@@ -61,7 +61,8 @@ public class WebSecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.setStatus(HttpServletResponse.SC_OK);
-                })
+
+                }).deleteCookies("JSESSIONID")
         );
 
         return http.build();
