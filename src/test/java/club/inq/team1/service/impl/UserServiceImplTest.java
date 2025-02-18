@@ -17,7 +17,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("UserInfo에서 User Entity 참조 테스트")
     @Disabled
-    void acceptUser1(){
+    void createUser1(){
 
     }
 }

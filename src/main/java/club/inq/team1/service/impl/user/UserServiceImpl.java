@@ -5,6 +5,7 @@ import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
 import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
 import club.inq.team1.dto.request.user.RequestUserCreateDTO;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
+import club.inq.team1.dto.response.user.ResponseUserPublicInfoDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.repository.UserInfoRepository;
@@ -31,13 +32,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User acceptUser(RequestUserCreateDTO requestUserCreateDTO) {
+    public ResponseUserPrivateInfoDTO createUser(RequestUserCreateDTO requestUserCreateDTO) {
         User user = new User();
 
         user.setUsername(requestUserCreateDTO.getUsername());
         user.setPassword(passwordEncoder.encode(requestUserCreateDTO.getPassword()));
         User saved = userRepository.save(user);
-        // todo mapper 로 변경 필요
+
         UserInfo userInfo = new UserInfo();
         userInfo.setUser(saved);
         userInfo.setFirstName(requestUserCreateDTO.getFirstName());
@@ -49,7 +50,9 @@ public class UserServiceImpl implements UserService {
         userInfo.setGender(requestUserCreateDTO.getGender());
         userInfoRepository.save(userInfo);
 
-        return user;
+        user.setUserInfo(userInfo);
+
+        return toResponseUserPrivateInfoDTO(user);
     }
 
     @Override
@@ -58,14 +61,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getPrivateInfo() {
+    public ResponseUserPrivateInfoDTO getPrivateInfo() {
         User user = currentUser.get();
-        return userRepository.findById(user.getUserId()).orElseThrow();
+        return toResponseUserPrivateInfoDTO(user);
     }
 
     @Override
     @Transactional
-    public User updatePrivateInfo(RequestUserInfoUpdateDTO requestUserInfoUpdateDTO) {
+    public ResponseUserPrivateInfoDTO updatePrivateInfo(RequestUserInfoUpdateDTO requestUserInfoUpdateDTO) {
         User user = currentUser.get();
 
         UserInfo userInfoId = user.getUserInfo();
@@ -75,20 +78,23 @@ public class UserServiceImpl implements UserService {
 
         userInfoRepository.save(userInfoId);
 
-        return user;
+        user.setUserInfo(userInfoId);
+        return toResponseUserPrivateInfoDTO(user);
     }
 
     @Override
     @Transactional
-    public User updatePassword(RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO) {
+    public ResponseUserPrivateInfoDTO updatePassword(RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO) {
         User user = currentUser.get();
         user.setPassword(passwordEncoder.encode(requestUserPasswordUpdateDTO.getPassword()));
-        return userRepository.save(user);
+        User save = userRepository.save(user);
+        return toResponseUserPrivateInfoDTO(save);
     }
 
     @Override
-    public User getUserProfile(Long id) {
-        return userRepository.findById(id).orElseThrow();
+    public ResponseUserPublicInfoDTO getUserProfile(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        return toResponseUserPublicInfoDTO(user);
     }
 
     @Override
@@ -121,6 +127,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUserPrivateInfoDTO toResponseUserPrivateInfoDTO(User user) {
         ResponseUserPrivateInfoDTO dto = new ResponseUserPrivateInfoDTO();
+        UserInfo userInfo = user.getUserInfo();
+
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+
+        dto.setNickname(userInfo.getNickname());
+        dto.setGender(userInfo.getGender());
+        dto.setBirth(userInfo.getBirth());
+        dto.setPhone(userInfo.getPhone());
+        dto.setFirstName(userInfo.getFirstName());
+        dto.setLastName(userInfo.getLastName());
+        dto.setEmail(userInfo.getEmail());
+        dto.setCreatedAt(userInfo.getCreatedAt());
+        return dto;
+    }
+
+    @Override
+    public ResponseUserPublicInfoDTO toResponseUserPublicInfoDTO(User user){
+        ResponseUserPublicInfoDTO dto = new ResponseUserPublicInfoDTO();
         UserInfo userInfo = user.getUserInfo();
 
         dto.setUserId(user.getUserId());
