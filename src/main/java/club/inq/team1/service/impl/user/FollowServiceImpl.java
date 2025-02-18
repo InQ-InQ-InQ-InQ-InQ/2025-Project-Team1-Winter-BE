@@ -5,7 +5,6 @@ import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.FollowRepository;
-import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
 import club.inq.team1.repository.MailRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.user.FollowService;
@@ -133,9 +132,9 @@ public class FollowServiceImpl implements FollowService {
 
     private List<User> findAllFollowerWithAlarmTrue(){
         User user = currentUser.get();
-        return followRepository.findFollowersByFolloweeAndAlarmTrue(user)
+        return followRepository.findByFolloweeAndAlarmTrue(user)
                 .stream()
-                .map(FollowerUserProjectionDTO::getFollower)
+                .map(Follow::getFollower)
                 .toList();
     }
 
