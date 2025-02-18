@@ -1,18 +1,18 @@
 package club.inq.team1.service.user;
 
-import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.request.UpdateUserPasswordDTO;
-import club.inq.team1.dto.request.UserJoinDTO;
+import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserCreateDTO;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
-    User acceptUser(UserJoinDTO userJoinDTO);
+    User acceptUser(RequestUserCreateDTO requestUserCreateDTO);
     boolean existsNicknameCheck(String nickname);
     User getPrivateInfo();
-    User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO);
-    User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO);
+    User updatePrivateInfo(RequestUserInfoUpdateDTO requestUserInfoUpdateDTO);
+    User updatePassword(RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO);
     User getUserProfile(Long id);
     boolean setUserProfileImage(MultipartFile multipartFile);
     ResponseUserPrivateInfoDTO toResponseUserPrivateInfoDTO(User user);

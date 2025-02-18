@@ -1,4 +1,4 @@
-package club.inq.team1.dto.request;
+package club.inq.team1.dto.request.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(title = "개인 정보 수정")
-public class PutUserPrivateInfoDTO {
+public class RequestUserInfoUpdateDTO {
     @NotNull
     @NotBlank
     @NonNull

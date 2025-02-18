@@ -1,9 +1,9 @@
 package club.inq.team1.service.impl.user;
 
 import club.inq.team1.constant.ImagePath;
-import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.request.UpdateUserPasswordDTO;
-import club.inq.team1.dto.request.UserJoinDTO;
+import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserCreateDTO;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -31,22 +31,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User acceptUser(UserJoinDTO userJoinDTO) {
+    public User acceptUser(RequestUserCreateDTO requestUserCreateDTO) {
         User user = new User();
 
-        user.setUsername(userJoinDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userJoinDTO.getPassword()));
+        user.setUsername(requestUserCreateDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(requestUserCreateDTO.getPassword()));
         User saved = userRepository.save(user);
         // todo mapper 로 변경 필요
         UserInfo userInfo = new UserInfo();
         userInfo.setUser(saved);
-        userInfo.setFirstName(userJoinDTO.getFirstName());
-        userInfo.setLastName(userJoinDTO.getLastName());
-        userInfo.setNickname(userJoinDTO.getNickname());
-        userInfo.setPhone(userJoinDTO.getPhone());
-        userInfo.setEmail(userJoinDTO.getEmail());
-        userInfo.setBirth(userJoinDTO.getBirth());
-        userInfo.setGender(userJoinDTO.getGender());
+        userInfo.setFirstName(requestUserCreateDTO.getFirstName());
+        userInfo.setLastName(requestUserCreateDTO.getLastName());
+        userInfo.setNickname(requestUserCreateDTO.getNickname());
+        userInfo.setPhone(requestUserCreateDTO.getPhone());
+        userInfo.setEmail(requestUserCreateDTO.getEmail());
+        userInfo.setBirth(requestUserCreateDTO.getBirth());
+        userInfo.setGender(requestUserCreateDTO.getGender());
         userInfoRepository.save(userInfo);
 
         return user;
@@ -65,13 +65,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updatePrivateInfo(PutUserPrivateInfoDTO putUserPrivateInfoDTO) {
+    public User updatePrivateInfo(RequestUserInfoUpdateDTO requestUserInfoUpdateDTO) {
         User user = currentUser.get();
 
         UserInfo userInfoId = user.getUserInfo();
-        userInfoId.setNickname(putUserPrivateInfoDTO.getNickname());
-        userInfoId.setPhone(putUserPrivateInfoDTO.getPhone());
-        userInfoId.setEmail(putUserPrivateInfoDTO.getEmail());
+        userInfoId.setNickname(requestUserInfoUpdateDTO.getNickname());
+        userInfoId.setPhone(requestUserInfoUpdateDTO.getPhone());
+        userInfoId.setEmail(requestUserInfoUpdateDTO.getEmail());
 
         userInfoRepository.save(userInfoId);
 
@@ -80,9 +80,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updatePassword(UpdateUserPasswordDTO updateUserPasswordDTO) {
+    public User updatePassword(RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO) {
         User user = currentUser.get();
-        user.setPassword(passwordEncoder.encode(updateUserPasswordDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(requestUserPasswordUpdateDTO.getPassword()));
         return userRepository.save(user);
     }
 

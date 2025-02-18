@@ -1,4 +1,4 @@
-package club.inq.team1.dto.request;
+package club.inq.team1.dto.request.user;
 
 import club.inq.team1.config.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(title = "회원가입 요청 DTO")
-public class UserJoinDTO {
+public class RequestUserCreateDTO {
     @NotNull
     @NotBlank
     @NonNull

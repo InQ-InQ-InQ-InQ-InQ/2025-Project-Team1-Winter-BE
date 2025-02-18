@@ -1,8 +1,8 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.request.UpdateUserPasswordDTO;
-import club.inq.team1.dto.request.UserJoinDTO;
+import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserCreateDTO;
 import club.inq.team1.dto.projection.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
@@ -46,17 +46,17 @@ public class UserController {
             @ApiResponse(responseCode = "299", description = "동일한 아이디를 가진 유저가 존재"),
             @ApiResponse(responseCode = "298", description = "동일한 닉네임을 가진 유저가 존재")
     })
-    public ResponseEntity<User> join(@RequestBody @Valid UserJoinDTO userJoinDTO) {
-        if (userDetailsService.loadUserByUsername(userJoinDTO.getUsername()) != null) {
+    public ResponseEntity<User> join(@RequestBody @Valid RequestUserCreateDTO requestUserCreateDTO) {
+        if (userDetailsService.loadUserByUsername(requestUserCreateDTO.getUsername()) != null) {
             // 이미 같은 아이디를 가진 유저가 존재.
             return ResponseEntity.status(299).body(null);
         }
-        if(userService.existsNicknameCheck(userJoinDTO.getNickname())){
+        if(userService.existsNicknameCheck(requestUserCreateDTO.getNickname())){
             // 같은 닉네임을 가진 유저가 존재.
             return ResponseEntity.status(298).body(null);
         }
 
-        User user = userService.acceptUser(userJoinDTO);
+        User user = userService.acceptUser(requestUserCreateDTO);
 
         return ResponseEntity.status(200).body(user);
     }
@@ -91,12 +91,12 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
             @ApiResponse(responseCode = "299", description = "닉네임 중복으로 인한 실패")
     })
-    public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
-        if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
-                !userService.getPrivateInfo().getUserInfo().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
+    public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid RequestUserInfoUpdateDTO requestUserInfoUpdateDTO){
+        if(userService.existsNicknameCheck(requestUserInfoUpdateDTO.getNickname()) &&
+                !userService.getPrivateInfo().getUserInfo().getNickname().equals(requestUserInfoUpdateDTO.getNickname())){
             return ResponseEntity.status(299).body(null);
         }
-        User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
+        User user = userService.updatePrivateInfo(requestUserInfoUpdateDTO);
         return ResponseEntity.status(200).body(user);
     }
 
@@ -104,8 +104,8 @@ public class UserController {
     @Operation(summary = "비밀번호 변경", responses = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
     })
-    public ResponseEntity<User> updateCurrentUserPassword(@RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
-        User user = userService.updatePassword(updateUserPasswordDTO);
+    public ResponseEntity<User> updateCurrentUserPassword(@RequestBody @Valid RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO){
+        User user = userService.updatePassword(requestUserPasswordUpdateDTO);
         return ResponseEntity.status(200).body(user);
     }
 
