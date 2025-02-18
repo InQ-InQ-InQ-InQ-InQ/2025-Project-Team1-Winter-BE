@@ -1,6 +1,5 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +18,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "comment_like")
-@JsonIgnoreProperties(value = {"user", "comment"})
 public class CommentLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

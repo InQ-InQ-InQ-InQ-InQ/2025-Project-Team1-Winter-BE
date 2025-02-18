@@ -1,7 +1,5 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,19 +34,15 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
-    @JsonBackReference
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
     private User user;
     
     @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<CommentLike> commentLikes = new ArrayList<>();
     
     @OneToMany(mappedBy = "comment", orphanRemoval = true, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Reply> replies = new ArrayList<>();
 }

@@ -139,7 +139,9 @@ public class UserServiceImpl implements UserService {
         dto.setFirstName(userInfo.getFirstName());
         dto.setLastName(userInfo.getLastName());
         dto.setEmail(userInfo.getEmail());
+        dto.setProfileImagePath(userInfo.getProfileImagePath());
         dto.setCreatedAt(userInfo.getCreatedAt());
+        dto.setModifiedAt(userInfo.getModifiedAt());
         return dto;
     }
 
@@ -157,6 +159,7 @@ public class UserServiceImpl implements UserService {
         dto.setFirstName(userInfo.getFirstName());
         dto.setLastName(userInfo.getLastName());
         dto.setEmail(userInfo.getEmail());
+        dto.setProfileImagePath(userInfo.getProfileImagePath());
         dto.setCreatedAt(userInfo.getCreatedAt());
         return dto;
     }

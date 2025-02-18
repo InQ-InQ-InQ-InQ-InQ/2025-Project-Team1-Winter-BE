@@ -24,5 +24,6 @@ public class ResponseUserPublicInfoDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String profileImagePath;
     private LocalDateTime createdAt;
 }

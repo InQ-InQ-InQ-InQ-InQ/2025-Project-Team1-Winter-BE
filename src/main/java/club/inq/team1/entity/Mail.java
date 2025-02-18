@@ -30,7 +30,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Builder
 @Table(name = "mail")
-@JsonIgnoreProperties(value = {"user","post"})
 @EntityListeners(AuditingEntityListener.class)
 public class Mail {
     @Id

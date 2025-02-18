@@ -30,7 +30,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_info")
-@JsonIgnoreProperties(value = {"user"})
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
