@@ -23,8 +23,6 @@ public class ResponseUserPrivateInfoDTO {
     private LocalDate birth;
     private String firstName;
     private String lastName;
-    private String phone;
     private String email;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 }

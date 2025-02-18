@@ -1,21 +1,22 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.projection.FollowerDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;
+import club.inq.team1.entity.UserInfo;
 import club.inq.team1.repository.FollowRepository;
 import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
 import club.inq.team1.repository.MailRepository;
 import club.inq.team1.repository.UserRepository;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.util.CurrentUser;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -64,10 +65,30 @@ public class FollowServiceImpl implements FollowService {
 
     // 팔로워 조회 (전체 팔로워 목록)
     @Override
-    public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
+    @Transactional
+    public Slice<ResponseUserPrivateInfoDTO> findAllFollowers(Long userId, Pageable pageable){
         User user = getUserOrThrow(userId,"해당 사용자가 존재하지 않습니다.");
-        PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFollowersByFollowee(user, pageRequest);  // user.get()로 User 객체를 전달
+        return followRepository.findByFollowee(user,pageable)
+                .map(this::toResponseUserPrivateInfoDTO);
+    }
+
+    @Override
+    public ResponseUserPrivateInfoDTO toResponseUserPrivateInfoDTO(Follow follow){
+        ResponseUserPrivateInfoDTO dto = new ResponseUserPrivateInfoDTO();
+        User follower = follow.getFollower();
+        UserInfo followerInfo = follower.getUserInfo();
+
+        dto.setUserId(follower.getUserId());
+        dto.setUsername(follower.getUsername());
+
+        dto.setNickname(followerInfo.getNickname());
+        dto.setGender(followerInfo.getGender());
+        dto.setBirth(followerInfo.getBirth());
+        dto.setFirstName(followerInfo.getFirstName());
+        dto.setLastName(followerInfo.getLastName());
+        dto.setEmail(followerInfo.getEmail());
+        dto.setCreatedAt(followerInfo.getCreatedAt());
+        return dto;
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
@@ -79,10 +100,12 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    public List<FollowingDTO> findAllFollowees(Long userId, Integer page) {
+    @Override
+    @Transactional
+    public Slice<ResponseUserPrivateInfoDTO> findAllFollowees(Long userId, Pageable pageable){
         User user = getUserOrThrow(userId,"해당 유저가 존재하지 않습니다.");
-        PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFolloweesByFollower(user, pageRequest);  // user.get()로 User 객체를 전달
+        return followRepository.findByFollower(user,pageable)
+                .map(this::toResponseUserPrivateInfoDTO);
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
@@ -94,12 +117,14 @@ public class FollowServiceImpl implements FollowService {
     }
 
     // 팔로워 수 조회
+    @Override
     public Long countFollowers(Long userId) {
         User user = getUserOrThrow(userId, "없는 회원입니다.");
         return followRepository.countByFollowee(user);
     }
 
     // 팔로윙 수 조회
+    @Override
     public Long countFollowings(Long userId) {
         User user = getUserOrThrow(userId, "없는 회원입니다.");
         return followRepository.countByFollower(user);

@@ -1,9 +1,9 @@
 package club.inq.team1.service;
 
-import club.inq.team1.dto.projection.FollowerDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
-import club.inq.team1.entity.User;
-import java.util.List;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
+import club.inq.team1.entity.Follow;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 
 public interface FollowService {
@@ -14,13 +14,15 @@ public interface FollowService {
     boolean unfollow(Long opponentId);
 
     // 팔로워 조회 (전체 팔로워 목록)
-    List<FollowerDTO> findAllFollowers(Long currentUserId, Integer page);
+    Slice<ResponseUserPrivateInfoDTO> findAllFollowers(Long userId, Pageable pageable);
+
+    ResponseUserPrivateInfoDTO toResponseUserPrivateInfoDTO(Follow follow);
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
     boolean findSpecificFollower(Long followerId, Long followeeId);
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    List<FollowingDTO> findAllFollowees(Long currentUserId, Integer page);
+    Slice<ResponseUserPrivateInfoDTO> findAllFollowees(Long userId, Pageable pageable);
 
     // 팔로워 수 조회
     Long countFollowers(Long currentUserId);

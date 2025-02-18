@@ -1,18 +1,17 @@
 package club.inq.team1.repository;
 
-import club.inq.team1.dto.projection.FollowerDTO;
 import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    List<FollowingDTO> findFolloweesByFollower(User follower, Pageable pageable);
-    List<FollowerDTO> findFollowersByFollowee(User followee, Pageable pageable);
+    Slice<Follow> findByFollower(User follower, Pageable pageable);
+    Slice<Follow> findByFollowee(User followee, Pageable pageable);
     Optional<Follow> findByFollowerAndFollowee(User follower, User followee);
     long countByFollowee(User followee);
     long countByFollower(User follower);

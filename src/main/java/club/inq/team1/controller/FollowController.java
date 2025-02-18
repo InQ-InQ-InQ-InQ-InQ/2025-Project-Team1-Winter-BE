@@ -1,12 +1,14 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.response.ResponseFollowDTO;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.service.FollowService;
 import club.inq.team1.util.CurrentUser;
-import club.inq.team1.util.mapper.FollowMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -57,14 +58,10 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping(value = "/{userId}/follower", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ResponseFollowDTO>> findFollower(
+    public ResponseEntity<Slice<ResponseUserPrivateInfoDTO>> findFollower(
             @PathVariable("userId") Long userId,
-            @RequestParam(value = "page", required = false) Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        List<ResponseFollowDTO> followers = followService.findAllFollowers(userId, page).stream()
-                .map(FollowMapper::toResponseFollowDTO).toList();
+            @PageableDefault(size = 20, sort = {"followId"}, direction = Direction.DESC) Pageable pageable) {
+        Slice<ResponseUserPrivateInfoDTO> followers = followService.findAllFollowers(userId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(followers);  // 팔로워 목록 반환
@@ -85,14 +82,10 @@ public class FollowController {
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<ResponseFollowDTO>> findFollowee(
+    public ResponseEntity<Slice<ResponseUserPrivateInfoDTO>> findFollowee(
             @PathVariable("userId") Long userId,
-            @RequestParam(value = "page", required = false) Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        List<ResponseFollowDTO> followees = followService.findAllFollowees(userId, page).stream()
-                .map(FollowMapper::toResponseFollowDTO).toList();
+            @PageableDefault(size = 20, sort = {"followId"}, direction = Direction.DESC) Pageable pageable) {
+        Slice<ResponseUserPrivateInfoDTO> followees = followService.findAllFollowees(userId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(followees);
