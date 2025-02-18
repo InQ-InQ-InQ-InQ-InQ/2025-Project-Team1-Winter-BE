@@ -16,7 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,7 +63,7 @@ public class UserInfo {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "birth")
-    private Date birth;
+    private LocalDate birth;
 
     @Column(name = "profile_image_path")
     private String profileImagePath;
