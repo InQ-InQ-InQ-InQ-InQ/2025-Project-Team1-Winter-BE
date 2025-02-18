@@ -1,4 +1,4 @@
-package club.inq.team1.repository;
+package club.inq.team1.repository.user;
 
 import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;

@@ -2,8 +2,8 @@ package club.inq.team1;
 
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
-import club.inq.team1.repository.UserInfoRepository;
-import club.inq.team1.repository.UserRepository;
+import club.inq.team1.repository.user.UserInfoRepository;
+import club.inq.team1.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

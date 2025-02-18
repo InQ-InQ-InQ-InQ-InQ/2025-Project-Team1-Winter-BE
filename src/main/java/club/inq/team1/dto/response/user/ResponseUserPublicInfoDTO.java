@@ -1,6 +1,6 @@
 package club.inq.team1.dto.response.user;
 
-import club.inq.team1.config.Gender;
+import club.inq.team1.constant.Gender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;

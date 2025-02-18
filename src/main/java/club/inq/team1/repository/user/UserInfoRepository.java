@@ -1,4 +1,4 @@
-package club.inq.team1.repository;
+package club.inq.team1.repository.user;
 
 import club.inq.team1.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;

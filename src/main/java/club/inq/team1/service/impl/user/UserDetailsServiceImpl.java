@@ -1,6 +1,6 @@
 package club.inq.team1.service.impl.user;
 
-import club.inq.team1.repository.UserRepository;
+import club.inq.team1.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

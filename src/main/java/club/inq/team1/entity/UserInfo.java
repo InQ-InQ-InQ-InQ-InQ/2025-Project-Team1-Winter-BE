@@ -1,7 +1,6 @@
 package club.inq.team1.entity;
 
-import club.inq.team1.config.Gender;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import club.inq.team1.constant.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package club.inq.team1.repository;
+package club.inq.team1.repository.post;
 
 import club.inq.team1.entity.Comment;
 import club.inq.team1.entity.Post;
