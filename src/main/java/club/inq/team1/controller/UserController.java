@@ -6,7 +6,7 @@ import club.inq.team1.dto.request.UserJoinDTO;
 import club.inq.team1.dto.projection.PublicUserProfileDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
-import club.inq.team1.service.UserService;
+import club.inq.team1.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -130,11 +130,6 @@ public class UserController {
     public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
         boolean b = userService.setUserProfileImage(image);
         return ResponseEntity.status(200).body(Boolean.toString(b));
-    }
-
-    @GetMapping(value = "/{userId}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<byte[]> getProfileImage(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(userService.getUserProfileImage(userId));
     }
 
     @DeleteMapping(value = "/my/delete")

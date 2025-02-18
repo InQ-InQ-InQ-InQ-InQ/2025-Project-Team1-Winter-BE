@@ -1,7 +1,7 @@
 package club.inq.team1.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import club.inq.team1.service.user.FollowService;
+import club.inq.team1.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

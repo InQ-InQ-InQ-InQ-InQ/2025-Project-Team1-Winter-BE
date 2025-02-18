@@ -1,4 +1,4 @@
-package club.inq.team1.service.impl;
+package club.inq.team1.service.impl.user;
 
 import club.inq.team1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

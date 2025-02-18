@@ -1,7 +1,7 @@
 package club.inq.team1.controller;
 
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
-import club.inq.team1.service.FollowService;
+import club.inq.team1.service.user.FollowService;
 import club.inq.team1.util.CurrentUser;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -1,20 +1,19 @@
-package club.inq.team1.service.impl;
+package club.inq.team1.service.impl.user;
 
 import club.inq.team1.constant.ImagePath;
-import club.inq.team1.dto.projection.ProfileImageProjectionDTO;
 import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
 import club.inq.team1.dto.request.UpdateUserPasswordDTO;
 import club.inq.team1.dto.request.UserJoinDTO;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.User;
 import club.inq.team1.entity.UserInfo;
 import club.inq.team1.repository.UserInfoRepository;
 import club.inq.team1.repository.UserRepository;
-import club.inq.team1.service.UserService;
+import club.inq.team1.service.user.UserService;
 import club.inq.team1.util.CurrentUser;
 import jakarta.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -119,6 +118,30 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public ResponseUserPrivateInfoDTO toResponseUserPrivateInfoDTO(User user) {
+        ResponseUserPrivateInfoDTO dto = new ResponseUserPrivateInfoDTO();
+        UserInfo userInfo = user.getUserInfo();
+
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+
+        dto.setNickname(userInfo.getNickname());
+        dto.setGender(userInfo.getGender());
+        dto.setBirth(userInfo.getBirth());
+        dto.setFirstName(userInfo.getFirstName());
+        dto.setLastName(userInfo.getLastName());
+        dto.setEmail(userInfo.getEmail());
+        dto.setCreatedAt(userInfo.getCreatedAt());
+        return dto;
+    }
+
+    @Override
+    // 해당 유저가 존재하는지 확인한다.
+    public User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+    }
+
     private void deletePrevProfileImageFile(UserInfo userInfo) {
         String profileImagePath = userInfo.getProfileImagePath();
         if (profileImagePath != null) {
@@ -126,21 +149,6 @@ public class UserServiceImpl implements UserService {
             if (prevProfileImage.exists()) {
                 prevProfileImage.delete();
             }
-        }
-    }
-
-    @Override
-    public byte[] getUserProfileImage(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        ProfileImageProjectionDTO profileImageProjectionDTO = userInfoRepository.findProfileImagePathByUser(user)
-                .orElseThrow();
-
-        String profileImagePath = profileImageProjectionDTO.getProfileImagePath();
-
-        try {
-            return Files.readAllBytes(Path.of(profileImagePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
