@@ -1,13 +1,11 @@
 package club.inq.team1.controller;
 
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
-import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import club.inq.team1.service.post.PostService;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -19,24 +17,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
-@Slf4j
+@Tag(name = "/api/posts", description = "게시글 관련")
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponsePostDTO> createPost(@ModelAttribute RequestPostCreateDTO dto) {
-        log.info(dto.toString());
         ResponsePostDTO post = postService.createPost(dto, dto.getFiles());
         return ResponseEntity.ok(post);
     }

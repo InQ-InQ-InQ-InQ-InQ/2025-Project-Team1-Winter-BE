@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
+@Tag(name = "/api/users")
 public class FollowController {
     private final FollowService followService;
     private final CurrentUser currentUser;

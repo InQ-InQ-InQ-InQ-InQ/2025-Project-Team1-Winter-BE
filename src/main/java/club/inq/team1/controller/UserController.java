@@ -5,13 +5,12 @@ import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
 import club.inq.team1.dto.request.user.RequestUserCreateDTO;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.dto.response.user.ResponseUserPublicInfoDTO;
-import club.inq.team1.entity.User;
 import club.inq.team1.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,16 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "UserController", description = "user와 관련된 api 컨트롤러")
+@RequiredArgsConstructor
+@Tag(name = "/api/users", description = "유저 관련")
 public class UserController {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserDetailsService userDetailsService, UserService userService) {
-        this.userDetailsService = userDetailsService;
-        this.userService = userService;
-    }
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", responses = {
@@ -122,14 +116,14 @@ public class UserController {
     }
 
     @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
-        boolean b = userService.setUserProfileImage(image);
-        return ResponseEntity.ok(Boolean.toString(b));
+    public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
+        Boolean setImageSuccess = userService.setUserProfileImage(image);
+        return ResponseEntity.ok(setImageSuccess);
     }
 
     @DeleteMapping(value = "/my/delete")
-    public ResponseEntity<String> deleteMySelf(){
-        boolean deleteSuccess = userService.deleteMySelf();
-        return ResponseEntity.ok(Boolean.toString(deleteSuccess));
+    public ResponseEntity<Boolean> deleteMySelf(){
+        Boolean deleteSuccess = userService.deleteMySelf();
+        return ResponseEntity.ok(deleteSuccess);
     }
 }

@@ -3,6 +3,7 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.request.post.comment.RequestCommentCreateDTO;
 import club.inq.team1.dto.request.post.comment.RequestCommentUpdateDTO;
 import club.inq.team1.service.post.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
+@Tag(name = "/api/comments", description = "댓글 관련")
 public class CommentController {
 
     private final CommentService commentService;

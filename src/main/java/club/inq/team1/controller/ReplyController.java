@@ -3,6 +3,7 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.request.post.reply.RequestReplyCreateDTO;
 import club.inq.team1.dto.request.post.reply.RequestReplyUpdateDTO;
 import club.inq.team1.service.post.ReplyService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/replies")
 @RequiredArgsConstructor
+@Tag(name = "/api/replies", description = "답글 관련")
 public class ReplyController {
 
     private final ReplyService replyService;
