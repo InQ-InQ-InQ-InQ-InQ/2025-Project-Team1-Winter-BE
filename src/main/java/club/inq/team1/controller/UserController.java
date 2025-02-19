@@ -1,17 +1,16 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.request.PutUserPrivateInfoDTO;
-import club.inq.team1.dto.request.UpdateUserPasswordDTO;
-import club.inq.team1.dto.request.UserJoinDTO;
-import club.inq.team1.dto.projection.PublicUserProfileDTO;
-import club.inq.team1.entity.User;
-import club.inq.team1.entity.UserInfo;
-import club.inq.team1.service.UserService;
+import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
+import club.inq.team1.dto.request.user.RequestUserCreateDTO;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
+import club.inq.team1.dto.response.user.ResponseUserPublicInfoDTO;
+import club.inq.team1.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,36 +28,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "UserController", description = "user와 관련된 api 컨트롤러")
+@RequiredArgsConstructor
+@Tag(name = "/api/users", description = "유저 관련")
 public class UserController {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserDetailsService userDetailsService, UserService userService) {
-        this.userDetailsService = userDetailsService;
-        this.userService = userService;
-    }
-
     @PostMapping("/join")
     @Operation(summary = "회원가입", responses = {
             @ApiResponse(responseCode = "200", description = "아이디 생성 성공"),
-            @ApiResponse(responseCode = "299", description = "동일한 아이디를 가진 유저가 존재"),
-            @ApiResponse(responseCode = "298", description = "동일한 닉네임을 가진 유저가 존재")
+            @ApiResponse(responseCode = "499", description = "동일한 아이디를 가진 유저가 존재"),
+            @ApiResponse(responseCode = "498", description = "동일한 닉네임을 가진 유저가 존재")
     })
-    public ResponseEntity<User> join(@RequestBody @Valid UserJoinDTO userJoinDTO) {
-        if (userDetailsService.loadUserByUsername(userJoinDTO.getUsername()) != null) {
+    public ResponseEntity<ResponseUserPrivateInfoDTO> join(@RequestBody @Valid RequestUserCreateDTO requestUserCreateDTO) {
+        if (userDetailsService.loadUserByUsername(requestUserCreateDTO.getUsername()) != null) {
             // 이미 같은 아이디를 가진 유저가 존재.
-            return ResponseEntity.status(299).body(null);
+            return ResponseEntity.status(499).body(null);
         }
-        if(userService.existsNicknameCheck(userJoinDTO.getNickname())){
+        if(userService.existsNicknameCheck(requestUserCreateDTO.getNickname())){
             // 같은 닉네임을 가진 유저가 존재.
-            return ResponseEntity.status(298).body(null);
+            return ResponseEntity.status(498).body(null);
         }
 
-        User user = userService.acceptUser(userJoinDTO);
+        ResponseUserPrivateInfoDTO user = userService.createUser(requestUserCreateDTO);
 
-        return ResponseEntity.status(200).body(user);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/username")
@@ -66,7 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "아이디 중복 조회 성공")
     })
     public ResponseEntity<Boolean> existsUsername(@RequestParam(value = "q") String username) {
-        return ResponseEntity.status(200).body(userDetailsService.loadUserByUsername(username) != null);
+        return ResponseEntity.ok(userDetailsService.loadUserByUsername(username) != null);
     }
 
     @GetMapping("/nickname")
@@ -74,72 +68,68 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "닉네임 중복 조회 성공")
     })
     public ResponseEntity<Boolean> existsNickname(@RequestParam(value = "q") String nickname) {
-        return ResponseEntity.status(200).body(userService.existsNicknameCheck(nickname));
+        return ResponseEntity.ok(userService.existsNicknameCheck(nickname));
     }
 
     @GetMapping(value = "/my", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "현재 로그인 된 사용자 개인정보 조회", responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    public ResponseEntity<User> getCurrentUserPrivateInfo(){
-        User user = userService.getPrivateInfo();
-        return ResponseEntity.status(200).body(user);
+    public ResponseEntity<ResponseUserPrivateInfoDTO> getCurrentUserPrivateInfo(){
+        ResponseUserPrivateInfoDTO privateInfo = userService.getPrivateInfo();
+
+        return ResponseEntity.ok(privateInfo);
     }
 
     @PutMapping(value = "/my/update", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "현재 로그인된 사용자의 개인정보 수정", responses = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
-            @ApiResponse(responseCode = "299", description = "닉네임 중복으로 인한 실패")
+            @ApiResponse(responseCode = "499", description = "닉네임 중복으로 인한 실패")
     })
-    public ResponseEntity<User> updateCurrentUserPrivateInfo(@RequestBody @Valid PutUserPrivateInfoDTO putUserPrivateInfoDTO){
-        if(userService.existsNicknameCheck(putUserPrivateInfoDTO.getNickname()) &&
-                !userService.getPrivateInfo().getUserInfo().getNickname().equals(putUserPrivateInfoDTO.getNickname())){
-            return ResponseEntity.status(299).body(null);
+    public ResponseEntity<ResponseUserPrivateInfoDTO> updateCurrentUserPrivateInfo(@RequestBody @Valid RequestUserInfoUpdateDTO requestUserInfoUpdateDTO){
+        if(userService.existsNicknameCheck(requestUserInfoUpdateDTO.getNickname()) &&
+                !userService.getPrivateInfo().getNickname().equals(requestUserInfoUpdateDTO.getNickname())){
+            return ResponseEntity.status(499).body(null);
         }
-        User user = userService.updatePrivateInfo(putUserPrivateInfoDTO);
-        return ResponseEntity.status(200).body(user);
+        ResponseUserPrivateInfoDTO dto = userService.updatePrivateInfo(requestUserInfoUpdateDTO);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping(value = "/my/update",produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "비밀번호 변경", responses = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
     })
-    public ResponseEntity<User> updateCurrentUserPassword(@RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
-        User user = userService.updatePassword(updateUserPasswordDTO);
-        return ResponseEntity.status(200).body(user);
+    public ResponseEntity<ResponseUserPrivateInfoDTO> updateCurrentUserPassword(@RequestBody @Valid RequestUserPasswordUpdateDTO requestUserPasswordUpdateDTO){
+        ResponseUserPrivateInfoDTO dto = userService.updatePassword(requestUserPasswordUpdateDTO);
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "다른 유저 프로필 조회 기능", responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    public ResponseEntity<PublicUserProfileDTO> getUserProfile(@PathVariable("id") Long id){
-        User user = userService.getUserProfile(id);
-        UserInfo userInfo = user.getUserInfo();
-        // todo 수정 필요
-        PublicUserProfileDTO publicUserProfileDTO = new PublicUserProfileDTO();
-        publicUserProfileDTO.setUserId(user.getUserId());
-        publicUserProfileDTO.setNickname(userInfo.getNickname());
-        publicUserProfileDTO.setEmail(userInfo.getEmail());
-        publicUserProfileDTO.setGender(userInfo.getGender());
+    public ResponseEntity<ResponseUserPublicInfoDTO> getUserProfile(@PathVariable("id") Long id){
+        ResponseUserPublicInfoDTO userProfile = userService.getUserProfile(id);
 
-        return ResponseEntity.status(200).body(publicUserProfileDTO);
+        return ResponseEntity.ok(userProfile);
     }
 
-    @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> setProfileImage(@RequestPart("image")MultipartFile image) {
-        boolean b = userService.setUserProfileImage(image);
-        return ResponseEntity.status(200).body(Boolean.toString(b));
-    }
-
-    @GetMapping(value = "/{userId}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<byte[]> getProfileImage(@PathVariable("userId") Long userId){
-        return ResponseEntity.ok(userService.getUserProfileImage(userId));
+    @PostMapping(value = "/my/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "프로필 이미지 설정", responses = {
+            @ApiResponse(responseCode = "200", description = "프로필 이미지 설정 완료")
+    })
+    public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
+        Boolean setImageSuccess = userService.setUserProfileImage(image);
+        return ResponseEntity.ok(setImageSuccess);
     }
 
     @DeleteMapping(value = "/my/delete")
-    public ResponseEntity<String> deleteMySelf(){
-        boolean deleteSuccess = userService.deleteMySelf();
-        return ResponseEntity.status(200).body(Boolean.toString(deleteSuccess));
+    @Operation(summary = "회원 탈퇴" ,responses = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 완료")
+    })
+    public ResponseEntity<Boolean> deleteMySelf(){
+        Boolean deleteSuccess = userService.deleteMySelf();
+        return ResponseEntity.ok(deleteSuccess);
     }
 }

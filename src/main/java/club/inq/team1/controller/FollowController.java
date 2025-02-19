@@ -1,12 +1,16 @@
 package club.inq.team1.controller;
 
-import club.inq.team1.dto.response.ResponseFollowDTO;
-import club.inq.team1.service.FollowService;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
+import club.inq.team1.service.user.FollowService;
 import club.inq.team1.util.CurrentUser;
-import club.inq.team1.util.mapper.FollowMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +19,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "FollowController", description = "팔로윙 관련 API 컨트롤러")
+@Tag(name = "/api/users")
 public class FollowController {
     private final FollowService followService;
     private final CurrentUser currentUser;
     // 팔로윙
     @PostMapping("/follow/{opponentId}")
+    @Operation(summary = "팔로우", responses = {
+            @ApiResponse(responseCode = "201", description = "팔로우 성공"),
+            @ApiResponse(responseCode = "400", description = "이미 팔로우상태")
+    })
     public ResponseEntity<String> follow(@PathVariable("opponentId") Long opponentId) {
         if (currentUser.get().getUserId().equals(opponentId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -42,6 +49,10 @@ public class FollowController {
 
     // 언팔로윙
     @DeleteMapping("/unfollow/{opponentId}")
+    @Operation(summary = "언팔로우", responses = {
+            @ApiResponse(responseCode = "200", description = "언팔로우 성공"),
+            @ApiResponse(responseCode = "400", description = "팔로우 상태가 아님")
+    })
     public ResponseEntity<String> unfollow(@PathVariable("opponentId") Long opponentId) {
         if (currentUser.get().getUserId().equals(opponentId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -57,86 +68,89 @@ public class FollowController {
 
     //팔로워 조회
     @GetMapping(value = "/{userId}/follower", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ResponseFollowDTO>> findFollower(
+    @Operation(summary = "팔로워 목록 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로우 목록 조회 성공")
+    })
+    public ResponseEntity<Slice<ResponseUserPrivateInfoDTO>> findFollower(
             @PathVariable("userId") Long userId,
-            @RequestParam(value = "page", required = false) Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        List<ResponseFollowDTO> followers = followService.findAllFollowers(userId, page).stream()
-                .map(FollowMapper::toResponseFollowDTO).toList();
+            @PageableDefault(size = 20, sort = {"followId"}, direction = Direction.DESC) Pageable pageable) {
+        Slice<ResponseUserPrivateInfoDTO> followers = followService.findAllFollowers(userId, pageable);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(followers);  // 팔로워 목록 반환
+        return ResponseEntity.ok(followers);  // 팔로워 목록 반환
     }
 
     //특정 팔로워 확인
     @GetMapping("/{userId}/follower/{opponentId}")
+    @Operation(summary = "특정 팔로우 관계 확인", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로우 관계 조회 성공"),
+    })
     public ResponseEntity<Boolean> findSpecificFollower(
             @PathVariable("userId") Long userId,
             @PathVariable("opponentId") Long opponentId) {
         if (followService.findSpecificFollower(userId, opponentId)) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(true);  // 팔로우 관계가 존재하면 OK 반환
+            return ResponseEntity.ok(true);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(false);  // 팔로우 관계가 없으면 NOT_FOUND 반환
+        return ResponseEntity.ok(false);
     }
 
     //팔로윙 조회
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<ResponseFollowDTO>> findFollowee(
+    @Operation(summary = "팔로윙 목록 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로윙 목록 조회 성공")
+    })
+    public ResponseEntity<Slice<ResponseUserPrivateInfoDTO>> findFollowee(
             @PathVariable("userId") Long userId,
-            @RequestParam(value = "page", required = false) Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        List<ResponseFollowDTO> followees = followService.findAllFollowees(userId, page).stream()
-                .map(FollowMapper::toResponseFollowDTO).toList();
+            @PageableDefault(size = 20, sort = {"followId"}, direction = Direction.DESC) Pageable pageable) {
+        Slice<ResponseUserPrivateInfoDTO> followees = followService.findAllFollowees(userId, pageable);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(followees);
+        return ResponseEntity.ok(followees);
     }
 
     //특정 팔로윙 확인
     @GetMapping("/{userId}/following/{opponentId}")
+    @Operation(summary = "특정 팔로윙 관계 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로우 관계 조회 성공")
+    })
     public ResponseEntity<Boolean> findSpecificFollowee(
             @PathVariable("userId") Long currentUserId,
             @PathVariable("opponentId") Long opponentId) {
-        if (followService.findSpecificFollower(opponentId,currentUserId)) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(true);  // 팔로우 관계가 존재하면 OK 반환
+        if (followService.findSpecificFollower(opponentId, currentUserId)) {
+            return ResponseEntity.ok(true);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(false);  // 팔로우 관계가 없으면 NOT_FOUND 반환
+        return ResponseEntity.ok(false);
     }
 
     //팔로워 수 조회
     @GetMapping("/{userId}/follower/count")
+    @Operation(summary = "팔로워 수 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로워 수 조회 성공")
+    })
     public ResponseEntity<Long> countFollower(@PathVariable("userId") Long userId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(followService.countFollowers(userId));
+        return ResponseEntity.ok(followService.countFollowers(userId));
     }
 
     //팔로윙 수 조회
     @GetMapping("/{userId}/following/count")
+    @Operation(summary = "팔로윙 수 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "팔로윙 수 조회 성공")
+    })
     public ResponseEntity<Long> countFollowing(@PathVariable("userId") Long userId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(followService.countFollowings(userId));
+        return ResponseEntity.ok(followService.countFollowings(userId));
     }
-
-    //팔로워/팔로윙수 조회 및 특정 조회 버그 수정 필요
 
     /**
      * 팔로윙 한 상대의 알람 설정 상태를 기존에 설정된 것의 반대로 한다.
+     *
      * @param userId 알람 설정을 할 상대방의 아이디.
      * @return 바꾼 뒤 알람 상태를 반환한다.
      */
     @PostMapping(value = "/alarm/{userId}")
-    public ResponseEntity<String> setAlarmReverse(@PathVariable("userId") Long userId){
+    @Operation(summary = "알람 설정 변경", responses = {
+            @ApiResponse(responseCode = "200", description = "알람 상태 변경 성공")
+    })
+    public ResponseEntity<Boolean> toggleAlarmSetting(@PathVariable("userId") Long userId){
         boolean alarm = followService.setAlarm(userId);
-        return ResponseEntity.status(200)
-                .body(Boolean.toString(alarm));
+        return ResponseEntity.ok(alarm);
     }
 }
 

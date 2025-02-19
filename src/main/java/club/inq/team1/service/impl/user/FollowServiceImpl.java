@@ -1,21 +1,21 @@
-package club.inq.team1.service.impl;
+package club.inq.team1.service.impl.user;
 
-import club.inq.team1.dto.projection.FollowerDTO;
-import club.inq.team1.dto.projection.FollowingDTO;
+import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.Mail;
 import club.inq.team1.entity.User;
-import club.inq.team1.repository.FollowRepository;
-import club.inq.team1.dto.projection.FollowerUserProjectionDTO;
-import club.inq.team1.repository.MailRepository;
-import club.inq.team1.repository.UserRepository;
-import club.inq.team1.service.FollowService;
+import club.inq.team1.repository.user.FollowRepository;
+import club.inq.team1.repository.user.MailRepository;
+import club.inq.team1.repository.user.UserRepository;
+import club.inq.team1.service.user.FollowService;
+import club.inq.team1.service.user.UserService;
 import club.inq.team1.util.CurrentUser;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +23,7 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final MailRepository mailRepository;
+    private final UserService userService;
     private final CurrentUser currentUser;
 
     // 팔로우
@@ -30,7 +31,7 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public boolean follow(Long opponentId) {
         User follower = currentUser.get();
-        User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
+        User followee = userService.getUserOrThrow(opponentId);
 
         if(findSpecificFollower(follower.getUserId(), opponentId)){
             return false;
@@ -50,7 +51,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public boolean unfollow(Long opponentId) {
         User follower = currentUser.get();
-        User followee = getUserOrThrow(opponentId,"해당 사용자가 존재하지 않습니다.");
+        User followee = userService.getUserOrThrow(opponentId);
 
         if (!findSpecificFollower(follower.getUserId(),opponentId)) {
             return false;
@@ -64,50 +65,52 @@ public class FollowServiceImpl implements FollowService {
 
     // 팔로워 조회 (전체 팔로워 목록)
     @Override
-    public List<FollowerDTO> findAllFollowers(Long userId, Integer page) {
-        User user = getUserOrThrow(userId,"해당 사용자가 존재하지 않습니다.");
-        PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFollowersByFollowee(user, pageRequest);  // user.get()로 User 객체를 전달
+    @Transactional
+    public Slice<ResponseUserPrivateInfoDTO> findAllFollowers(Long userId, Pageable pageable){
+        User user = userService.getUserOrThrow(userId);
+        return followRepository.findByFollowee(user,pageable)
+                .map(Follow::getFollower)
+                .map(userService::toResponseUserPrivateInfoDTO);
     }
 
     // 특정 팔로워 확인 (특정 유저가 팔로우하는지 확인)
     @Override
     public boolean findSpecificFollower(Long followerId, Long followeeId) {
-        User follower = getUserOrThrow(followerId, "팔로워에 해당하는 유저가 존재하지 않습니다.");
-        User followee = getUserOrThrow(followeeId, "팔로윙에 해당하는 유저가 존재하지 않습니다.");
+        User follower = userService.getUserOrThrow(followerId);
+        User followee = userService.getUserOrThrow(followeeId);
         return followRepository.findByFollowerAndFollowee(follower, followee).isPresent();
     }
 
     // 팔로윙 조회 (전체 팔로윙 목록)
-    public List<FollowingDTO> findAllFollowees(Long userId, Integer page) {
-        User user = getUserOrThrow(userId,"해당 유저가 존재하지 않습니다.");
-        PageRequest pageRequest = PageRequest.of(page - 1, 10);
-        return followRepository.findFolloweesByFollower(user, pageRequest);  // user.get()로 User 객체를 전달
+    @Override
+    @Transactional
+    public Slice<ResponseUserPrivateInfoDTO> findAllFollowees(Long userId, Pageable pageable){
+        User user = userService.getUserOrThrow(userId);
+        return followRepository.findByFollower(user,pageable)
+                .map(Follow::getFollowee)
+                .map(userService::toResponseUserPrivateInfoDTO);
     }
 
     // 특정 팔로윙 확인 (특정 유저를 팔로우하고 있는지 확인)
     public boolean findSpecificFollowee(Long followerId, Long followeeId) {
-        User follower = getUserOrThrow(followerId,"현재 사용자가 존재하지 않습니다.");
-        User followee = getUserOrThrow(followeeId,"해당 사용자가 존재하지 않습니다.");
+        User follower = userService.getUserOrThrow(followerId);
+        User followee = userService.getUserOrThrow(followeeId);
 
         return followRepository.findByFollowerAndFollowee(follower, followee).isPresent();
     }
 
     // 팔로워 수 조회
+    @Override
     public Long countFollowers(Long userId) {
-        User user = getUserOrThrow(userId, "없는 회원입니다.");
+        User user = userService.getUserOrThrow(userId);
         return followRepository.countByFollowee(user);
     }
 
     // 팔로윙 수 조회
+    @Override
     public Long countFollowings(Long userId) {
-        User user = getUserOrThrow(userId, "없는 회원입니다.");
+        User user = userService.getUserOrThrow(userId);
         return followRepository.countByFollower(user);
-    }
-
-    // 해당 유저가 존재하는지 확인한다.
-    private User getUserOrThrow(Long userId, String exceptionMessage) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException(exceptionMessage));
     }
 
     /**
@@ -120,7 +123,7 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public boolean setAlarm(Long followeeId){
         User user = currentUser.get();
-        User followee = getUserOrThrow(followeeId, "해당 유저가 존재하지 않습니다.");
+        User followee = userService.getUserOrThrow(followeeId);
         Follow follow = followRepository.findByFollowerAndFollowee(user, followee).orElseThrow(()->new RuntimeException("팔로우 된 상태가 아닙니다."));
         follow.setAlarm(!follow.getAlarm());
         followRepository.save(follow);
@@ -129,14 +132,14 @@ public class FollowServiceImpl implements FollowService {
 
     private List<User> findAllFollowerWithAlarmTrue(){
         User user = currentUser.get();
-        return followRepository.findFollowersByFolloweeAndAlarmTrue(user)
+        return followRepository.findByFolloweeAndAlarmTrue(user)
                 .stream()
-                .map(FollowerUserProjectionDTO::getFollower)
+                .map(Follow::getFollower)
                 .toList();
     }
 
     @Transactional
-    private boolean sendAlarm(){
+    public boolean sendAlarm(){
         List<User> users = findAllFollowerWithAlarmTrue();
         users.stream()
                 .map(user->Mail.builder()

@@ -8,7 +8,7 @@ import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
 import club.inq.team1.entity.PostLike;
 import club.inq.team1.entity.User;
-import club.inq.team1.repository.PostRepository;
+import club.inq.team1.repository.post.PostRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
 import club.inq.team1.service.post.CommentService;
 import club.inq.team1.service.post.ImageService;

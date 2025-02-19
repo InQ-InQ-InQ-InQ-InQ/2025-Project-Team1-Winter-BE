@@ -1,11 +1,6 @@
 package club.inq.team1.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import club.inq.team1.dto.request.UserJoinDTO;
-import club.inq.team1.entity.User;
-import club.inq.team1.entity.UserInfo;
-import club.inq.team1.service.UserService;
+import club.inq.team1.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +17,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("UserInfo에서 User Entity 참조 테스트")
     @Disabled
-    void acceptUser1(){
+    void createUser1(){
 
     }
 }

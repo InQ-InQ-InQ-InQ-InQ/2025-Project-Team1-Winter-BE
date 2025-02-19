@@ -1,7 +1,6 @@
 package club.inq.team1.entity;
 
-import club.inq.team1.config.Gender;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import club.inq.team1.constant.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +15,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_info")
-@JsonIgnoreProperties(value = {"user"})
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,7 +61,7 @@ public class UserInfo {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "birth")
-    private Date birth;
+    private LocalDate birth;
 
     @Column(name = "profile_image_path")
     private String profileImagePath;
