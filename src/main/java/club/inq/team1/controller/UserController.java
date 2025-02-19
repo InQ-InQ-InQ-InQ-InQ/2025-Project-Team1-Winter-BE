@@ -115,13 +115,19 @@ public class UserController {
         return ResponseEntity.ok(userProfile);
     }
 
-    @PostMapping(value = "/my/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/my/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "프로필 이미지 설정", responses = {
+            @ApiResponse(responseCode = "200", description = "프로필 이미지 설정 완료")
+    })
     public ResponseEntity<Boolean> setProfileImage(@RequestPart("image")MultipartFile image) {
         Boolean setImageSuccess = userService.setUserProfileImage(image);
         return ResponseEntity.ok(setImageSuccess);
     }
 
     @DeleteMapping(value = "/my/delete")
+    @Operation(summary = "회원 탈퇴" ,responses = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 완료")
+    })
     public ResponseEntity<Boolean> deleteMySelf(){
         Boolean deleteSuccess = userService.deleteMySelf();
         return ResponseEntity.ok(deleteSuccess);
