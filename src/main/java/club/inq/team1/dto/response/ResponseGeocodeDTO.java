@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class GeocodeResponseDTO {
+public class ResponseGeocodeDTO {
 
     @JsonProperty("status")
     private String status;

@@ -10,10 +10,12 @@ import club.inq.team1.entity.PostLike;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.PostRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
+import club.inq.team1.service.MapService;
 import club.inq.team1.service.post.CommentService;
 import club.inq.team1.service.post.ImageService;
 import club.inq.team1.service.post.PostService;
 import club.inq.team1.util.CurrentUser;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class PostServiceImpl implements PostService {
     private final PostLikeRepository postLikeRepository;
     private final ImageService imageService;
     private final CommentService commentService;
+    private final MapService naverMapService;
 
     @Override
     @Transactional
@@ -50,15 +53,21 @@ public class PostServiceImpl implements PostService {
     public Boolean updatePost(Long postId, RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
+
+
         if(!post.getUser().getUserId().equals(user.getUserId())){
             return false;
         }
 
+        BigDecimal latitude = requestPostUpdateDTO.getLatitude();
+        BigDecimal longitude = requestPostUpdateDTO.getLongitude();
+
         post.setTitle(requestPostUpdateDTO.getTitle());
         post.setContent(requestPostUpdateDTO.getContent());
         post.setTags(requestPostUpdateDTO.getTags());
-        post.setLatitude(requestPostUpdateDTO.getLatitude());
-        post.setLongitude(requestPostUpdateDTO.getLongitude());
+        post.setLatitude(latitude);
+        post.setLongitude(longitude);
+        post.setRegion(naverMapService.getRegion(latitude,longitude));
 
         postRepository.save(post);
 
@@ -98,13 +107,16 @@ public class PostServiceImpl implements PostService {
     private Post toPost(RequestPostCreateDTO requestPostCreateDTO) {
         Post post = new Post();
         User user = currentUser.get(); // 작성자 조회
+        BigDecimal latitude = requestPostCreateDTO.getLatitude();
+        BigDecimal longitude = requestPostCreateDTO.getLongitude();
 
         post.setTitle(requestPostCreateDTO.getTitle());
         post.setUser(user);
         post.setContent(requestPostCreateDTO.getContent());
         post.setTags(requestPostCreateDTO.getTags());
-        post.setLatitude(requestPostCreateDTO.getLatitude());
-        post.setLongitude(requestPostCreateDTO.getLongitude());
+        post.setLatitude(latitude);
+        post.setLongitude(longitude);
+        post.setRegion(naverMapService.getRegion(latitude,longitude));
 
         return post;
     }
