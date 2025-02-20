@@ -3,6 +3,7 @@ package club.inq.team1.service.impl;
 import club.inq.team1.dto.response.ResponseGeocodeDTO;
 import club.inq.team1.dto.response.ResponseReverseGeocodeDTO;
 import club.inq.team1.service.MapService;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -100,6 +101,46 @@ public class NaverMapServiceImpl implements MapService {
         headers.set("x-ncp-apigw-api-key-id" , clientId);
         headers.set("x-ncp-apigw-api-key", clientSecret);
         return headers;
+    }
+
+    /**
+     * PostService toPost() 메소드에서 지역명 추출 시 사용합니다.
+     * @Param latitude
+     * @Param longitude
+     * @return region (추출된 지역명)
+     */
+
+    @Override
+    public String getRegion(BigDecimal latitude, BigDecimal longitude) {
+        String region = null;
+
+        //매개변수를 네이버 api 호출을 위해 String 으로 변경
+        String lat = latitude.toString();
+        String lng = longitude.toString();
+
+        ResponseReverseGeocodeDTO reverseGeocodeDTO = callReverseGeocodingAPI(lat,lng);
+
+        if(reverseGeocodeDTO != null) {
+            String tmp = reverseGeocodeDTO.getResults().get(0)
+                .getRegion().getSido().getAlias();
+
+            region = "서울";
+
+            if(!tmp.equals("서울")){
+                String result = reverseGeocodeDTO.getResults().get(0).
+                    getRegion().getSigugun().getName();
+
+                char[] arr = result.toCharArray();
+                int idx = 0;
+                for (char c : arr) {
+                    idx++;
+                    if(c == '시' || c == '군') break;
+                }
+
+                region = result.substring(0, idx-1);
+            }
+        }
+        return region;
     }
 
 }
