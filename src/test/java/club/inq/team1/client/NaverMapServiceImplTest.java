@@ -28,70 +28,137 @@ class NaverMapServiceImplTest {
     @Test
     @DisplayName("RevereseGeocodeAPI 호출 테스트")
     void callReverseGeocodeAPI() {
-        String address1 = "경기 수원시 영통구 광교산로 154-42";
-        geocodeResponseDTO = naverMapClient.callGeocodingAPI(address1);
-        String x1 = geocodeResponseDTO.getAddresses().get(0).getX();
-        String y1 = geocodeResponseDTO.getAddresses().get(0).getY();
-        reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x1,y1);
-        String sido1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getName();
-        String sigungu1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigugun().getName();
+        String[] arr = {"제주 제주시 공항로 2 제주국제공항"};
+        for (String s : arr) {
+            String address1 = s;
+            geocodeResponseDTO = naverMapClient.callGeocodingAPI(address1);
+            String x1 = geocodeResponseDTO.getAddresses().get(0).getX();
+            String y1 = geocodeResponseDTO.getAddresses().get(0).getY();
+            reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x1,y1);
+            String sido1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getName();
+            String sigungu1 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigugun().getName();
 
-        System.out.println("============================");
-        System.out.println("주소 : " + address1);
-        System.out.println("좌표 : " + x1 + " / " + y1);
-        System.out.println("시도 : " + sido1);
-        System.out.println("시군구 : " + sigungu1);
-        System.out.println("============================");
-
-
-        String address2 = "서울 송파구 올림픽로 300";
-        geocodeResponseDTO = naverMapClient.callGeocodingAPI(address2);
-        String x2 = geocodeResponseDTO.getAddresses().get(0).getX();
-        String y2 = geocodeResponseDTO.getAddresses().get(0).getY();
-        reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x2,y2);
-        String sido2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getAlias();
-        String sigungu2 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigugun().getName();
-
-        System.out.println("============================");
-        System.out.println("주소 : " + address2);
-        System.out.println("좌표 : " + x2 + " / " + y2);
-        System.out.println("시도 : " + sido2);
-        System.out.println("시군구 : " + sigungu2);
-        System.out.println("============================");
-
-
-        String address3 = "경북 칠곡군 군청1길 80 칠곡군청";
-        geocodeResponseDTO = naverMapClient.callGeocodingAPI(address3);
-        String x3 = geocodeResponseDTO.getAddresses().get(0).getX();
-        String y3 = geocodeResponseDTO.getAddresses().get(0).getY();
-        reverseGeocodeResponseDTO = naverMapClient.callReverseGeocodingAPI(x3,y3);
-        String sido3 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSido().getAlias();
-        String sigungu3 = reverseGeocodeResponseDTO.getResults().get(0).getRegion().getSigugun().getName();
-
-        System.out.println("============================");
-        System.out.println("주소 : " + address3);
-        System.out.println("좌표 : " + x3 + " / " + y3);
-        System.out.println("시도 : " + sido3);
-        System.out.println("시군구 : " + sigungu3);
-        System.out.println("============================");
+            System.out.println("============================");
+            System.out.println("주소 : " + address1);
+            System.out.println("좌표 : " + x1 + " / " + y1);
+            System.out.println("시도 : " + sido1);
+            System.out.println("시군구 : " + sigungu1);
+            System.out.println("============================");
+        }
     }
 
     @Test
     @DisplayName("게시글 작성 시 지역명 파싱 확인")
     void getRegion() {
-        BigDecimal latitude = BigDecimal.valueOf(127.1025625);
-        BigDecimal longitude = BigDecimal.valueOf(37.5125702);
-        String region1 = naverMapClient.getRegion(latitude,longitude);
-        System.out.println("기대값 : 서울 / 실제값 : " + region1);
+        String region;
+        BigDecimal latitude;
+        BigDecimal longitude;
 
+        //서울특별시
+        latitude = BigDecimal.valueOf(127.1025625);
+        longitude = BigDecimal.valueOf(37.5125702);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 서울 / 실제값 : " + region);
+
+        //부산광역시
+        latitude = BigDecimal.valueOf(129.0750223);
+        longitude = BigDecimal.valueOf(35.1798160);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 부산 / 실제값 : " + region);
+
+        //대구광역시
+        latitude = BigDecimal.valueOf(128.6017630);
+        longitude = BigDecimal.valueOf(35.8713900);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 대구 / 실제값 : " + region);
+
+        //인천광역시
+        latitude = BigDecimal.valueOf(126.4523468);
+        longitude = BigDecimal.valueOf(37.4476110);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 인천 / 실제값 : " + region);
+
+        //광주광역시
+        latitude = BigDecimal.valueOf(126.7906620);
+        longitude = BigDecimal.valueOf(35.1372122);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 광주 / 실제값 : " + region);
+
+        //대전광역시
+        latitude = BigDecimal.valueOf(127.4321036);
+        longitude = BigDecimal.valueOf(36.3344179);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 대전 / 실제값 : " + region);
+
+        //울산광역시
+        latitude = BigDecimal.valueOf(129.1386316);
+        longitude = BigDecimal.valueOf(35.5514992);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 울산 / 실제값 : " + region);
+
+        //세종시
+        latitude = BigDecimal.valueOf(127.2652833);
+        longitude = BigDecimal.valueOf(36.5042886);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 세종 / 실제값 : " + region);
+
+        //경기도
         latitude = BigDecimal.valueOf(127.0347399);
         longitude = BigDecimal.valueOf(37.3005585);
-        String region2 = naverMapClient.getRegion(latitude,longitude);
-        System.out.println("기대값 : 수원 / 실제값 : " + region2);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 수원 / 실제값 : " + region);
 
+        //강원도
+        latitude = BigDecimal.valueOf(128.5918400);
+        longitude = BigDecimal.valueOf(38.2071690);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 속초 / 실제값 : " + region);
+
+        //경상북도
         latitude = BigDecimal.valueOf(128.4016790);
         longitude = BigDecimal.valueOf(35.9955753);
-        String region3 = naverMapClient.getRegion(latitude,longitude);
-        System.out.println("기대값 : 칠곡 / 실제값 : " + region3);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 칠곡 / 실제값 : " + region);
+
+        //경상남도
+        latitude = BigDecimal.valueOf(128.6919403);
+        longitude = BigDecimal.valueOf(35.2377974);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 창원 / 실제값 : " + region);
+
+        //전라북도
+        latitude = BigDecimal.valueOf(127.1536613);
+        longitude = BigDecimal.valueOf(35.8182902);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 전주 / 실제값 : " + region);
+
+        //전라남도
+        latitude = BigDecimal.valueOf(126.4631714);
+        longitude = BigDecimal.valueOf(34.8161102);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 무안 / 실제값 : " + region);
+
+        //충청북도
+        latitude = BigDecimal.valueOf(127.9260120);
+        longitude = BigDecimal.valueOf(36.9911050);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 충주 / 실제값 : " + region);
+
+        //충청남도
+        latitude = BigDecimal.valueOf(126.6729080);
+        longitude = BigDecimal.valueOf(36.6592490);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 홍성 / 실제값 : " + region);
+
+        //제주도
+        latitude = BigDecimal.valueOf(126.4959513);
+        longitude = BigDecimal.valueOf(33.5059364);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 제주 / 실제값 : " + region);
+
+        latitude = BigDecimal.valueOf(126.5634492);
+        longitude = BigDecimal.valueOf(33.2498297);
+        region = naverMapClient.getRegion(latitude,longitude);
+        System.out.println("기대값 : 서귀포 / 실제값 : " + region);
     }
 }
