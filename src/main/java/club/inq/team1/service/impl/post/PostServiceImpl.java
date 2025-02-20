@@ -53,12 +53,14 @@ public class PostServiceImpl implements PostService {
     public Boolean updatePost(Long postId, RequestPostUpdateDTO requestPostUpdateDTO, List<MultipartFile> multipartFiles) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
-        BigDecimal latitude = requestPostUpdateDTO.getLatitude();
-        BigDecimal longitude = requestPostUpdateDTO.getLongitude();
+
 
         if(!post.getUser().getUserId().equals(user.getUserId())){
             return false;
         }
+
+        BigDecimal latitude = requestPostUpdateDTO.getLatitude();
+        BigDecimal longitude = requestPostUpdateDTO.getLongitude();
 
         post.setTitle(requestPostUpdateDTO.getTitle());
         post.setContent(requestPostUpdateDTO.getContent());
