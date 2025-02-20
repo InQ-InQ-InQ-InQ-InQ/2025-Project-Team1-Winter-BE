@@ -112,7 +112,6 @@ public class NaverMapServiceImpl implements MapService {
 
     @Override
     public String getRegion(BigDecimal latitude, BigDecimal longitude) {
-        String region = null;
 
         //매개변수를 네이버 api 호출을 위해 String 으로 변경
         String lat = latitude.toString();
@@ -122,11 +121,16 @@ public class NaverMapServiceImpl implements MapService {
 
         if(reverseGeocodeDTO != null) {
             String tmp = reverseGeocodeDTO.getResults().get(0)
-                .getRegion().getSido().getAlias();
+                .getRegion().getSido().getName();
 
-            region = "서울";
+            //서울, 부산, 대구, 인천, 광주, 대전, 울산, 세종 인 경우 (끝이 시인 경우)
+            if(tmp.charAt(tmp.length()-1) == '시'){
+                return reverseGeocodeDTO.getResults().get(0).
+                    getRegion().getSido().getAlias();
+            }
 
-            if(!tmp.equals("서울")){
+            //경기도, 강원도, 충북, 충남, 전북, 전남, 경북, 경남, 제주 (끝이 도인 경우)
+            if(tmp.charAt(tmp.length()-1) == '도'){
                 String result = reverseGeocodeDTO.getResults().get(0).
                     getRegion().getSigugun().getName();
 
@@ -137,10 +141,10 @@ public class NaverMapServiceImpl implements MapService {
                     if(c == '시' || c == '군') break;
                 }
 
-                region = result.substring(0, idx-1);
+                return result.substring(0, idx-1);
             }
         }
-        return region;
+        return null;
     }
 
 }
