@@ -1,9 +1,9 @@
 package club.inq.team1.service;
 
-import club.inq.team1.dto.response.GeocodeResponseDTO;
-import club.inq.team1.dto.response.ReverseGeocodeResponseDTO;
+import club.inq.team1.dto.response.ResponseGeocodeDTO;
+import club.inq.team1.dto.response.ResponseReverseGeocodeDTO;
 
 public interface MapService {
-    GeocodeResponseDTO callGeocodingAPI(String address);
-    ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y);
+    ResponseGeocodeDTO callGeocodingAPI(String address);
+    ResponseReverseGeocodeDTO callReverseGeocodingAPI(String x, String y);
 }

@@ -1,7 +1,7 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.response.GeocodeResponseDTO;
-import club.inq.team1.dto.response.ReverseGeocodeResponseDTO;
+import club.inq.team1.dto.response.ResponseGeocodeDTO;
+import club.inq.team1.dto.response.ResponseReverseGeocodeDTO;
 import club.inq.team1.service.MapService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class NaverMapServiceImpl implements MapService {
      */
 
     @Override
-    public GeocodeResponseDTO callGeocodingAPI(String address) {
+    public ResponseGeocodeDTO callGeocodingAPI(String address) {
         String urlBuilder = geocodingUrl + "?query=" + address;
 
         // 헤더 생성 메서드 호출
@@ -46,11 +46,11 @@ public class NaverMapServiceImpl implements MapService {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<GeocodeResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<ResponseGeocodeDTO> response = restTemplate.exchange(
             urlBuilder,
             HttpMethod.GET,
             entity,
-            GeocodeResponseDTO.class
+            ResponseGeocodeDTO.class
         );
 
         if(response.getStatusCode() == HttpStatus.OK) {
@@ -68,7 +68,7 @@ public class NaverMapServiceImpl implements MapService {
      */
 
     @Override
-    public ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y){
+    public ResponseReverseGeocodeDTO callReverseGeocodingAPI(String x, String y){
         UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(reverseGeocodingUrl)
             .queryParam("coords",x+","+y)
             .queryParam("output", "json");
@@ -76,11 +76,11 @@ public class NaverMapServiceImpl implements MapService {
         //헤더 생성 메소드 호출
         HttpEntity<String> entity = new HttpEntity<>(createHeaders());
 
-        ResponseEntity<ReverseGeocodeResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<ResponseReverseGeocodeDTO> response = restTemplate.exchange(
             urlBuilder.toUriString(),
             HttpMethod.GET,
             entity,
-            ReverseGeocodeResponseDTO.class
+            ResponseReverseGeocodeDTO.class
         );
 
         if(response.getStatusCode() == HttpStatus.OK) {
