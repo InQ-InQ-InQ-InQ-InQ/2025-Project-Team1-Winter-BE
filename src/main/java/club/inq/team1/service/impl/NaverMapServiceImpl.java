@@ -1,8 +1,9 @@
 package club.inq.team1.service.impl;
 
-import club.inq.team1.dto.response.GeocodeResponseDTO;
-import club.inq.team1.dto.response.ReverseGeocodeResponseDTO;
+import club.inq.team1.dto.response.ResponseGeocodeDTO;
+import club.inq.team1.dto.response.ResponseReverseGeocodeDTO;
 import club.inq.team1.service.MapService;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -37,7 +38,7 @@ public class NaverMapServiceImpl implements MapService {
      */
 
     @Override
-    public GeocodeResponseDTO callGeocodingAPI(String address) {
+    public ResponseGeocodeDTO callGeocodingAPI(String address) {
         String urlBuilder = geocodingUrl + "?query=" + address;
 
         // 헤더 생성 메서드 호출
@@ -46,11 +47,11 @@ public class NaverMapServiceImpl implements MapService {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<GeocodeResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<ResponseGeocodeDTO> response = restTemplate.exchange(
             urlBuilder,
             HttpMethod.GET,
             entity,
-            GeocodeResponseDTO.class
+            ResponseGeocodeDTO.class
         );
 
         if(response.getStatusCode() == HttpStatus.OK) {
@@ -68,7 +69,7 @@ public class NaverMapServiceImpl implements MapService {
      */
 
     @Override
-    public ReverseGeocodeResponseDTO callReverseGeocodingAPI(String x, String y){
+    public ResponseReverseGeocodeDTO callReverseGeocodingAPI(String x, String y){
         UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(reverseGeocodingUrl)
             .queryParam("coords",x+","+y)
             .queryParam("output", "json");
@@ -76,11 +77,11 @@ public class NaverMapServiceImpl implements MapService {
         //헤더 생성 메소드 호출
         HttpEntity<String> entity = new HttpEntity<>(createHeaders());
 
-        ResponseEntity<ReverseGeocodeResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<ResponseReverseGeocodeDTO> response = restTemplate.exchange(
             urlBuilder.toUriString(),
             HttpMethod.GET,
             entity,
-            ReverseGeocodeResponseDTO.class
+            ResponseReverseGeocodeDTO.class
         );
 
         if(response.getStatusCode() == HttpStatus.OK) {
@@ -100,6 +101,50 @@ public class NaverMapServiceImpl implements MapService {
         headers.set("x-ncp-apigw-api-key-id" , clientId);
         headers.set("x-ncp-apigw-api-key", clientSecret);
         return headers;
+    }
+
+    /**
+     * PostService toPost() 메소드에서 지역명 추출 시 사용합니다.
+     * @Param latitude
+     * @Param longitude
+     * @return region (추출된 지역명)
+     */
+
+    @Override
+    public String getRegion(BigDecimal latitude, BigDecimal longitude) {
+
+        //매개변수를 네이버 api 호출을 위해 String 으로 변경
+        String lat = latitude.toString();
+        String lng = longitude.toString();
+
+        ResponseReverseGeocodeDTO reverseGeocodeDTO = callReverseGeocodingAPI(lat,lng);
+
+        if(reverseGeocodeDTO != null) {
+            String tmp = reverseGeocodeDTO.getResults().get(0)
+                .getRegion().getSido().getName();
+
+            //서울, 부산, 대구, 인천, 광주, 대전, 울산, 세종 인 경우 (끝이 시인 경우)
+            if(tmp.charAt(tmp.length()-1) == '시'){
+                return reverseGeocodeDTO.getResults().get(0).
+                    getRegion().getSido().getAlias();
+            }
+
+            //경기도, 강원도, 충북, 충남, 전북, 전남, 경북, 경남, 제주 (끝이 도인 경우)
+            if(tmp.charAt(tmp.length()-1) == '도'){
+                String result = reverseGeocodeDTO.getResults().get(0).
+                    getRegion().getSigugun().getName();
+
+                char[] arr = result.toCharArray();
+                int idx = 0;
+                for (char c : arr) {
+                    idx++;
+                    if(c == '시' || c == '군') break;
+                }
+
+                return result.substring(0, idx-1);
+            }
+        }
+        return null;
     }
 
 }

@@ -3,7 +3,6 @@ package club.inq.team1.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 /**
  * 네이버 ReverseGeocoding api response 변환 DTO
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Getter
-public class ReverseGeocodeResponseDTO {
+public class ResponseReverseGeocodeDTO {
 
     @JsonProperty("status")
     private Status status;
