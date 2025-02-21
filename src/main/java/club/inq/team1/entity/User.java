@@ -1,7 +1,6 @@
 package club.inq.team1.entity;
 
 import jakarta.persistence.CascadeType;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,8 +25,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "user")
-@JsonIgnoreProperties(value = {"password", "userInfo", "followers", "followings", "enabled", "accountNonLocked",
-        "authorities", "credentialsNonExpired", "accountNonExpired"})
 @BatchSize(size = 100)
 public class User implements UserDetails {
     @Id
@@ -66,25 +63,4 @@ public class User implements UserDetails {
 
         return roles;
     }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
-
 }

@@ -7,7 +7,7 @@ import club.inq.team1.entity.Comment;
 import club.inq.team1.entity.Reply;
 import club.inq.team1.entity.ReplyLike;
 import club.inq.team1.entity.User;
-import club.inq.team1.repository.CommentRepository;
+import club.inq.team1.repository.post.CommentRepository;
 import club.inq.team1.repository.post.ReplyLikeRepository;
 import club.inq.team1.repository.post.ReplyRepository;
 import club.inq.team1.service.post.ReplyService;

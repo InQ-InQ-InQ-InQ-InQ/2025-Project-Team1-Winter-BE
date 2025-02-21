@@ -1,10 +1,10 @@
-package club.inq.team1.dto.request;
+package club.inq.team1.dto.request.user;
 
-import club.inq.team1.config.Gender;
+import club.inq.team1.constant.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.sql.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(title = "회원가입 요청 DTO")
-public class UserJoinDTO {
+public class RequestUserCreateDTO {
     @NotNull
     @NotBlank
     @NonNull
@@ -54,7 +54,7 @@ public class UserJoinDTO {
     private String email;
 
     @Schema(description = "생년월일",example = "2001-01-01")
-    private Date birth;
+    private LocalDate birth;
 
     @Schema(description = "성별",example = "FEMALE")
     private Gender gender;

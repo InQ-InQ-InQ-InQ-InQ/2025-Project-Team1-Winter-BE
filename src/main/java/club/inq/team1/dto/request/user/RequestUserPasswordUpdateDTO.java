@@ -1,4 +1,4 @@
-package club.inq.team1.dto.request;
+package club.inq.team1.dto.request.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Schema(title = "패스워드 변경")
-public class UpdateUserPasswordDTO {
+public class RequestUserPasswordUpdateDTO {
     @NotNull
     @NotBlank
     @Schema(description = "변경하려는 패스워드")
