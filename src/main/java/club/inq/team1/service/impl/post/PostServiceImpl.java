@@ -11,6 +11,7 @@ import club.inq.team1.entity.User;
 import club.inq.team1.repository.post.PostRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
 import club.inq.team1.service.MapService;
+import club.inq.team1.service.impl.user.FollowServiceImpl;
 import club.inq.team1.service.post.CommentService;
 import club.inq.team1.service.post.ImageService;
 import club.inq.team1.service.post.PostService;
@@ -35,12 +36,16 @@ public class PostServiceImpl implements PostService {
     private final ImageService imageService;
     private final CommentService commentService;
     private final MapService naverMapService;
+    private final FollowServiceImpl followService;
 
     @Override
     @Transactional
     public ResponsePostDTO createPost(RequestPostCreateDTO requestPostCreateDTO, List<MultipartFile> multipartFiles) {
         Post post = toPost(requestPostCreateDTO);
         Post save = postRepository.save(post);
+
+        //해당 게시글 번호로 알람 생성
+        followService.sendAlarm(post);
 
         List<Image> saved = imageService.saveWithPost(multipartFiles, post);
 //        save.setImages(saved); // 이미지를 연결하는 과정인데 쿼리가 하나 더 나가기 때문에 일단 안쓰는 방향으로 설정함.
@@ -70,6 +75,9 @@ public class PostServiceImpl implements PostService {
         post.setRegion(naverMapService.getRegion(latitude,longitude));
 
         postRepository.save(post);
+
+        //해당 게시글 번호로 알람 생성
+        followService.sendAlarm(post);
 
         return true;
     }
