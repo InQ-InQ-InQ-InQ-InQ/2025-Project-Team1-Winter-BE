@@ -43,6 +43,7 @@ public class Mail {
     @Column(name = "saw", nullable = false)
     @ColumnDefault("false")
     private Boolean saw;
+
     /**
      * 수신자
      */
@@ -57,7 +58,12 @@ public class Mail {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private LocalDateTime createdAt;
-//    todo
-//    @ManyToOne
-//    @JoinColumn(name = "post_id")
+
+//  todo
+    /**
+     * 게시글 id
+     */
+    @ManyToOne
+    @JoinColumn(name = "post_id" , nullable = false)
+    private Post post;
 }
