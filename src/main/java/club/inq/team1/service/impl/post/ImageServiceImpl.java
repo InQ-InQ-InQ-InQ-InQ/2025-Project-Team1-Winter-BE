@@ -80,6 +80,9 @@ public class ImageServiceImpl implements ImageService {
             // 실제 파일 삭제
             try {
                 Files.deleteIfExists(filePath);
+                if(imageRepository.findById(image.getImageId()).isPresent()) {
+                    imageRepository.deleteById(image.getImageId());
+                }
             } catch (IOException e) {
                 throw new RuntimeException("이미지 파일 삭제과정에서 문제가 발생했습니다.", e);
             }
