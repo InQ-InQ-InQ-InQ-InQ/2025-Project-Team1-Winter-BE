@@ -86,6 +86,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Boolean deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
