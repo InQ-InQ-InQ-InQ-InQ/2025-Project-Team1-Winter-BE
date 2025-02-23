@@ -73,6 +73,12 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
+
+        if(multipartFiles != null){
+            imageService.deleteImages(post);
+            imageService.saveWithPost(multipartFiles, post);
+        }
+
         return true;
     }
 
