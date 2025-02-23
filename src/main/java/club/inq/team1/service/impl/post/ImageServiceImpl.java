@@ -8,6 +8,7 @@ import club.inq.team1.repository.post.ImageRepository;
 import club.inq.team1.service.post.ImageService;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +67,22 @@ public class ImageServiceImpl implements ImageService {
         return saved;
     }
 
+    @Override
+    @Transactional
+    public void deleteImages(Post post) {
+        List<Image> images = imageRepository.findByPost(post);
 
+        // 실제 파일 시스템에서 이미지 파일 삭제
+        for (Image image : images) {
+            String imagePath = image.getImagePath();
+            Path filePath = Path.of("C:/images/" + imagePath);
+            System.out.println(imagePath);
+            // 실제 파일 삭제
+            try {
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 파일 삭제과정에서 문제가 발생했습니다.", e);
+            }
+        }
+    }
 }
