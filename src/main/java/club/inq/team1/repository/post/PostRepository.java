@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
     Page<Post> findByTagsContaining(String tag, Pageable pageable);
+    Page<Post> findByRegionContaining(String region, Pageable pageable);
 }
