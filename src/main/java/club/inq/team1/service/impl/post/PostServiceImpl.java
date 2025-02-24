@@ -76,9 +76,6 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
-        //해당 게시글 번호로 알람 생성
-        followService.sendAlarm(post);
-
         return true;
     }
 
