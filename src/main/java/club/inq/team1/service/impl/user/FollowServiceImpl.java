@@ -3,6 +3,7 @@ package club.inq.team1.service.impl.user;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.entity.Follow;
 import club.inq.team1.entity.Mail;
+import club.inq.team1.entity.Post;
 import club.inq.team1.entity.User;
 import club.inq.team1.repository.user.FollowRepository;
 import club.inq.team1.repository.user.MailRepository;
@@ -139,12 +140,14 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Transactional
-    public boolean sendAlarm(){
+    public boolean sendAlarm(Post post){
         List<User> users = findAllFollowerWithAlarmTrue();
         users.stream()
                 .map(user->Mail.builder()
                         .user(user)
                         // todo : post 도 설정하도록 바꿔야됨.
+                        .post(post)
+                        .saw(false)
                         .build())
                 .forEach(mailRepository::save);
         return true;
