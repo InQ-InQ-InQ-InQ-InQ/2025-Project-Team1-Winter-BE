@@ -10,4 +10,6 @@ public interface ImageService {
     ResponseImageDTO toResponseImageDTO(Image image);
 
     List<Image> saveWithPost(List<MultipartFile> file, Post post);
+
+    void deleteImages(Post post);
 }

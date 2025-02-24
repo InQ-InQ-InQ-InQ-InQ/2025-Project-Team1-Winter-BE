@@ -8,6 +8,7 @@ import club.inq.team1.entity.Image;
 import club.inq.team1.entity.Post;
 import club.inq.team1.entity.PostLike;
 import club.inq.team1.entity.User;
+import club.inq.team1.repository.post.ImageRepository;
 import club.inq.team1.repository.post.PostRepository;
 import club.inq.team1.repository.post.PostLikeRepository;
 import club.inq.team1.service.MapService;
@@ -35,6 +36,7 @@ public class PostServiceImpl implements PostService {
     private final ImageService imageService;
     private final CommentService commentService;
     private final MapService naverMapService;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional
@@ -71,6 +73,12 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
+
+//        if(multipartFiles != null){
+//            imageService.deleteImages(post);
+//            imageService.saveWithPost(multipartFiles, post);
+//        }
+
         return true;
     }
 
@@ -84,6 +92,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Boolean deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
@@ -93,6 +102,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 게시글 관련 정보 지워야됨. 댓글은 알아서 지워지는데 답글은 안지워짐 이미지 정보도 지워지는데 이미지 파일은 안지워짐
+        imageService.deleteImages(post);
         postRepository.delete(post);
 
         return true;
