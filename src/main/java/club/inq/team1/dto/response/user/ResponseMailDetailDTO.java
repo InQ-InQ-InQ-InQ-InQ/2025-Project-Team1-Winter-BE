@@ -1,4 +1,4 @@
-package club.inq.team1.dto.response.mail;
+package club.inq.team1.dto.response.user;
 
 import java.time.LocalDateTime;
 import lombok.Getter;

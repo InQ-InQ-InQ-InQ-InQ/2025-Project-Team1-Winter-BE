@@ -3,14 +3,20 @@ package club.inq.team1.controller;
 import club.inq.team1.dto.request.user.RequestUserInfoUpdateDTO;
 import club.inq.team1.dto.request.user.RequestUserPasswordUpdateDTO;
 import club.inq.team1.dto.request.user.RequestUserCreateDTO;
+import club.inq.team1.dto.response.user.ResponseMailDetailDTO;
 import club.inq.team1.dto.response.user.ResponseUserPrivateInfoDTO;
 import club.inq.team1.dto.response.user.ResponseUserPublicInfoDTO;
+import club.inq.team1.service.user.MailService;
 import club.inq.team1.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
+    private final MailService mailService;
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", responses = {
@@ -131,5 +138,12 @@ public class UserController {
     public ResponseEntity<Boolean> deleteMySelf(){
         Boolean deleteSuccess = userService.deleteMySelf();
         return ResponseEntity.ok(deleteSuccess);
+    }
+
+    @GetMapping(value = "/my/mails")
+    public ResponseEntity<Slice<ResponseMailDetailDTO>> getMails(@PageableDefault(sort = "mailId", direction = Direction.DESC) Pageable pageable){
+        Slice<ResponseMailDetailDTO> mails = mailService.getMails(pageable);
+
+        return ResponseEntity.ok(mails);
     }
 }
