@@ -1,7 +1,5 @@
 # 2025-Project-Team1-Winter-BE
 
----
-
 ## 개발 환경
 ### DB
 ```text
@@ -10,6 +8,12 @@ database : photo
 username : root
 password : 1234
 ```
+### API
+1. https://www.ncloud.com/ 로 접속한다.
+2. 콘솔에서 Maps API를 찾는다.
+3. Application 등록을 선택한다.
+4. Geocoding과 Reverse Geocoding을 선택한 후 등록한다.
+5. 인증정보에서 Client ID와 Client Secret 을 복사해 각각 src/main/resources/application.yml 파일의 naver.map.client-id, naver.map.client-secret에 붙여넣는다.
 
 ## 테스트
 1. 프론트엔드 서버를 3000포트로 활성화한다.
