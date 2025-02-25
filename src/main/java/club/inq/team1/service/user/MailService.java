@@ -9,4 +9,6 @@ public interface MailService {
     Slice<ResponseMailDetailDTO> getMails(Pageable pageable);
 
     ResponseMailDetailDTO toResponseMailDetailDTO(Mail mail);
+
+    Boolean toggleMailSaw(Long mailId);
 }

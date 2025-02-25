@@ -146,4 +146,11 @@ public class UserController {
 
         return ResponseEntity.ok(mails);
     }
+
+    @PostMapping(value = "/my/mails/{mailId}")
+    public ResponseEntity<Boolean> toggleMailSaw(@PathVariable("mailId") Long mailId){
+        Boolean saw = mailService.toggleMailSaw(mailId);
+
+        return ResponseEntity.ok(saw);
+    }
 }

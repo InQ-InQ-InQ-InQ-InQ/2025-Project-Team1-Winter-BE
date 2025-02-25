@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +41,20 @@ public class MailServiceImpl implements MailService {
         dto.setCreatedAt(mail.getCreatedAt());
         dto.setSaw(mail.getSaw());
         return dto;
+    }
+
+    @Override
+    @Transactional
+    public Boolean toggleMailSaw(Long mailId) {
+        User user = currentUser.get();
+        Mail mail = mailRepository.findById(mailId).orElseThrow();
+        if(!mail.getUser().getUserId().equals(user.getUserId())){
+            throw new RuntimeException("본인 알림만 확인할 수 있습니다.");
+        }
+
+        mail.setSaw(!mail.getSaw());
+        mailRepository.save(mail);
+
+        return mail.getSaw();
     }
 }
