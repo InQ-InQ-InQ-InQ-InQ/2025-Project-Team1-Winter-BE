@@ -153,4 +153,11 @@ public class UserController {
 
         return ResponseEntity.ok(saw);
     }
+
+    @DeleteMapping(value = "/my/mails/{mailId}")
+    public ResponseEntity<Boolean> deleteMail(@PathVariable("mailId") Long mailId){
+        Boolean delete = mailService.deleteMail(mailId);
+
+        return ResponseEntity.ok(delete);
+    }
 }

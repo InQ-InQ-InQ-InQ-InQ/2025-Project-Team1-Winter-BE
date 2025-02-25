@@ -57,4 +57,19 @@ public class MailServiceImpl implements MailService {
 
         return mail.getSaw();
     }
+
+    @Override
+    @Transactional
+    public Boolean deleteMail(Long mailId) {
+        User user = currentUser.get();
+        Mail mail = mailRepository.findById(mailId).orElseThrow();
+
+        if(!mail.getUser().getUserId().equals(user.getUserId())){
+            throw new RuntimeException("본인 알림만 삭제할 수 있습니다.");
+        }
+
+        mailRepository.delete(mail);
+
+        return true;
+    }
 }

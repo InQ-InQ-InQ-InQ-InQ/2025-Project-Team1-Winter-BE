@@ -11,4 +11,6 @@ public interface MailService {
     ResponseMailDetailDTO toResponseMailDetailDTO(Mail mail);
 
     Boolean toggleMailSaw(Long mailId);
+
+    Boolean deleteMail(Long mailId);
 }
