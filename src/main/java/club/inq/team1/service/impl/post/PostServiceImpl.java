@@ -193,13 +193,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponsePostOutlineDTO toResponsePostOutlineDTO(Post post) {
         User user = currentUser.get();
+        User writer = post.getUser();
 
         ResponsePostOutlineDTO dto = new ResponsePostOutlineDTO();
 
         dto.setPostId(post.getPostId());
         dto.setTitle(post.getTitle());
-        dto.setUserId(post.getUser().getUserId());
-        dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setUserId(writer.getUserId());
+        dto.setNickname(writer.getUserInfo().getNickname());
+        dto.setProfileImagePath(writer.getUserInfo().getProfileImagePath());
         dto.setRegion(post.getRegion());
         dto.setLatitude(post.getLatitude());
         dto.setLongitude(post.getLongitude());
