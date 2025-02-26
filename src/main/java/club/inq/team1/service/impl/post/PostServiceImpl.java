@@ -144,6 +144,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<ResponsePostOutlineDTO> regionSearchPost(String region, Pageable pageable) {
+        Page<Post> posts = postRepository.findByRegionContaining(region,pageable);
+        return posts.map(this::toResponsePostOutlineDTO);
+    }
+
+    @Override
     public Boolean togglePostLike(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();

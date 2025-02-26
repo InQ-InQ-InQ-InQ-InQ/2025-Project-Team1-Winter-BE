@@ -57,6 +57,15 @@ public interface PostService {
      */
     Page<ResponsePostOutlineDTO> tagSearchPost(String tag, Pageable pageable);
 
+    /**
+     * 해당 지역명을 가진 게시글을 검색합니다.
+     *
+     * @param region    검색하려고 하는 지역명
+     * @param pageable  {@link Post} 에 대해 페이징을 한다.
+     * @return 페이징을 통해 게시글 목록을 받는다.
+     */
+    Page<ResponsePostOutlineDTO> regionSearchPost(String region, Pageable pageable);
+
     Boolean togglePostLike(Long postId);
     // 작성자 닉네임으로 검색.
 }

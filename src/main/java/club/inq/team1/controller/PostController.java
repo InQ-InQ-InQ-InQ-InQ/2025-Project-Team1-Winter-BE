@@ -101,6 +101,25 @@ public class PostController {
     }
 
     /**
+     * 지역명으로 게시글 검색
+     *
+     * @param region      찾고자하는 지역명
+     * @param pageable {@link club.inq.team1.entity.Post} 페이징. 기본 값은 24개,
+     * @return 페이징 처리 된 {@link ResponsePostOutlineDTO} 의 List
+     */
+    @GetMapping("/region-search")
+    @Operation(summary = "지역명으로 게시글 검색", responses = {
+        @ApiResponse(responseCode = "200", description = "검색 완료")
+    })
+    public ResponseEntity<Page<ResponsePostOutlineDTO>> regionSearchPost(
+        @RequestParam(value = "region", required = false, defaultValue = "") String region,
+        @PageableDefault(size = 24, sort = {"postId"}, direction = Direction.DESC) Pageable pageable) {
+        Page<ResponsePostOutlineDTO> responsePostOutlineDTOS = postService.regionSearchPost(region, pageable);
+
+        return ResponseEntity.ok(responsePostOutlineDTOS);
+    }
+
+    /**
      * 게시글 삭제
      *
      * @param postId 게시글 고유 아이디
