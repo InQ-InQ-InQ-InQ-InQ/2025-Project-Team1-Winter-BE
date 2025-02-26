@@ -98,14 +98,17 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseCommentDTO toResponseCommentDTO(Comment comment) {
-        ResponseCommentDTO dto = new ResponseCommentDTO();
         User user = currentUser.get();
+        User commenter = comment.getUser();
+
+        ResponseCommentDTO dto = new ResponseCommentDTO();
 
         dto.setCommentId(comment.getId());
-        dto.setUserId(comment.getUser().getUserId());
+        dto.setUserId(commenter.getUserId());
         dto.setPostId(comment.getPost().getPostId());
-        dto.setMyComment(comment.getUser().getUserId().equals(user.getUserId()));
-        dto.setNickname(comment.getUser().getUserInfo().getNickname());
+        dto.setMyComment(commenter.getUserId().equals(user.getUserId()));
+        dto.setNickname(commenter.getUserInfo().getNickname());
+        dto.setProfileImagePath(commenter.getUserInfo().getProfileImagePath());
         dto.setContent(comment.getContent());
         dto.setMyLike(commentLikeRepository.existsByUserAndComment(user,comment));
         dto.setCommentLikeCount(comment.getCommentLikes().size());
