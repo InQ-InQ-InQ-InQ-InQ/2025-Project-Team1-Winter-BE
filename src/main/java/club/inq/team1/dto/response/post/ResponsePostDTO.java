@@ -17,6 +17,7 @@ public class ResponsePostDTO {
     private Long postId; // 게시글 고유 아이디
     private Long userId; // 게시글 작성자의 고유 아이디
     private String nickname; // 게시글 작성자의 닉네임
+    private String profileImagePath; // 게시글 작성자 프로필 이미지 경로
     private Boolean myPost; // 게시글 작성자가 현재 로그인한 사용자인지
     private String title; // 게시글 제목
     private String content; // 게시글 내용
