@@ -116,6 +116,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponsePostDTO getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
+        postRepository.increaseHit(post.getPostId());
         return toResponsePostDTO(post);
     }
 
