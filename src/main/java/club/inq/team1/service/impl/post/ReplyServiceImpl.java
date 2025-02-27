@@ -93,14 +93,17 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public ResponseReplyDTO toResponseReplyDTO(Reply reply) {
-        ResponseReplyDTO dto = new ResponseReplyDTO();
         User user = currentUser.get();
+        User replier = reply.getUser();
+
+        ResponseReplyDTO dto = new ResponseReplyDTO();
 
         dto.setReplyId(reply.getReplyId());
-        dto.setUserId(reply.getUser().getUserId());
-        dto.setNickname(reply.getUser().getUserInfo().getNickname());
+        dto.setUserId(replier.getUserId());
+        dto.setNickname(replier.getUserInfo().getNickname());
+        dto.setProfileImagePath(replier.getUserInfo().getProfileImagePath());
         dto.setCommentId(reply.getComment().getId());
-        dto.setMyReply(reply.getUser().getUserId().equals(user.getUserId()));
+        dto.setMyReply(replier.getUserId().equals(user.getUserId()));
         dto.setContent(reply.getContent());
         dto.setMyLike(replyLikeRepository.existsByUserAndReply(user,reply));
         dto.setReplyLikeCount(reply.getReplyLikes().size());

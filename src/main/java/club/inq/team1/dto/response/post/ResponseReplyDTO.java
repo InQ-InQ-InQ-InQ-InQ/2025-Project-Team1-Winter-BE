@@ -15,6 +15,7 @@ public class ResponseReplyDTO {
     private Long replyId; // 답글 고유 아이디
     private Long userId; // 답글을 단 유저의 고유 아이디
     private String nickname; // 답글을 단 유저의 닉네임
+    private String profileImagePath; // 답글 단 유저의 프로필 이미지 경로
     private Long commentId; // 댓글의 고유 아이디
     private Boolean myReply; // 답글 작성자가 현재 로그인한 사용자인지 여부
     private String content; // 답글 내용
