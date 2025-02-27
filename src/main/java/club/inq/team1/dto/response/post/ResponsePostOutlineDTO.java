@@ -11,6 +11,7 @@ public class ResponsePostOutlineDTO {
     private String title; // 게시글 제목
     private Long userId; // 게시글 작성자 고유 아이디
     private Long postId; // 게시글 고유 아이디
+    private long hit; //게시글 조회수
     private String nickname; // 게시글 작성자 닉네임
     private String profileImagePath; // 작성자의 프로필 이미지 경로
     private String region; // 게시글 지역 태그

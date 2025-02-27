@@ -45,6 +45,9 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private long hit = 0;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

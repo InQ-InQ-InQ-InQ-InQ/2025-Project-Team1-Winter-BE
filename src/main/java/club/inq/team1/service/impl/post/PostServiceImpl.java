@@ -116,6 +116,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponsePostDTO getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
+        postRepository.increaseHit(post.getPostId());
         return toResponsePostDTO(post);
     }
 
@@ -176,6 +177,7 @@ public class PostServiceImpl implements PostService {
         ResponsePostDTO dto = new ResponsePostDTO();
 
         dto.setPostId(post.getPostId());
+        dto.setHit(post.getHit());
         dto.setUserId(writer.getUserId());
         dto.setNickname(writer.getUserInfo().getNickname());
         dto.setProfileImagePath(writer.getUserInfo().getProfileImagePath());
@@ -205,6 +207,7 @@ public class PostServiceImpl implements PostService {
 
         dto.setPostId(post.getPostId());
         dto.setTitle(post.getTitle());
+        dto.setHit(post.getHit());
         dto.setUserId(writer.getUserId());
         dto.setNickname(writer.getUserInfo().getNickname());
         dto.setProfileImagePath(writer.getUserInfo().getProfileImagePath());
