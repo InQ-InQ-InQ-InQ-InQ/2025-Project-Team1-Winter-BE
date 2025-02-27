@@ -178,6 +178,7 @@ public class PostServiceImpl implements PostService {
         dto.setPostId(post.getPostId());
         dto.setUserId(post.getUser().getUserId());
         dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setHit(post.getHit());
         dto.setMyPost(post.getUser().getUserId().equals(user.getUserId()));
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
@@ -205,6 +206,7 @@ public class PostServiceImpl implements PostService {
         dto.setTitle(post.getTitle());
         dto.setUserId(post.getUser().getUserId());
         dto.setNickname(post.getUser().getUserInfo().getNickname());
+        dto.setHit(post.getHit());
         dto.setRegion(post.getRegion());
         dto.setLatitude(post.getLatitude());
         dto.setLongitude(post.getLongitude());
