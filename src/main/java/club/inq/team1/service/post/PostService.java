@@ -1,15 +1,14 @@
 package club.inq.team1.service.post;
 
+import club.inq.team1.dto.request.map.RequestMapRangeSearchDTO;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
 import club.inq.team1.entity.Post;
-import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
@@ -71,14 +70,11 @@ public interface PostService {
     /**
      * 좌측하단, 우측상단 좌표값 사이의 값을 가진 게시글을 검색합니다.
      *
-     * @param leftX     좌측하단 X좌표값 (latitude)
-     * @param rightX    우측상단 X좌표값 (latitude)
-     * @param leftY     좌측하단 Y좌표값 (longitude)
-     * @param rightY    우측상단 Y좌표값 (longitude)
+     * @param dto   좌측하단, 우측상단 좌표를 가지고있는 dto
      * @param pageable  {@link Post} 에 대해 페이징을 한다.
      * @return 페이징을 통해 게시글 목록을 받는다.
      */
-    Page<ResponsePostOutlineDTO> rangeSearchPost(BigDecimal leftX, BigDecimal rightX, BigDecimal leftY, BigDecimal rightY, Pageable pageable);
+    Page<ResponsePostOutlineDTO> rangeSearchPost(RequestMapRangeSearchDTO dto, Pageable pageable);
 
     Boolean togglePostLike(Long postId);
     // 작성자 닉네임으로 검색.
