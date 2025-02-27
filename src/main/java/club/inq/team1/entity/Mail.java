@@ -1,6 +1,5 @@
 package club.inq.team1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -18,9 +17,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -31,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @Table(name = "mail")
 @EntityListeners(AuditingEntityListener.class)
+@BatchSize(size = 10)
 public class Mail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
