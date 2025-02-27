@@ -1,5 +1,6 @@
 package club.inq.team1.controller;
 
+import club.inq.team1.dto.request.map.RequestMapRangeSearchDTO;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
 import club.inq.team1.dto.response.post.ResponsePostOutlineDTO;
@@ -118,6 +119,25 @@ public class PostController {
 
         return ResponseEntity.ok(responsePostOutlineDTOS);
     }
+
+    /**
+     * 좌측하단, 우측상단 좌표 사이 해당 하는 게시글 검색
+     *
+     * @param dto   좌측하단, 우측상단 좌표를 가지고있는 dto
+     * @param pageable {@link club.inq.team1.entity.Post} 페이징. 기본 값은 24개,
+     * @return 페이징 처리 된 {@link ResponsePostOutlineDTO} 의 List
+     */
+    @GetMapping("/range-search")
+    @Operation(summary = "좌측하단, 우측상단 좌표 사이 해당하는 값을 가진 게시글 검색", responses = {
+        @ApiResponse(responseCode = "200", description = "검색 완료")
+    })
+    public ResponseEntity<Page<ResponsePostOutlineDTO>> rangeSearchPost(@ModelAttribute RequestMapRangeSearchDTO dto,
+        @PageableDefault(size = 24, sort = {"postId"}, direction = Direction.DESC) Pageable pageable) {
+        Page<ResponsePostOutlineDTO> responsePostOutlineDTOS = postService.rangeSearchPost(dto, pageable);
+
+        return ResponseEntity.ok(responsePostOutlineDTOS);
+    }
+
 
     /**
      * 게시글 삭제

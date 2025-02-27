@@ -1,5 +1,6 @@
 package club.inq.team1.service.post;
 
+import club.inq.team1.dto.request.map.RequestMapRangeSearchDTO;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
@@ -65,6 +66,15 @@ public interface PostService {
      * @return 페이징을 통해 게시글 목록을 받는다.
      */
     Page<ResponsePostOutlineDTO> regionSearchPost(String region, Pageable pageable);
+
+    /**
+     * 좌측하단, 우측상단 좌표값 사이의 값을 가진 게시글을 검색합니다.
+     *
+     * @param dto   좌측하단, 우측상단 좌표를 가지고있는 dto
+     * @param pageable  {@link Post} 에 대해 페이징을 한다.
+     * @return 페이징을 통해 게시글 목록을 받는다.
+     */
+    Page<ResponsePostOutlineDTO> rangeSearchPost(RequestMapRangeSearchDTO dto, Pageable pageable);
 
     Boolean togglePostLike(Long postId);
     // 작성자 닉네임으로 검색.

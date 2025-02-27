@@ -1,5 +1,6 @@
 package club.inq.team1.service.impl.post;
 
+import club.inq.team1.dto.request.map.RequestMapRangeSearchDTO;
 import club.inq.team1.dto.request.post.post.RequestPostCreateDTO;
 import club.inq.team1.dto.request.post.post.RequestPostUpdateDTO;
 import club.inq.team1.dto.response.post.ResponsePostDTO;
@@ -147,6 +148,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<ResponsePostOutlineDTO> regionSearchPost(String region, Pageable pageable) {
         Page<Post> posts = postRepository.findByRegionContaining(region,pageable);
+        return posts.map(this::toResponsePostOutlineDTO);
+    }
+
+    @Override
+    public Page<ResponsePostOutlineDTO> rangeSearchPost(RequestMapRangeSearchDTO dto, Pageable pageable) {
+        Page<Post> posts = postRepository.findByLatitudeBetweenAndLongitudeBetween(dto.getLeftX(), dto.getRightX(), dto.getLeftY(), dto.getRightY(), pageable);
         return posts.map(this::toResponsePostOutlineDTO);
     }
 
