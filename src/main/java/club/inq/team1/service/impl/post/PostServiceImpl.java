@@ -150,6 +150,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<ResponsePostOutlineDTO> rangeSearchPost(BigDecimal leftX, BigDecimal rightX, BigDecimal leftY, BigDecimal rightY, Pageable pageable) {
+        Page<Post> posts = postRepository.findByLatitudeBetweenAndLongitudeBetween(leftX, rightX, leftY, rightY, pageable);
+        return posts.map(this::toResponsePostOutlineDTO);
+    }
+
+    @Override
     public Boolean togglePostLike(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = currentUser.get();
